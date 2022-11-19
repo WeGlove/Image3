@@ -23,7 +23,6 @@ class Strips:
 
             copy = numpy.repeat(copy, height, axis=0)
             mask = Image.fromarray(copy).convert("L")
-            mask.save(f"mask_{index}.png")
             return mask, random_array
 
         return f
@@ -45,7 +44,6 @@ class Strips:
 
             copy = numpy.repeat(copy, width, axis=1)
             mask = Image.fromarray(copy).convert("L")
-            mask.save(f"mask_{index}.png")
             return mask, random_array
 
         return f
@@ -80,6 +78,6 @@ class Strips:
             mask.paste(right_alpha, (index * round(width / limit), 0, index * round(width / limit) + overlap, height))
 
             mask.paste(strip, (index * round(width / limit), 0, (index + 1) * round(width / limit), height))
-            return mask
+            return mask, None
 
         return f
