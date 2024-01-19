@@ -2,7 +2,7 @@ from PIL import Image
 import os
 import random
 from typing import List
-from compositor import Compositor
+from alpha_comp.compositor import Compositor
 
 
 class AlphaComp:

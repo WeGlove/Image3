@@ -11,7 +11,6 @@ class Cones(Compositor):
         angle_space = 360 / limit
         angle_start = angle_space * index
         angle_end = angle_space * (index + 1)
-        print(angle_start, angle_end)
 
         center_vector = np.array([width / 2, height / 2])
 
@@ -23,7 +22,6 @@ class Cones(Compositor):
         normal = np.array([1, 0])
         alpha = np.cross(pixel_normals, normal)
         alpha = np.arcsin(alpha) / np.pi * 180 + 90
-        print(np.min(alpha), np.max(alpha))
         for alpha_value, pixel_vector in zip(alpha, pixel_vectors):
             if (pixel_vector - center_vector)[0] < 0:
                 alpha_value += 180

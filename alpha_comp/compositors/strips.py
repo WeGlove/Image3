@@ -9,7 +9,7 @@ class VStrips:
 
     def composite(self, width, height, index, limit, arg):
         if arg is None:
-            rng = numpy.random.default_rng(seed)
+            rng = numpy.random.default_rng(self.seed)
             random_array = rng.random((1, width)) * limit
             random_array = numpy.floor(random_array)
         else:
@@ -47,6 +47,7 @@ class HStrips:
         mask = Image.fromarray(copy).convert("L")
         return mask, random_array
 
+
 class Stips:
 
     def composite(self, width, height, index, limit, arg):
@@ -54,6 +55,7 @@ class Stips:
         strip = Image.new("L", (round(width / limit), height), color=0xFF)
         mask.paste(strip, (index * round(width / limit), 0, (index + 1) * round(width / limit), height))
         return mask
+
 
 class StripFade:
 
