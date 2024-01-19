@@ -1,17 +1,23 @@
 import numpy as np
 from scipy.signal import fftconvolve
+from alpha_comp.compositor import Compositor
 
 
-class TensorComp:
+class TensorComp(Compositor):
 
     def __init__(self, compositor, tensor):
+        super().__init__()
         self.compositor = compositor
         self.tensor = tensor
         self.tensor_width = self.tensor.shape[0] // 2
         self.tensor_height = self.tensor.shape[1] // 2
 
-    def composite(self, width, height, index, limit, arg):
-        mask, out_arg = self.compositor.composite(width, height, index, limit, arg)
+    def initialize(self, width, height, limit):
+        super().initialize(width, height, limit)
+        self.compositor.initialize(width, height, limit)
+
+    def composite(self, index):
+        mask = self.compositor.composite(index)
         r = fftconvolve(mask[:, :, 0], self.tensor)
         g = fftconvolve(mask[:, :, 1], self.tensor)
         b = fftconvolve(mask[:, :, 2], self.tensor)
@@ -20,7 +26,7 @@ class TensorComp:
                          b[self.tensor_width:-self.tensor_width, self.tensor_height:-self.tensor_height]])
         mask = np.transpose(mask, (1, 2, 0))
 
-        return mask, arg
+        return mask
 
     @staticmethod
     def box_blur(size: int = 0):

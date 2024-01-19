@@ -1,16 +1,22 @@
 import numpy as np
+from alpha_comp.compositor import Compositor
 
 
-class TranslationComp:
+class TranslationComp(Compositor):
 
     def __init__(self, compositor, width=0, height=0):
+        super().__init__()
         self.compositor = compositor
-        self.width = width
-        self.height = height
+        self.width_roll = width
+        self.height_roll = height
 
-    def composite(self, width, height, index, limit, arg):
-        mask, out_arg = self.compositor.composite(width, height, index, limit, arg)
-        mask = np.roll(mask, self.width, axis=0)
-        mask = np.roll(mask, self.height, axis=1)
+    def initialize(self, width, height, limit):
+        super().initialize(width, height, limit)
+        self.compositor.initialize(width, height, limit)
 
-        return mask, out_arg
+    def composite(self, index):
+        mask = self.compositor.composite(index)
+        mask = np.roll(mask, self.width_roll, axis=0)
+        mask = np.roll(mask, self.height_roll, axis=1)
+
+        return mask

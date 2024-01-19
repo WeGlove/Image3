@@ -1,20 +1,23 @@
 import numpy as np
+from alpha_comp.compositor import Compositor
 
 
-class MeanComp:
+class MeanComp(Compositor):
 
     def __init__(self, compositors):
+        super().__init__()
         self.compositors = compositors
 
-    def composite(self, width, height, index, limit, arg):
-        if arg is None:
-            arg = [None] * limit
+    def initialize(self, width, height, limit):
+        super().initialize(width, height, limit)
+        for compositor in self.compositors:
+            compositor.initialize(width, height, limit)
 
-        out_args = []
+    def composite(self, index):
         masks = []
-        for (compositor, in_arg) in zip(self.compositors, arg):
-            mask, out_arg = compositor.composite(width, height, index, limit, in_arg)
+        for compositor in self.compositors:
+            mask, out_arg = compositor.composite(self.width, self.height, index, self.limit, in_arg)
             masks.append(mask)
             out_args.append(out_arg)
 
-        return np.mean(masks, axis=0), out_args
+        return np.mean(masks, axis=0)
