@@ -1,13 +1,14 @@
-import numpy
 from PIL import Image
 import os
 import random
+from typing import List
+from compositor import Compositor
 
 
 class AlphaComp:
 
     @staticmethod
-    def mass_image_compositor(path, masking_fun, order="linear", save_masks=None):
+    def mass_image_compositor(path, compsitors: List[Compositor], order="linear", save_masks=None):
         dir = os.listdir(path)
         if order == "reverse":
             dir.reverse()
@@ -21,7 +22,8 @@ class AlphaComp:
             img = Image.open(os.path.join(path, file))
             if stack_img is None:
                 stack_img = Image.new("RGBA", img.size, color=0xFF)
-            mask, arg = masking_fun(img.width, img.height, i, len(dir), arg)
+            for compositor in compsitors:
+                mask, arg = compositor.composite(img.width, img.height, i, len(dir), arg)
             img.putalpha(mask)
             stack_img.alpha_composite(img)
             print(f"Composited image {i}")
