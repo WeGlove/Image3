@@ -7,7 +7,7 @@ import itertools
 class Cones(Compositor):
 
     def composite(self, width, height, index, limit, arg):
-        arr = np.zeros((width, height))
+        arr = np.zeros((width, height, 3))
         angle_space = 360 / limit
         angle_start = angle_space * index
         angle_end = angle_space * (index + 1)
@@ -26,7 +26,6 @@ class Cones(Compositor):
             if (pixel_vector - center_vector)[0] < 0:
                 alpha_value += 180
             if angle_start < alpha_value < angle_end:
-                arr[pixel_vector[0], pixel_vector[1]] = 1
+                arr[pixel_vector[0], pixel_vector[1], :] = 1
 
-        mask = Image.fromarray(arr.T * 255).convert("L")
-        return mask, None
+        return arr, None

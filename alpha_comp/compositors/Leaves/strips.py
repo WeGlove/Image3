@@ -44,11 +44,11 @@ class HStrips:
         copy[copy == -1] = 255
 
         copy = numpy.repeat(copy, width, axis=1)
-        mask = Image.fromarray(copy).convert("L")
-        return mask, random_array
+
+        return copy, random_array
 
 
-class Stips:
+class Strips:
 
     def composite(self, width, height, index, limit, arg):
         mask = Image.new("L", (width, height), color=0x00)
