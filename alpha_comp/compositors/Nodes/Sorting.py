@@ -40,7 +40,7 @@ class Sorting(Compositor):
         return out_mask, positions
 
     def composite(self, index, img):
-        mask = self.compositor.composite(index)
+        mask = self.compositor.composite(index, img)
 
         out_r = mask[:, :, 0]
         out_r, self.positions_r = self.sort_arr(out_r, self.positions_r)

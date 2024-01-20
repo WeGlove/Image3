@@ -16,7 +16,7 @@ class MeanComp(Compositor):
     def composite(self, index, img):
         masks = []
         for compositor in self.compositors:
-            mask = compositor.composite(index)
+            mask = compositor.composite(index, img)
             masks.append(mask)
 
         return np.mean(masks, axis=0)
