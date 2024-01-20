@@ -6,7 +6,7 @@ import itertools
 
 class Radials(Compositor):
 
-    def composite(self, index):
+    def composite(self, index, img):
         arr = np.zeros((self.width, self.height, 3))
         radius_space = min(self.width, self.height) / self.limit
         radius_start = radius_space * index

@@ -43,7 +43,7 @@ class HStrips(Compositor):
         super().initialize(width, height, limit)
         self.random_mask = None
 
-    def composite(self, index):
+    def composite(self, index, img):
         if self.random_mask is None:
             rng = numpy.random.default_rng(self.seed)
             random_array = rng.random((self.height, 1)) * self.limit

@@ -23,7 +23,7 @@ class AlphaComp:
             if stack_img is None:
                 stack_img = np.zeros(img.shape)
                 compositor.initialize(img.shape[0], img.shape[1], len(dir))
-            mask = compositor.composite(i)
+            mask = compositor.composite(i, img)
 
             stack_img = stack_img + np.multiply(img, mask)
 

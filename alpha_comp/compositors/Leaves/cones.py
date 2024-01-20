@@ -6,7 +6,7 @@ import itertools
 
 class Cones(Compositor):
 
-    def composite(self, index):
+    def composite(self, index, img):
         arr = np.zeros((self.width, self.height, 3))
         angle_space = 360 / self.limit
         angle_start = angle_space * index

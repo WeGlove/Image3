@@ -14,7 +14,7 @@ class TranslationComp(Compositor):
         super().initialize(width, height, limit)
         self.compositor.initialize(width, height, limit)
 
-    def composite(self, index):
+    def composite(self, index, img):
         mask = self.compositor.composite(index)
         mask = np.roll(mask, self.width_roll, axis=0)
         mask = np.roll(mask, self.height_roll, axis=1)

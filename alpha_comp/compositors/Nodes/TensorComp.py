@@ -16,7 +16,7 @@ class TensorComp(Compositor):
         super().initialize(width, height, limit)
         self.compositor.initialize(width, height, limit)
 
-    def composite(self, index):
+    def composite(self, index, img):
         mask = self.compositor.composite(index)
         r = fftconvolve(mask[:, :, 0], self.tensor)
         g = fftconvolve(mask[:, :, 1], self.tensor)

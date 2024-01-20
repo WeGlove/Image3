@@ -15,5 +15,5 @@ class Compositor:
         self.limit = limit
 
     @abstractmethod
-    def composite(self, index) -> np.ndarray:
+    def composite(self, index, img) -> np.ndarray:
         pass

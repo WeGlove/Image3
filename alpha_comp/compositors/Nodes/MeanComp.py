@@ -13,7 +13,7 @@ class MeanComp(Compositor):
         for compositor in self.compositors:
             compositor.initialize(width, height, limit)
 
-    def composite(self, index):
+    def composite(self, index, img):
         masks = []
         for compositor in self.compositors:
             mask = compositor.composite(index)

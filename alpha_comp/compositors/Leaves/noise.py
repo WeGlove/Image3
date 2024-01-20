@@ -19,7 +19,7 @@ class Noise(Compositor):
             self.noise_map = np.array([self.noise_map, self.noise_map, self.noise_map])
             self.noise_map = np.transpose(self.noise_map, (1, 2, 0))
 
-    def composite(self, index):
+    def composite(self, index, img):
         mask = np.zeros((self.width, self.height, 3))
         mask[self.noise_map == index] = 1
 
