@@ -16,8 +16,7 @@ class MeanComp(Compositor):
     def composite(self, index):
         masks = []
         for compositor in self.compositors:
-            mask, out_arg = compositor.composite(self.width, self.height, index, self.limit, in_arg)
+            mask = compositor.composite(index)
             masks.append(mask)
-            out_args.append(out_arg)
 
         return np.mean(masks, axis=0)

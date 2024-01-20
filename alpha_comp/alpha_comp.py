@@ -17,6 +17,7 @@ class AlphaComp:
         stack_img = None
 
         for i, file in enumerate(dir):
+            print(f"Compositing {i}")
             img = Image.open(os.path.join(path, file))
             img = np.array(img)
             if stack_img is None:
