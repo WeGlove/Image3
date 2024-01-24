@@ -24,7 +24,8 @@ class Cones(Compositor):
         alpha = np.arcsin(alpha) / np.pi * 180 + 90
         for alpha_value, pixel_vector in zip(alpha, pixel_vectors):
             if (pixel_vector - center_vector)[0] < 0:
-                alpha_value += 180
+                alpha_value = -alpha_value
+            alpha_value %= 360
             if angle_start < alpha_value < angle_end:
                 arr[pixel_vector[0], pixel_vector[1], :] = 1
 
