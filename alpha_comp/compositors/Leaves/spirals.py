@@ -6,7 +6,7 @@ import itertools
 
 class Spirals(Compositor):
 
-    def __init__(self, factor=1):
+    def __init__(self, factor=0.001):
         super().__init__()
         self.factor = factor
 
