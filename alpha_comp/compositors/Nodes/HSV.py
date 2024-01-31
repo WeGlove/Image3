@@ -1,3 +1,4 @@
+import time
 import numpy as np
 from alpha_comp.compositor import Compositor
 
@@ -16,20 +17,25 @@ class HSV(Compositor):
         self.compositor_s.initialize(width, height, limit)
         self.compositor_v.initialize(width, height, limit)
 
-    def _to_hsv(self, mask):
+    @staticmethod
+    def _to_hsv(mask, width, height):
         min_mask = np.min(mask, axis=-1)
         max_mask = np.max(mask, axis=-1)
         V = max_mask
         delta = max_mask - min_mask
 
-        S = np.zeros((self.width, self.height))
-        S[V == 0] = 0
-        S[V != 0] = delta[V != 0] / max_mask[V != 0]
+        S = np.zeros((width, height))
+        V_pos = V != 0
+        S[V_pos] = delta[V_pos] / max_mask[V_pos]
 
-        H = np.zeros((self.width, self.height))
-        H[max_mask == mask[:, :, 0]] = 60 * (((mask[:, :, 1][max_mask == mask[:, :, 0]] - mask[:, :, 2][max_mask == mask[:, :, 0]]) / delta[max_mask == mask[:, :, 0]]) % 6)
-        H[max_mask == mask[:, :, 1]] = 60 * (((mask[:, :, 2][max_mask == mask[:, :, 1]] - mask[:, :, 0][max_mask == mask[:, :, 2]]) / delta[max_mask == mask[:, :, 0]]) + 2)
-        H[max_mask == mask[:, :, 2]] = 60 * (((mask[:, :, 0][max_mask == mask[:, :, 2]] - mask[:, :, 1][max_mask == mask[:, :, 2]]) / delta[max_mask == mask[:, :, 0]]) + 4)
+        max_mask_r = max_mask == mask[:, :, 0]
+        max_mask_g = max_mask == mask[:, :, 1]
+        max_mask_b = max_mask == mask[:, :, 2]
+
+        H = np.zeros((width, height))
+        H[max_mask_r] = 60 * (((mask[:, :, 1][max_mask_r] - mask[:, :, 2][max_mask_r]) / delta[max_mask_r]) % 6)
+        H[max_mask_g] = 60 * (((mask[:, :, 2][max_mask_g] - mask[:, :, 0][max_mask_g]) / delta[max_mask_g]) + 2)
+        H[max_mask_b] = 60 * (((mask[:, :, 0][max_mask_b] - mask[:, :, 1][max_mask_b]) / delta[max_mask_b]) + 4)
         H[delta == 0] = 0
         H = H / 360
         return np.array([H, S, V]).transpose((1, 2, 0))
@@ -69,9 +75,11 @@ class HSV(Compositor):
         mask_s = self.compositor_s.composite(index, img)
         mask_v = self.compositor_v.composite(index, img)
 
-        H = self._to_hsv(mask_h)[:, :, 0]
-        S = self._to_hsv(mask_s)[:, :, 1]
-        V = self._to_hsv(mask_v)[:, :, 2]
+        a = time.time()
+        H = self._to_hsv(mask_h, self.width, self.height)[:, :, 0]
+        S = self._to_hsv(mask_s, self.width, self.height)[:, :, 1]
+        V = self._to_hsv(mask_v, self.width, self.height)[:, :, 2]
+        print(time.time() - a)
 
         out_mask = self._to_rgb(np.array([H, S, V]).transpose((1, 2, 0)))
 
