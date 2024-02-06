@@ -22,6 +22,7 @@ class Noise(Compositor):
 
     def composite(self, index, img):
         mask = np.zeros((self.width, self.height, 3))
+        print(mask.shape, self.noise_map.shape)
         mask[self.noise_map == index] = 1
 
         return mask
