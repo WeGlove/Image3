@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 from alpha_comp.compositor import Compositor
 
 
@@ -9,8 +10,8 @@ class SizeSplit(Compositor):
         self.compositor_a = compositor_a
         self.compositor_b = compositor_b
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, limit, device=None):
+        super().initialize(width, height, limit, device)
 
         self.compositor_a.initialize(width, height, limit)
         self.compositor_b.initialize(width, height, limit)
@@ -25,4 +26,4 @@ class SizeSplit(Compositor):
         mask_b = np.array(np.floor(np.array(np.floor(mask_b * 255), dtype=np.int32) >> 4), dtype=np.int32) << 4
 
         base_mask = np.array(mask_a + mask_b) / 255
-        return base_mask
+        return torch.tensor(base_mask, device=self.device)

@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.signal import fftconvolve
 from alpha_comp.compositor import Compositor
+import torch
 
 
 class TensorComp(Compositor):
@@ -12,11 +13,11 @@ class TensorComp(Compositor):
         self.tensor_width = self.tensor.shape[0] // 2
         self.tensor_height = self.tensor.shape[1] // 2
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, limit, device=None):
+        super().initialize(width, height, limit, device)
         self.compositor.initialize(width, height, limit)
 
-    def composite(self, index, img):
+    def composite(self, index, img, device=None):
         mask = self.compositor.composite(index, img)
         r = fftconvolve(mask[:, :, 0], self.tensor)
         g = fftconvolve(mask[:, :, 1], self.tensor)
@@ -26,7 +27,7 @@ class TensorComp(Compositor):
                          b[self.tensor_width:-self.tensor_width, self.tensor_height:-self.tensor_height]])
         mask = np.transpose(mask, (1, 2, 0))
 
-        return mask
+        return torch.tensor(mask, device=self.device)
 
     @staticmethod
     def box_blur(size: int = 0):

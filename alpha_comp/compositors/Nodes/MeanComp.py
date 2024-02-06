@@ -1,5 +1,6 @@
 import numpy as np
 from alpha_comp.compositor import Compositor
+import torch
 
 
 class MeanComp(Compositor):
@@ -8,8 +9,8 @@ class MeanComp(Compositor):
         super().__init__()
         self.compositors = compositors
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, limit, device=None):
+        super().initialize(width, height, limit, device)
         for compositor in self.compositors:
             compositor.initialize(width, height, limit)
 
@@ -19,4 +20,4 @@ class MeanComp(Compositor):
             mask = compositor.composite(index, img)
             masks.append(mask)
 
-        return np.mean(masks, axis=0)
+        return torch.tensor(np.mean(masks, axis=0), device=self.device)

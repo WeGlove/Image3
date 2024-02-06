@@ -1,5 +1,6 @@
 import time
 import numpy as np
+import torch
 from alpha_comp.compositor import Compositor
 
 
@@ -11,8 +12,8 @@ class HSV(Compositor):
         self.compositor_s = compositor_s
         self.compositor_v = compositor_v
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, limit, device=None):
+        super().initialize(width, height, limit, device)
         self.compositor_h.initialize(width, height, limit)
         self.compositor_s.initialize(width, height, limit)
         self.compositor_v.initialize(width, height, limit)
@@ -83,4 +84,4 @@ class HSV(Compositor):
 
         out_mask = self._to_rgb(np.array([H, S, V]).transpose((1, 2, 0)))
 
-        return out_mask
+        return torch.tensor(out_mask, device=self.device)

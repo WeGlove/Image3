@@ -1,4 +1,6 @@
 import numpy as np
+import torch
+
 from alpha_comp.compositor import Compositor
 
 
@@ -11,8 +13,8 @@ class Sorting(Compositor):
         self.positions_g = None
         self.positions_b = None
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, limit, device=None):
+        super().initialize(width, height, limit, device)
         self.compositor.initialize(width, height, limit)
         self.positions_r = np.array([0] * height)
         self.positions_g = np.array([0] * height)
@@ -54,4 +56,4 @@ class Sorting(Compositor):
         out_mask = np.array([out_r, out_g, out_b])
         out_mask = np.transpose(out_mask, (1, 2, 0))
 
-        return out_mask
+        return torch.tensor(out_mask, device=self.device)

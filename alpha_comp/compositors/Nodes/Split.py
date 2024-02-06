@@ -1,5 +1,6 @@
 import numpy as np
 from alpha_comp.compositor import Compositor
+import torch
 
 
 class Split(Compositor):
@@ -10,8 +11,8 @@ class Split(Compositor):
         self.compositor_g = compositor_g
         self.compositor_b = compositor_b
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, limit, device=None):
+        super().initialize(width, height, limit, device)
         self.compositor_r.initialize(width, height, limit)
         self.compositor_g.initialize(width, height, limit)
         self.compositor_b.initialize(width, height, limit)
@@ -24,4 +25,4 @@ class Split(Compositor):
         mask = np.array([mask_r[:, :, 0], mask_g[:, :, 1], mask_b[:, :, 2]])
         mask = np.transpose(mask, (1, 2, 0))
 
-        return mask
+        return torch.tensor(mask, device=self.device)

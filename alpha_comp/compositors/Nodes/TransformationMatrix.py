@@ -1,6 +1,8 @@
 import itertools
 
 import numpy as np
+import torch
+
 from alpha_comp.compositor import Compositor
 
 
@@ -11,8 +13,8 @@ class TransformationMatrix(Compositor):
         self.compositor = compositor
         self.mat = mat
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, limit, device=None):
+        super().initialize(width, height, limit, device)
         self.compositor.initialize(width, height, limit)
 
     def composite(self, index, img):
@@ -22,7 +24,7 @@ class TransformationMatrix(Compositor):
             vec = self.mat @ np.array([x, y])
             vec = [int(vec[0] % self.width), int(vec[1] % self.height)]
             mask[x, y, :] = mask_out[vec[0], vec[1], :]
-        return mask
+        return torch.tensor(mask, device=self.device)
 
     @staticmethod
     def scale(x, y):

@@ -1,7 +1,7 @@
 from alpha_comp.compositor import Compositor
 import numpy as np
-from PIL import Image
 import itertools
+import torch
 
 
 class Cones(Compositor):
@@ -29,4 +29,4 @@ class Cones(Compositor):
             if angle_start < alpha_value < angle_end:
                 arr[pixel_vector[0], pixel_vector[1], :] = 1
 
-        return arr
+        return torch.tensor(arr, device=self.device)

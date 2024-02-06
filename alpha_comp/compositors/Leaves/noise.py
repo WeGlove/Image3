@@ -1,7 +1,6 @@
+import torch
 from alpha_comp.compositor import Compositor
 import numpy as np
-from PIL import Image
-import itertools
 
 
 class Noise(Compositor):
@@ -11,12 +10,12 @@ class Noise(Compositor):
         self.gray = gray
         self.bias = bias
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, limit, device=None):
+        super().initialize(width, height, limit, device)
         if not self.gray:
             self.noise_map = np.floor(np.random.rand(width, height, 3) ** self.bias * limit)
         else:
-            self.noise_map = np.floor(np.random.rand(width, height) ** self.bias * limit)
+            self.noise_map = np.floor(np.random.rand(width, height) ** np.array(self.bias.cpu()) * limit)
             self.noise_map = np.array([self.noise_map, self.noise_map, self.noise_map])
             self.noise_map = np.transpose(self.noise_map, (1, 2, 0))
 
@@ -25,4 +24,4 @@ class Noise(Compositor):
         print(mask.shape, self.noise_map.shape)
         mask[self.noise_map == index] = 1
 
-        return mask
+        return torch.tensor(mask, device=self.device)

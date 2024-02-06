@@ -1,4 +1,5 @@
 import numpy
+import torch
 from PIL import Image
 from alpha_comp.compositor import Compositor
 
@@ -10,11 +11,11 @@ class VStrips(Compositor):
         self.seed = seed
         self.random_mask = None
 
-    def initialize(self, width, height, limit):
+    def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit)
         self.random_mask = None
 
-    def composite(self, index):
+    def composite(self, index, img):
         if self.random_mask is None:
             rng = numpy.random.default_rng(self.seed)
             random_array = rng.random((1, self.width)) * self.limit
@@ -29,7 +30,7 @@ class VStrips(Compositor):
 
         copy = numpy.repeat(copy, self.height, axis=0)
         mask = Image.fromarray(copy).convert("L")
-        return mask
+        return torch.tensor(mask)
 
 
 class HStrips(Compositor):
@@ -39,8 +40,8 @@ class HStrips(Compositor):
         self.seed = seed
         self.random_mask = None
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, limit, device=None):
+        super().initialize(width, height, limit, device)
         self.random_mask = None
 
     def composite(self, index, img):
@@ -63,11 +64,11 @@ class HStrips(Compositor):
 
 class Strips(Compositor):
 
-    def composite(self, index):
+    def composite(self, index, img):
         mask = Image.new("L", (self.width, self.height), color=0x00)
         strip = Image.new("L", (round(self.width / self.limit), self.height), color=0xFF)
         mask.paste(strip, (index * round(self.width / self.limit), 0, (index + 1) * round(self.width / self.limit), self.height))
-        return mask
+        return torch.tensor(mask, device=self.device)
 
 
 class StripFade(Compositor):
@@ -76,7 +77,7 @@ class StripFade(Compositor):
         super().__init__()
         self.overlap = overlap
 
-    def f(self, index):
+    def f(self, index, img):
         mask = Image.new("L", (self.width, self.height), color=0x00)
         strip = Image.new("L", (round(self.width / self.limit), self.height), color=0xFF)
 
@@ -94,4 +95,4 @@ class StripFade(Compositor):
         mask.paste(right_alpha, (index * round(self.width / self.limit), 0, index * round(self.width / self.limit) + self.overlap, self.height))
 
         mask.paste(strip, (index * round(self.width / self.limit), 0, (index + 1) * round(self.width / self.limit), self.height))
-        return mask, None
+        return torch.tensor(mask, device=self.device)

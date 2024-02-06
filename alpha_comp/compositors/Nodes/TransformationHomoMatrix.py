@@ -1,6 +1,8 @@
 import itertools
 
 import numpy as np
+import torch
+
 from alpha_comp.compositor import Compositor
 
 
@@ -11,8 +13,8 @@ class TransformationHomoMatrix(Compositor):
         self.compositor = compositor
         self.mat = mat
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, limit, device=None):
+        super().initialize(width, height, limit, device)
         self.compositor.initialize(width, height, limit)
 
     def composite(self, index, img):
@@ -24,9 +26,9 @@ class TransformationHomoMatrix(Compositor):
                 vec = [0, 0]
             else:
                 vec = [(int(vec[0] / vec[2]) % self.width), int(vec[1] / vec[2]) % self.height]
-            #print(x, y, vec, mask.shape, mask_out.shape)
+
             mask[x, y, :] = mask_out[vec[0], vec[1], :]
-        return mask
+        return torch.tensor(mask)
 
     @staticmethod
     def scale(x, y):

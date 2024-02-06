@@ -1,6 +1,5 @@
-import numpy
 import numpy as np
-from PIL import Image
+import torch
 from alpha_comp.compositor import Compositor
 
 
@@ -13,8 +12,8 @@ class Closeness(Compositor):
         self.comp_img = comp_img
         self.rev = rev
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, limit, device=None):
+        super().initialize(width, height, limit, device)
         self.block_mask = np.ones((width, height))
         self.sizes = [width*height//self.limit for _ in range(self.limit)]
         self.sizes[-1] += (width * height) % self.limit
@@ -40,5 +39,5 @@ class Closeness(Compositor):
 
         mask = np.array([mask, mask, mask])
         mask = np.transpose(mask, (1, 2, 0))
-        return mask
+        return torch.tensor(mask, device=self.device)
 
