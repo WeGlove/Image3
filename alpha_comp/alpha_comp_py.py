@@ -11,6 +11,7 @@ from joblib import Parallel, delayed
 from typing import Tuple, List
 import cv2
 
+
 class AlphaComp:
 
     @staticmethod
