@@ -1,4 +1,5 @@
 import torch
+import math
 
 
 def get_polar(width, height, device):
@@ -21,3 +22,10 @@ def radial(width, height, pixels_polar, radius_low, radius_high, device):
     arr = arr.repeat(3, 1, 1).transpose(0, 1).transpose(1, 2)
 
     return arr
+
+
+def radial_map(pixels_polar, amount, size):
+    arr = (pixels_polar * size) % amount
+    arr = torch.floor(arr)
+
+    return arr.repeat(3, 1, 1).transpose(0, 1).transpose(1, 2)

@@ -17,6 +17,9 @@ class Compositor:
         self.limit = limit
         self.device = torch.device('cpu') if device is None else device
 
+    def free(self):
+        pass
+
     @abstractmethod
     def composite(self, index, img) -> np.ndarray:
         pass

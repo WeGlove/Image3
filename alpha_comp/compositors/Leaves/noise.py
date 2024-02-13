@@ -15,13 +15,14 @@ class Noise(Compositor):
         if not self.gray:
             self.noise_map = np.floor(np.random.rand(width, height, 3) ** self.bias * limit)
         else:
-            self.noise_map = np.floor(np.random.rand(width, height) ** np.array(self.bias.cpu()) * limit)
-            self.noise_map = np.array([self.noise_map, self.noise_map, self.noise_map])
-            self.noise_map = np.transpose(self.noise_map, (1, 2, 0))
+            self.noise_map = torch.floor(torch.rand(width, height, device=self.device) ** self.bias * limit)
+            self.noise_map = self.noise_map.repeat(3, 1, 1).transpose(0, 1).transpose(1, 2)
 
     def composite(self, index, img):
-        mask = np.zeros((self.width, self.height, 3))
-        print(mask.shape, self.noise_map.shape)
+        mask = torch.zeros((self.width, self.height, 3), device=self.device)
         mask[self.noise_map == index] = 1
 
-        return torch.tensor(mask, device=self.device)
+        return mask
+
+    def free(self):
+        del self.noise_map

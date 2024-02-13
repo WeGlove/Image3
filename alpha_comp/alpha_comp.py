@@ -1,3 +1,6 @@
+import threading
+import time
+from threading import RLock
 import torch
 from PIL import Image
 import os
@@ -36,6 +39,39 @@ class AlphaComp:
                 mask.save(os.path.join(save_masks, f"mask_{i}.png"))
 
         return Image.fromarray(np.uint8(stack_img.cpu()))
+
+    @staticmethod
+    def given_production(images, instructions, save_path, order="linear", save_masks=None, device=None):
+        if order == "reverse":
+            images.reverse()
+
+        img_shape = images[0].shape
+
+        counter = 0
+        for k, (compositor, repetitions) in enumerate(instructions):
+            for j in range(repetitions):
+                stack_img = None
+
+                a = time.time()
+                compositor.initialize(img_shape[0], img_shape[1], len(images), device)
+                for i, img in enumerate(images):
+                    if stack_img is None:
+                        stack_img = torch.zeros(img.shape, device=device)
+
+                    mask = compositor.composite(i, img / 255)
+
+                    stack_img = stack_img + torch.multiply(img, mask)
+
+                    if save_masks is not None:
+                        mask = Image.fromarray(np.uint8(np.clip(mask * 255, 0, 255)))
+                        mask.save(os.path.join(save_masks, f"mask_{counter}.png"))
+
+                b = time.time()
+
+                Image.fromarray(np.uint8(stack_img.cpu())).save(os.path.join(save_path, f"out_{counter}.png"))
+                print("Created", counter, time.time() - a, b - a)
+                counter += 1
+            compositor.free()
 
     @staticmethod
     def mass_rep_composition(path, save_path, compositor: Compositor, order="linear", save_masks=None, repeats=1, offset=0, device=None):
