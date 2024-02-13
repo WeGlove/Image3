@@ -9,7 +9,7 @@ from alpha_comp.compositor import Compositor
 import numpy as np
 from joblib import Parallel, delayed
 from typing import Tuple, List
-
+import cv2
 
 class AlphaComp:
 
@@ -41,7 +41,7 @@ class AlphaComp:
         return Image.fromarray(np.uint8(stack_img.cpu()))
 
     @staticmethod
-    def given_production(images, instructions, save_path, order="linear", save_masks=None, device=None):
+    def given_production(images, instructions, save_path, order="linear", save_masks=None, device=None, display=True, do_save=False):
         if order == "reverse":
             images.reverse()
 
@@ -68,9 +68,15 @@ class AlphaComp:
 
                 b = time.time()
 
-                Image.fromarray(np.uint8(stack_img.cpu())).save(os.path.join(save_path, f"out_{counter}.png"))
+                if do_save:
+                    Image.fromarray(np.uint8(stack_img.cpu())).save(os.path.join(save_path, f"out_{counter}.png"))
                 print("Created", counter, time.time() - a, b - a)
                 counter += 1
+
+                if display:
+                    cv2.imshow('Render', stack_img.cpu().numpy()/255)
+                    if cv2.waitKey(1) == ord('q'):
+                        break
             compositor.free()
 
     @staticmethod

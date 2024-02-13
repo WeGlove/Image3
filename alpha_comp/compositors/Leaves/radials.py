@@ -44,3 +44,7 @@ class RadialsWrap(Compositor):
         arr[self.r_map == index] = 1
 
         return arr
+
+    def free(self):
+        del self.polar
+        del self.r_map
