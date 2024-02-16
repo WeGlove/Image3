@@ -23,3 +23,7 @@ class Compositor:
     @abstractmethod
     def composite(self, index, img) -> np.ndarray:
         pass
+
+    @abstractmethod
+    def get_animated_properties(self, visitors):
+        pass

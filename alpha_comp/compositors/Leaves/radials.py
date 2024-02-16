@@ -2,6 +2,7 @@ import numpy as np
 import torch
 from alpha_comp.compositor import Compositor
 from alpha_comp.Geos import radial, get_polar, radial_map
+from strips.animated_property import AnimatedProperty
 
 
 class Radials(Compositor):
@@ -32,14 +33,14 @@ class RadialsWrap(Compositor):
         super().__init__()
         self.polar = None
         self.r_map = None
-        self.shift = shift
+        self.shift = AnimatedProperty(initial_value=shift)
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)
         self.polar = get_polar(width, height, device)
-        self.r_map = radial_map(self.polar + self.shift, limit, 1/100)
 
     def composite(self, index, img):
+        self.r_map = radial_map(self.polar + self.shift.get(), self.limit, 1 / 100)
         arr = torch.zeros(self.width, self.height, 3, device=self.device)
         arr[self.r_map == index] = 1
 
@@ -48,3 +49,6 @@ class RadialsWrap(Compositor):
     def free(self):
         del self.polar
         del self.r_map
+
+    def get_animated_properties(self, visitors):
+        return {visitors + "_" + "RadialsWarp_Shift": self.shift}
