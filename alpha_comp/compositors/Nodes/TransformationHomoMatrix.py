@@ -1,8 +1,7 @@
-import itertools
-
+from alpha_comp.Geos import get_homo_vector_map, get_vector_map
 import numpy as np
 import torch
-
+from strips.animated_property import AnimatedProperty
 from alpha_comp.compositor import Compositor
 
 
@@ -11,24 +10,53 @@ class TransformationHomoMatrix(Compositor):
     def __init__(self, compositor, mat):
         super().__init__()
         self.compositor = compositor
-        self.mat = mat
+        self.mat_original = mat
+        self.mat = AnimatedProperty(initial_value=None)
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)
-        self.compositor.initialize(width, height, limit)
+        self.compositor.initialize(width, height, limit, device)
+        self.mat.initial_value = torch.tensor(self.mat_original, device=self.device)
 
     def composite(self, index, img):
-        mask = np.zeros((self.width, self.height, 3))
         mask_out = self.compositor.composite(index, img)
-        for x, y in itertools.product(range(self.width), range(self.height)):
-            vec = self.mat @ np.array([x, y, 1])
-            if vec[2] == 0:
-                vec = [0, 0]
-            else:
-                vec = [(int(vec[0] / vec[2]) % self.width), int(vec[1] / vec[2]) % self.height]
 
-            mask[x, y, :] = mask_out[vec[0], vec[1], :]
-        return torch.tensor(mask)
+        pixel_vectors_center = get_homo_vector_map(self.width, self.height, device=self.device)
+        vmap = get_vector_map(self.width, self.height, self.device)
+        vmap_x = vmap[:, :, 0]
+
+        pointers = torch.einsum("tt,ijt->ijt", self.mat.get(), pixel_vectors_center)
+        pointers = pointers[:, :, :2]
+        print(mask_out.shape)
+        pointers[:, :, 0] = (pointers[:, :, 0]) % self.width
+        pointers[:, :, 1] = (pointers[:, :, 1]-vmap_x*(1080/1920)) % self.height
+
+        pointers_flat = pointers[:, :, 0] * self.height + pointers[:, :, 1]
+        pointers_flat = torch.flatten(pointers_flat)
+        pointers_flat = torch.tensor(pointers_flat, dtype=torch.int64)
+
+
+        mask_r = torch.flatten(mask_out[:, :, 0])
+        mask_r = mask_r[pointers_flat]
+        mask_r = torch.unflatten(mask_r, 0, sizes=(self.width, self.height))
+
+        mask_g = torch.flatten(mask_out[:, :, 1])
+        mask_g = mask_g[pointers_flat]
+        mask_g = mask_g.reshape((self.width, self.height))
+
+        mask_b = torch.flatten(mask_out[:, :, 2])
+        mask_b = mask_b[pointers_flat]
+        mask_b = mask_b.reshape((self.width, self.height))
+
+        mask = torch.stack([mask_r, mask_g, mask_b])
+        mask = mask.transpose(0, 1).transpose(1, 2)
+
+        mask = mask
+
+        return mask
+
+    def get_animated_properties(self, visitors):
+        return {visitors + "_TransformationHomoMatrix:mat": self.mat}
 
     @staticmethod
     def scale(x, y):

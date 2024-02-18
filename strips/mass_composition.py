@@ -20,9 +20,11 @@ class MassComposition(Strip):
         self.height = height
         self.animated_properties = self.get_animated_properties()
         self.compositor.initialize(self.width, self.height, len(self.images), self.device)
+        new_dict = dict()
         for key, value in self.animated_properties.items():
-            if not value.is_animated():
-                del self.animated_properties[key]
+            if value.is_animated():
+                new_dict[key] = self.animated_properties[key]
+        self.animated_properties = new_dict
 
     def produce(self, last_image, frame):
         for animated_property in self.animated_properties.values():

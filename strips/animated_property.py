@@ -12,7 +12,7 @@ class AnimatedProperty:
 
     def linear_interp(self):
         if len(self.keyframes) == 0:
-            return self.frame
+            return self.initial_value
 
         for k, (frame, value) in enumerate(self.keyframes):
             if self.frame < frame:
