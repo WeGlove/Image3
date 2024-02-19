@@ -51,4 +51,4 @@ class RadialsWrap(Compositor):
         del self.r_map
 
     def get_animated_properties(self, visitors):
-        return {visitors + "_" + "RadialsWarp_Shift": self.shift}
+        return {visitors + "_" + "RadialsWarp:Shift": self.shift}

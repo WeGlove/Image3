@@ -23,7 +23,7 @@ class AnimatedProperty:
                     frame_a, val_a = self.keyframes[k]
 
                     length = frame_a - frame_b
-                    point_on_line = self.frame / length
+                    point_on_line = (self.frame % length) / length
 
                     return val_b * (1-point_on_line) + val_a * point_on_line
         else:
