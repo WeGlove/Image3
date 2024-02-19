@@ -17,7 +17,6 @@ class TransformationHomoMatrix(Compositor):
         super().initialize(width, height, limit, device)
         self.compositor.initialize(width, height, limit, device)
 
-
     def composite(self, index, img):
         self.mat.initial_value = torch.tensor(self.mat_original, device=self.device)
         mask_out = self.compositor.composite(index, img)
@@ -25,10 +24,11 @@ class TransformationHomoMatrix(Compositor):
         pixel_vectors_center = get_homo_vector_map(self.width, self.height, device=self.device)
 
         pointers = torch.einsum("tt,ijt->ijt", self.mat.get(), pixel_vectors_center)
+        homo_part = pointers[:, :, 2]
         pointers = pointers[:, :, :2]
 
-        pointers[:, :, 0] = pointers[:, :, 0] % self.width
-        pointers[:, :, 1] = pointers[:, :, 1] % self.height
+        pointers[:, :, 0] = (pointers[:, :, 0] / homo_part) % self.width
+        pointers[:, :, 1] = (pointers[:, :, 1] / homo_part) % self.height
         pointers = torch.tensor(pointers, dtype=torch.int64)
 
         pointers_flat = torch.floor(pointers[:, :, 0] * self.height + pointers[:, :, 1])
@@ -49,7 +49,7 @@ class TransformationHomoMatrix(Compositor):
         mask = torch.stack([mask_r, mask_g, mask_b])
         mask = mask.transpose(0, 1).transpose(1, 2)
 
-        return mask
+        return mask.cuda()
 
     def get_animated_properties(self, visitors):
         return {visitors + "_TransformationHomoMatrix:mat": self.mat}
