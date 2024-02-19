@@ -49,7 +49,7 @@ class TransformationHomoMatrix(Compositor):
         mask = torch.stack([mask_r, mask_g, mask_b])
         mask = mask.transpose(0, 1).transpose(1, 2)
 
-        return mask.cuda()
+        return mask
 
     def get_animated_properties(self, visitors):
         return {visitors + "_TransformationHomoMatrix:mat": self.mat}
