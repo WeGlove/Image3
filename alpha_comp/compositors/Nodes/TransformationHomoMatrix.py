@@ -16,25 +16,23 @@ class TransformationHomoMatrix(Compositor):
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)
         self.compositor.initialize(width, height, limit, device)
-        self.mat.initial_value = torch.tensor(self.mat_original, device=self.device)
+
 
     def composite(self, index, img):
+        self.mat.initial_value = torch.tensor(self.mat_original, device=self.device)
         mask_out = self.compositor.composite(index, img)
 
         pixel_vectors_center = get_homo_vector_map(self.width, self.height, device=self.device)
-        vmap = get_vector_map(self.width, self.height, self.device)
-        vmap_x = vmap[:, :, 0]
 
         pointers = torch.einsum("tt,ijt->ijt", self.mat.get(), pixel_vectors_center)
         pointers = pointers[:, :, :2]
-        print(mask_out.shape)
-        pointers[:, :, 0] = (pointers[:, :, 0]) % self.width
-        pointers[:, :, 1] = (pointers[:, :, 1]-vmap_x*(1080/1920)) % self.height
 
-        pointers_flat = pointers[:, :, 0] * self.height + pointers[:, :, 1]
+        pointers[:, :, 0] = pointers[:, :, 0] % self.width
+        pointers[:, :, 1] = pointers[:, :, 1] % self.height
+        pointers = torch.tensor(pointers, dtype=torch.int64)
+
+        pointers_flat = torch.floor(pointers[:, :, 0] * self.height + pointers[:, :, 1])
         pointers_flat = torch.flatten(pointers_flat)
-        pointers_flat = torch.tensor(pointers_flat, dtype=torch.int64)
-
 
         mask_r = torch.flatten(mask_out[:, :, 0])
         mask_r = mask_r[pointers_flat]
@@ -51,8 +49,6 @@ class TransformationHomoMatrix(Compositor):
         mask = torch.stack([mask_r, mask_g, mask_b])
         mask = mask.transpose(0, 1).transpose(1, 2)
 
-        mask = mask
-
         return mask
 
     def get_animated_properties(self, visitors):
@@ -68,7 +64,7 @@ class TransformationHomoMatrix(Compositor):
 
     @staticmethod
     def shear_x(x):
-        return np.array([[1, np.tan(x), 1], [0, 1, 0], [0, 0, 1]])
+        return np.array([[1, np.tan(x), 0], [0, 1, 0], [0, 0, 1]])
 
     @staticmethod
     def shear_y(y):
