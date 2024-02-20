@@ -29,18 +29,19 @@ class Radials(Compositor):
 
 class RadialsWrap(Compositor):
 
-    def __init__(self, shift=0):
+    def __init__(self, shift=0, size=0.01):
         super().__init__()
         self.polar = None
         self.r_map = None
         self.shift = AnimatedProperty(initial_value=shift)
+        self.size = AnimatedProperty(initial_value=size)
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)
         self.polar = get_polar(width, height, device)
 
     def composite(self, index, img):
-        self.r_map = radial_map(self.polar + self.shift.get(), self.limit, 1 / 100)
+        self.r_map = radial_map(self.polar + self.shift.get(), self.limit, self.size.get())
         arr = torch.zeros(self.width, self.height, 3, device=self.device)
         arr[self.r_map == index] = 1
 
@@ -51,4 +52,4 @@ class RadialsWrap(Compositor):
         del self.r_map
 
     def get_animated_properties(self, visitors):
-        return {visitors + "_" + "RadialsWarp:Shift": self.shift}
+        return {visitors + "_" + "RadialsWarp:Shift": self.shift, visitors + "_" + "RadialsWarp:Size": self.size}
