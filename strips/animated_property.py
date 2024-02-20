@@ -5,6 +5,13 @@ class AnimatedProperty:
         self.initial_value = initial_value
         self.frame = -1
         self.animation_style = "Linear"
+        self.function = lambda x: x
+
+    def set_anim_function(self, function):
+        self.function = function
+
+    def set_anim_style(self, style):
+        self.animation_style = style
 
     def set_key_frame(self, frame, value):
         self.keyframes.append((frame, value))
@@ -29,9 +36,36 @@ class AnimatedProperty:
         else:
             return self.keyframes[-1][1]
 
+    def nearest_neighbor(self):
+        if len(self.keyframes) == 0:
+            return self.initial_value
+
+        for k, (frame, value) in enumerate(self.keyframes):
+            if self.frame < frame:
+                if k == 0:
+                    return self.initial_value
+                else:
+                    frame_b, val_b = self.keyframes[k - 1]
+                    frame_a, val_a = self.keyframes[k]
+
+                    length = frame_a - frame_b
+                    point_on_line = (self.frame % length) / length
+
+                    if point_on_line < 0.5:
+                        return val_b
+                    else:
+                        return val_a
+
+        else:
+            return self.keyframes[-1][1]
+
     def get(self):
         if self.animation_style == "Linear":
-            return self.linear_interp()
+            interp = self.linear_interp()
+            return self.function(interp)
+        elif self.animation_style == "NearestNeighbor":
+            interp = self.nearest_neighbor()
+            return self.function(interp)
         else:
             raise ValueError(f"Unknown animation style {self.animation_style}")
 
