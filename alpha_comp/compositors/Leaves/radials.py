@@ -41,6 +41,7 @@ class RadialsWrap(Compositor):
         self.polar = get_polar(width, height, device)
 
     def composite(self, index, img):
+        print(self.shift.get(), self.size.get())
         self.r_map = radial_map(self.polar + self.shift.get(), self.limit, self.size.get())
         arr = torch.zeros(self.width, self.height, 3, device=self.device)
         arr[self.r_map == index] = 1

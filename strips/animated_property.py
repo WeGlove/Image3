@@ -22,17 +22,18 @@ class AnimatedProperty:
             return self.initial_value
 
         for k, (frame, value) in enumerate(self.keyframes):
-            if self.frame < frame:
+            position = frame - self.frame
+            if position > 0:
                 if k == 0:
-                    return self.initial_value
+                    return self.keyframes[0][1]
                 else:
                     frame_b, val_b = self.keyframes[k - 1]
                     frame_a, val_a = self.keyframes[k]
 
                     length = frame_a - frame_b
-                    point_on_line = (self.frame % length) / length
+                    point_on_line = position / length
 
-                    return val_b * (1-point_on_line) + val_a * point_on_line
+                    return val_b * point_on_line + val_a * (1-point_on_line)
         else:
             return self.keyframes[-1][1]
 
@@ -41,15 +42,16 @@ class AnimatedProperty:
             return self.initial_value
 
         for k, (frame, value) in enumerate(self.keyframes):
-            if self.frame < frame:
+            position = frame - self.frame
+            if position > 0:
                 if k == 0:
-                    return self.initial_value
+                    return self.keyframes[0][1]
                 else:
                     frame_b, val_b = self.keyframes[k - 1]
                     frame_a, val_a = self.keyframes[k]
 
                     length = frame_a - frame_b
-                    point_on_line = (self.frame % length) / length
+                    point_on_line = position / length
 
                     if point_on_line < 0.5:
                         return val_b
