@@ -1,10 +1,20 @@
 import torch
 
 
-def get_polar(width, height, device):
+def get_radius(width, height, device):
     pixel_vectors_center = get_centered_vector_map(width, height, device)
     pixel_polar = torch.linalg.norm(pixel_vectors_center, axis=-1)
     return pixel_polar
+
+
+def get_angles(width, height, device):
+    pixel_vectors_center = get_centered_vector_map(width, height, device)
+    pixel_angles = torch.atan2(pixel_vectors_center[:,:,0], pixel_vectors_center[:,:,1])
+    return pixel_angles
+
+
+def get_polar(width, height, device):
+    return get_radius(width, height, device), get_angles(width, height, device)
 
 
 def get_centered_vector_map(width, height, device):

@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 from alpha_comp.compositor import Compositor
-from alpha_comp.Geos import radial, get_polar, radial_map
+from alpha_comp.Geos import radial, get_radius, radial_map
 from strips.animated_property import AnimatedProperty
 
 
@@ -38,7 +38,7 @@ class RadialsWrap(Compositor):
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)
-        self.polar = get_polar(width, height, device)
+        self.polar = get_radius(width, height, device)
 
     def composite(self, index, img):
         print(self.shift.get(), self.size.get())
