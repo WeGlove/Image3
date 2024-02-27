@@ -1,8 +1,8 @@
 import torch
 
 
-def get_radius(width, height, device):
-    pixel_vectors_center = get_centered_vector_map(width, height, device)
+def get_radius(width, height, device, center=None):
+    pixel_vectors_center = get_centered_vector_map(width, height, device, center)
     pixel_polar = torch.linalg.norm(pixel_vectors_center, axis=-1)
     return pixel_polar
 
@@ -17,8 +17,11 @@ def get_polar(width, height, device):
     return get_radius(width, height, device), get_angles(width, height, device)
 
 
-def get_centered_vector_map(width, height, device):
-    center_vector = torch.tensor([width / 2, height / 2], device=device)
+def get_centered_vector_map(width, height, device, center=None):
+    if center is None:
+        center_vector = torch.tensor([width / 2, height / 2], device=device)
+    else:
+        center_vector = center
     x, y = torch.meshgrid(torch.linspace(0, width, steps=width, device=device),
                           torch.linspace(0, height, steps=height, device=device))
     pixel_vectors = torch.stack([x, y]).transpose(0, 1).transpose(1, 2)
