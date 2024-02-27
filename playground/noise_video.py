@@ -2,6 +2,7 @@ import math
 import os.path
 from alpha_comp.compositors.Leaves.noise import Noise
 from alpha_comp.compositors.Leaves.two_point_weights import TwoPointWeights
+from alpha_comp.compositors.Leaves.point_weights import PointWeights
 import numpy as np
 from PIL import Image
 from alpha_comp.renderer import Renderer
@@ -31,10 +32,10 @@ if __name__ == "__main__":
             img = torch.tensor(img, device=cuda)
             images.append(img)
 
-        strip = MassComposition(1000, images, TwoPointWeights(torch.tensor([0, 0], device=cuda), torch.tensor([1920, 1080], device=cuda), weight_a=0.5))
-        a = strip.get_animated_properties()["_RadialsWarp:PointA"]
-        a.set_key_frame(0, torch.tensor([0, 0], device=cuda))
-        a.set_key_frame(1000, torch.tensor([0, 1080], device=cuda))
+        strip = MassComposition(1000, images, PointWeights(torch.tensor([[0, 0], [1920, 1080], [0, 1920]], device=cuda)))
+        a = strip.get_animated_properties()["_RadialsWarp:Points"]
+        a.set_key_frame(0, torch.tensor([[0, 0], [1920, 1080], [0, 1920]], device=cuda))
+        a.set_key_frame(1000, torch.tensor([[0, 1080], [1920, 1080], [0, 1920]], device=cuda))
 
         strips.append(strip)
 
