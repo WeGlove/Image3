@@ -7,14 +7,18 @@ def get_radius(width, height, device, center=None):
     return pixel_polar
 
 
-def get_angles(width, height, device):
-    pixel_vectors_center = get_centered_vector_map(width, height, device)
-    pixel_angles = torch.atan2(pixel_vectors_center[:,:,0], pixel_vectors_center[:,:,1])
+def get_angles(width, height, device, center=None):
+    if center is None:
+        center_vector = torch.tensor([width / 2, height / 2], device=device)
+    else:
+        center_vector = center
+    pixel_vectors_center = get_centered_vector_map(width, height, device, center_vector)
+    pixel_angles = torch.atan2(pixel_vectors_center[:, :, 0], pixel_vectors_center[:, :, 1])
     return pixel_angles
 
 
-def get_polar(width, height, device):
-    return get_radius(width, height, device), get_angles(width, height, device)
+def get_polar(width, height, device, center=None):
+    return get_radius(width, height, device, center), get_angles(width, height, device, center)
 
 
 def get_centered_vector_map(width, height, device, center=None):
