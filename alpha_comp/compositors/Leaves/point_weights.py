@@ -24,6 +24,7 @@ class PointWeights(Compositor):
         rad_out = None
         points = self.points.get()
         weights = self.weights.get()
+        weights = weights / torch.sum(weights)
         for i in range(points.shape[0]):
             rad = get_radius(self.width, self.height, self.device, self.points.get()[i]) * weights[i] + self.shift.get()
             if rad_out is None:
@@ -40,4 +41,4 @@ class PointWeights(Compositor):
 
     def get_animated_properties(self, visitors):
         return {visitors + "_" + "PointWeights:Shift": self.shift, visitors + "_" + "PointWeights:Size": self.size,
-                visitors + "_" + "PointWeights:Points": self.points}
+                visitors + "_" + "PointWeights:Points": self.points, visitors + "_" + "PointWeights:Weights": self.weights}
