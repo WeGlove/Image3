@@ -1,3 +1,4 @@
+import threading
 import time
 from typing import List, Tuple
 from alpha_comp.compositor import Compositor
@@ -7,6 +8,7 @@ import torch
 from PIL import Image
 import numpy as np
 import os
+from threading import Lock
 
 class Renderer:
 
@@ -22,7 +24,32 @@ class Renderer:
         self.save = save
         self.save_path = save_path
 
+        self.current_image = None
+        self.image_lock = Lock()
+        self.run_display_thread = True
+        self.new_image = True
+
+    def _display_thread(self):
+        while self.run_display_thread:
+            a = time.time()
+            with self.image_lock:
+                render = self.current_image
+                is_new = self.new_image
+                self.new_image = False
+            if render is not None and is_new:
+                cv2.imshow('Render', render.cpu().numpy() / 255)
+                if cv2.waitKey(1) == ord('q'):
+                    break
+
+            b = time.time()
+            delta = 1 / self.fps - (b - a)
+            if delta > 0:
+                time.sleep(delta)
+
     def run(self, strips: List[Strip], fps_wait=False):
+        thread = threading.Thread(target=self._display_thread)
+        thread.start()
+
         last_image = torch.zeros((self.width, self.height))
 
         while True:
@@ -45,9 +72,10 @@ class Renderer:
                     counter += 1
 
                     if self.display:
-                        cv2.imshow('Render', stack_img.cpu().numpy() / 255)
-                        if cv2.waitKey(1) == ord('q'):
-                            break
+                        with self.image_lock:
+                            self.current_image = stack_img
+                            self.new_image = True
+
                     if self.save:
                         mask = Image.fromarray(np.uint8(stack_img.cpu()))
                         mask.save(os.path.join(self.save_path, f"out_{i}.png"))
@@ -63,3 +91,7 @@ class Renderer:
 
             if not self.repeat:
                 break
+
+        with self.image_lock:
+            self.run_display_thread = False
+        thread.join()
