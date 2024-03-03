@@ -1,4 +1,6 @@
 from abc import abstractmethod
+from typing import Dict
+from strips.animated_property import AnimatedProperty
 
 
 class Strip:
@@ -31,5 +33,5 @@ class Strip:
     def free(self):
         pass
 
-    def get_animated_properties(self):
+    def get_animated_properties(self) -> Dict[str, AnimatedProperty]:
         pass

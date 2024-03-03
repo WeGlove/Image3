@@ -37,7 +37,8 @@ class Renderer:
                 is_new = self.new_image
                 self.new_image = False
             if render is not None and is_new:
-                cv2.imshow('Render', render.cpu().numpy() / 255)
+                img = render.cpu().numpy() / 255
+                cv2.imshow('Render', img)
                 if cv2.waitKey(1) == ord('q'):
                     break
 

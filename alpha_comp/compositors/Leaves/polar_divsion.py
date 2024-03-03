@@ -2,18 +2,21 @@ from alpha_comp.compositor import Compositor
 from alpha_comp.Geos import get_polar
 import torch
 from strips.animated_property import AnimatedProperty
+import math
 
 
-class PointWeightsSpirals(Compositor):
+class PolarDivision(Compositor):
 
-    def __init__(self, points, scale_radius=0, rotation=0, frequency=1, weights_rad=None, weights_angles=None):
+    def __init__(self, points, scale_radius=1, scale=5, shift=0, ratio=0.5, rotation=0, frequency=1, weights_rad=None, weights_angles=None):
         super().__init__()
         self.points = AnimatedProperty(initial_value=points)
-        self.scale_radius = AnimatedProperty(initial_value=scale_radius)
         self.rotation = AnimatedProperty(initial_value=rotation)
         self.frequency = AnimatedProperty(initial_value=frequency)
         self.weights_rad = AnimatedProperty(initial_value=weights_rad)
         self.weights_angle = AnimatedProperty(initial_value=weights_angles)
+        self.scale = AnimatedProperty(initial_value=scale)
+        self.shift = AnimatedProperty(initial_value=shift)
+        self.ratio = AnimatedProperty(initial_value=ratio)
 
         self.angle_space = None
 
@@ -29,18 +32,17 @@ class PointWeightsSpirals(Compositor):
     def composite(self, index, img):
         out_arr = torch.zeros(self.width, self.height, device=self.device)
 
-        angle_start = self.angle_space * index
-        angle_end = self.angle_space * (index + 1)
-
         rad_out = None
         angles_out = None
         points = self.points.get()
         weights_rad = self.weights_rad.get()
+        weights_rad = weights_rad / torch.sum(weights_rad)
         weights_angle = self.weights_angle.get()
+        weights_angle = weights_angle / torch.sum(weights_angle)
         for i in range(points.shape[0]):
             rad, angle = get_polar(self.width, self.height, self.device, points[i])
-            rad = rad * weights_rad[i] #+ self.shift.get()
-            angle = angle * weights_angle[i] #+ self.shift.get()
+            rad = rad * weights_rad[i]
+            angle = angle * weights_angle[i]
             if rad_out is None:
                 rad_out = rad
                 angles_out = angle
@@ -48,13 +50,24 @@ class PointWeightsSpirals(Compositor):
                 rad_out += rad
                 angles_out += angle
 
-        angles = (angles_out + torch.pi) + rad_out * self.scale_radius.get()
-        angles = (angles * self.frequency.get() + self.rotation.get()) % (2 * torch.pi)
+        angles = (((angles_out + torch.pi) * self.frequency.get() + self.rotation.get()) % (2 * torch.pi)) / (2 * torch.pi)
+        rad_out = ((rad_out * self.scale.get() + self.shift.get()) % math.sqrt((self.width/2)**2 + (self.height/2)**2)) / math.sqrt((self.width/2)**2 + (self.height/2)**2)
 
-        out_arr[torch.logical_and(angle_start < angles, angles < angle_end)] = 1
+        ratio = self.ratio.get()
+        arr_map = (angles * ratio + rad_out * (1-ratio))
+
+        arr = torch.floor(arr_map * self.limit)
+        out_arr[arr == index] = 1
 
         out_arr = torch.stack([out_arr, out_arr, out_arr]).transpose(0, 1).transpose(1, 2)
         return out_arr
 
     def get_animated_properties(self, visitors):
-        return {}
+        return {visitors + "_" + "PolarDivision:Points": self.points,
+                visitors + "_" + "PolarDivision:Scale": self.scale,
+                visitors + "_" + "PolarDivision:Shift": self.shift,
+                visitors + "_" + "PolarDivision:Ratio": self.ratio,
+                visitors + "_" + "PolarDivision:Rotation": self.rotation,
+                visitors + "_" + "PolarDivision:Frequency": self.frequency,
+                visitors + "_" + "PolarDivision:Weights_rad": self.weights_rad,
+                visitors + "_" + "PolarDivision:Weights_angle": self.weights_angle}
