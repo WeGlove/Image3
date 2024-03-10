@@ -1,3 +1,6 @@
+import torch
+
+
 class AnimatedProperty:
 
     def __init__(self, initial_value):
@@ -37,6 +40,27 @@ class AnimatedProperty:
         else:
             return self.keyframes[-1][1]
 
+    def sin_interp(self):
+        if len(self.keyframes) == 0:
+            return self.initial_value
+
+        for k, (frame, value) in enumerate(self.keyframes):
+            position = frame - self.frame
+            if position > 0:
+                if k == 0:
+                    return self.keyframes[0][1]
+                else:
+                    frame_b, val_b = self.keyframes[k - 1]
+                    frame_a, val_a = self.keyframes[k]
+
+                    length = frame_a - frame_b
+                    point_on_line = position / length
+                    point_on_line = (torch.cos(point_on_line * torch.pi + torch.pi) + 1) / 2
+
+                    return val_b * point_on_line + val_a * (1-point_on_line)
+        else:
+            return self.keyframes[-1][1]
+
     def nearest_neighbor(self):
         if len(self.keyframes) == 0:
             return self.initial_value
@@ -64,6 +88,9 @@ class AnimatedProperty:
     def get(self):
         if self.animation_style == "Linear":
             interp = self.linear_interp()
+            return self.function(interp)
+        elif self.animation_style == "Sine":
+            interp = self.sin_interp()
             return self.function(interp)
         elif self.animation_style == "NearestNeighbor":
             interp = self.nearest_neighbor()
