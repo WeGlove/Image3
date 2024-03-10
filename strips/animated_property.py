@@ -8,10 +8,7 @@ class AnimatedProperty:
         self.initial_value = initial_value
         self.frame = -1
         self.animation_style = "Linear"
-        self.function = lambda x: x
-
-    def set_anim_function(self, function):
-        self.function = function
+        self.constraint = None
 
     def set_anim_style(self, style):
         self.animation_style = style
@@ -88,19 +85,31 @@ class AnimatedProperty:
     def get(self):
         if self.animation_style == "Linear":
             interp = self.linear_interp()
-            return self.function(interp)
         elif self.animation_style == "Sine":
             interp = self.sin_interp()
-            return self.function(interp)
         elif self.animation_style == "NearestNeighbor":
             interp = self.nearest_neighbor()
-            return self.function(interp)
         else:
             raise ValueError(f"Unknown animation style {self.animation_style}")
 
+        if self.constraint is not None:
+            interp = self.constraint.constrain(interp)
+
+        return interp
+
     def set_frame(self, frame):
         self.frame = frame
+        if self.constraint is not None:
+            self.constraint.set_frame(frame)
 
     def is_animated(self):
         return len(self.keyframes) != 0
 
+    def set_constraint(self, constraint):
+        self.constraint = constraint
+
+    def get_animated_properties(self, visitor):
+        if self.constraint is None:
+            return {}
+        else:
+            return self.constraint.get_animated_properties(visitor + "_" + "AnimatedProperty:Constraint")

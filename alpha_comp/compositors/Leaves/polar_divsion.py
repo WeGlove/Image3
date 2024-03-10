@@ -63,11 +63,18 @@ class PolarDivision(Compositor):
         return out_arr
 
     def get_animated_properties(self, visitors):
-        return {visitors + "_" + "PolarDivision:Points": self.points,
-                visitors + "_" + "PolarDivision:Scale": self.scale,
-                visitors + "_" + "PolarDivision:Shift": self.shift,
-                visitors + "_" + "PolarDivision:Ratio": self.ratio,
-                visitors + "_" + "PolarDivision:Rotation": self.rotation,
-                visitors + "_" + "PolarDivision:Frequency": self.frequency,
-                visitors + "_" + "PolarDivision:Weights_rad": self.weights_rad,
-                visitors + "_" + "PolarDivision:Weights_angle": self.weights_angle}
+        animated_properties = {visitors + "_" + "PolarDivision:Points": self.points,
+                               visitors + "_" + "PolarDivision:Scale": self.scale,
+                               visitors + "_" + "PolarDivision:Shift": self.shift,
+                               visitors + "_" + "PolarDivision:Ratio": self.ratio,
+                               visitors + "_" + "PolarDivision:Rotation": self.rotation,
+                               visitors + "_" + "PolarDivision:Frequency": self.frequency,
+                               visitors + "_" + "PolarDivision:Weights_rad": self.weights_rad,
+                               visitors + "_" + "PolarDivision:Weights_angle": self.weights_angle}
+
+        constraint_properties = {}
+        for k, animated_property in animated_properties.items():
+            constraint_properties.update(animated_property.get_animated_properties(k))
+
+        animated_properties.update(constraint_properties)
+        return animated_properties

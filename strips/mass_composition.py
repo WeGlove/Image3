@@ -25,6 +25,7 @@ class MassComposition(Strip):
             if value.is_animated():
                 new_dict[key] = self.animated_properties[key]
         self.animated_properties = new_dict
+        print(self.animated_properties)
 
     def produce(self, last_image, frame):
         for animated_property in self.animated_properties.values():
