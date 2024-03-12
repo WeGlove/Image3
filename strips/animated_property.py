@@ -1,4 +1,5 @@
 import torch
+import math
 
 
 class AnimatedProperty:
@@ -52,7 +53,7 @@ class AnimatedProperty:
 
                     length = frame_a - frame_b
                     point_on_line = position / length
-                    point_on_line = (torch.cos(point_on_line * torch.pi + torch.pi) + 1) / 2
+                    point_on_line = (math.cos(point_on_line * torch.pi + torch.pi) + 1) / 2
 
                     return val_b * point_on_line + val_a * (1-point_on_line)
         else:
