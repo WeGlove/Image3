@@ -10,17 +10,18 @@ import numpy as np
 import os
 from threading import Lock
 
+
 class Renderer:
 
-    def __init__(self, fps, device, start_frame=0, stop_frame=-1, repeat=False, display=True, save=False, save_path="."):
+    def __init__(self, fps, device, start_frame=0, stop_frame=-1, width=None, height=None, repeat=False, display=True, save=False, save_path="."):
         self.start_frame = start_frame
         self.stop_frame = stop_frame
         self.fps = fps
         self.repeat = repeat
         self.display = display
         self.device = device
-        self.width = 1920
-        self.height = 1080
+        self.width = 1920 if width is None else width
+        self.height = 1080 if height is None else height
         self.save = save
         self.save_path = save_path
 
@@ -51,7 +52,7 @@ class Renderer:
         thread = threading.Thread(target=self._display_thread)
         thread.start()
 
-        last_image = torch.zeros((self.width, self.height))
+        last_image = torch.zeros((self.width, self.height), device=self.device)
 
         while True:
             counter = 0

@@ -37,7 +37,7 @@ class MassComposition(Strip):
             if stack_img is None:
                 stack_img = torch.zeros(img.shape, device=self.device)
 
-            mask = self.compositor.composite(i, last_image)
+            mask = self.compositor.composite(i, img)
 
             stack_img = stack_img + torch.multiply(img, mask.transpose(0, 1))
 
