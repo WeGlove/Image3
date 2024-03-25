@@ -8,7 +8,7 @@ class Closeness(Compositor):
     def __init__(self, comp_img, rev=True, weights=None):
         super().__init__()
         self.block_mask = None
-        self.comp_img = AnimatedProperty(comp_img / 255)
+        self.comp_img = AnimatedProperty(comp_img)
         self.rev = rev
         self.weights = AnimatedProperty(weights)
 
@@ -36,7 +36,6 @@ class Closeness(Compositor):
             brightness = 1 - brightness
         brightness = brightness * self.block_mask
         size = int(weights[index])
-        print(self.weights.get() / torch.sum(self.weights.get()))
         b = torch.argsort(brightness.flatten())
         brightness_sorted = torch.flip(b, [0])
         highest_indices = brightness_sorted[:size]
