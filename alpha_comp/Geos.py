@@ -42,8 +42,8 @@ def get_vector_map(width, height, device):
     return pixel_vectors
 
 
-def get_centered_homo_vector_map(width, height, device):
-    vector_map = get_centered_vector_map(width, height, device)
+def get_centered_homo_vector_map(width, height, device, center=None):
+    vector_map = get_centered_vector_map(width, height, device, center=center)
     homo_part = torch.ones((width, height), device=device)
     a = vector_map[:, :, 0]
     b = vector_map[:, :, 1]

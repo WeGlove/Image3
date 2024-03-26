@@ -1,3 +1,4 @@
+import math
 import os.path
 from alpha_comp.compositors.Leaves.polar_divsion import PolarDivision
 import numpy as np
@@ -8,6 +9,9 @@ from alpha_comp.compositors.Leaves.Closeness import Closeness
 from alpha_comp.compositors.Nodes.SizeSplit import SizeSplit
 import torch
 from strips.constraints import identity, mat_split, rotation
+from alpha_comp.compositors.Leaves.lines import Lines
+from mat_math.homo_kernels import rotation_2D
+
 
 if __name__ == "__main__":
     path = os.path.join("../playground", "news2")
@@ -29,21 +33,17 @@ if __name__ == "__main__":
         template_images = images[4:] + [torch.zeros(1920, 1080, device=cuda)]
         images = images[:4]
 
-        comp = SizeSplit(
-            PolarDivision(points=torch.tensor([[1920/2, 1080/2]], device=cuda)),
-            PolarDivision(points=torch.tensor([[1920/2, 1080/2]], device=cuda)))
-
-        comp = PolarDivision(points=torch.tensor([[1920 / 2, 1080 / 2]], device=cuda))
+        comp = Lines(rotation=0)
 
         strip = MassComposition(3600, images, comp)
-        #a_shift = strip.get_animated_properties()["_SizeSplit:CompositorA_PolarDivision:Shift"]
-        #b_shift = strip.get_animated_properties()["_SizeSplit:CompositorB_PolarDivision:Shift"]
 
-        #a_shift.set_key_frame(0, 0)
-        #b_shift.set_key_frame(0, 0)
+        freq_prop = strip.get_animated_properties()['_Lines:Frequency']
+        rotation = strip.get_animated_properties()['_Lines:Rotation']
+        freq_prop.set_key_frame(0, 0.01)
+        rotation.set_key_frame(0, 0)
 
-        #a_shift.set_key_frame(1000, 10000)
-        #b_shift.set_key_frame(1000, -10000)
+        freq_prop.set_key_frame(1000, 0.001)
+        rotation.set_key_frame(10000, 2*math.pi)
 
         strips.append(strip)
 
