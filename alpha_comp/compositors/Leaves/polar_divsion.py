@@ -50,6 +50,7 @@ class PolarDivision(Compositor):
                 rad_out += rad
                 angles_out += angle
 
+        print(self.shift.get())
         angles = (((angles_out + torch.pi) * self.frequency.get() + self.rotation.get()) % (2 * torch.pi)) / (2 * torch.pi)
         rad_out = ((rad_out * self.scale.get() + self.shift.get()) % math.sqrt((self.width/2)**2 + (self.height/2)**2)) / math.sqrt((self.width/2)**2 + (self.height/2)**2)
 
