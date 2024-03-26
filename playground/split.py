@@ -11,6 +11,7 @@ import torch
 from strips.constraints import identity, mat_split, rotation
 from alpha_comp.compositors.Leaves.lines import Lines
 from mat_math.homo_kernels import rotation_2D
+from strips.constraints.jitter import Jitter
 
 
 if __name__ == "__main__":
@@ -39,11 +40,12 @@ if __name__ == "__main__":
 
         freq_prop = strip.get_animated_properties()['_Lines:Frequency']
         rotation = strip.get_animated_properties()['_Lines:Rotation']
-        freq_prop.set_key_frame(0, 0.01)
+        rotation.set_constraint(Jitter(frequency=0.1, amplitude=0.000001, device=cuda))
+        #freq_prop.set_key_frame(0, 0.01)
         rotation.set_key_frame(0, 0)
 
-        freq_prop.set_key_frame(1000, 0.001)
-        rotation.set_key_frame(10000, 2*math.pi)
+        #freq_prop.set_key_frame(1000, 0.001)
+        #rotation.set_key_frame(10000, 2*math.pi)
 
         strips.append(strip)
 
