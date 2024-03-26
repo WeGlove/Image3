@@ -40,9 +40,11 @@ if __name__ == "__main__":
 
         freq_prop = strip.get_animated_properties()['_Lines:Frequency']
         rotation = strip.get_animated_properties()['_Lines:Rotation']
+        dc = strip.get_animated_properties()['_Lines:DutyCycle']
         rotation.set_constraint(Jitter(frequency=0.1, amplitude=0.000001, device=cuda))
         #freq_prop.set_key_frame(0, 0.01)
         rotation.set_key_frame(0, 0)
+        dc.set_key_frame(0, torch.tensor([1,2,3,4], device=cuda))
 
         #freq_prop.set_key_frame(1000, 0.001)
         #rotation.set_key_frame(10000, 2*math.pi)

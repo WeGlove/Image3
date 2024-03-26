@@ -13,10 +13,12 @@ class Lines(Compositor):
         self.shift = AnimatedProperty(initial_value=shift)
         self.rotation = AnimatedProperty(rotation)
         self.center = AnimatedProperty(None)
+        self.duty_cycle = AnimatedProperty(None)
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)
         self.center.initial_value = torch.tensor([1920/2, 1080/2], device=self.device)
+        self.duty_cycle.initial_value = torch.tensor([1/limit] * self.limit)
 
     def composite(self, index, img):
         out_arr = torch.zeros(self.width, self.height, device=self.device)
@@ -26,9 +28,14 @@ class Lines(Compositor):
                                math.sin(self.rotation.get()) * -vector_map[:, :, 0])
         vector_map = (vector_map + self.shift.get()) * self.frequency.get()
         vector_map = vector_map % 1
-        vector_map = vector_map * self.limit
-        vector_map = torch.floor(vector_map)
-        out_arr[vector_map == index] = 1
+        duty_cycle = self.duty_cycle.get()
+        duty_cycle = duty_cycle / torch.sum(duty_cycle)
+        duty_cycle = torch.cumsum(duty_cycle, 0)
+
+        if index == 0:
+            out_arr[(0 <= vector_map) & (vector_map < duty_cycle[index])] = 1
+        else:
+            out_arr[(duty_cycle[index-1] <= vector_map) & (vector_map < duty_cycle[index])] = 1
 
         out_arr = torch.stack([out_arr, out_arr, out_arr]).transpose(0, 1).transpose(1, 2)
         return out_arr
@@ -37,7 +44,8 @@ class Lines(Compositor):
         animated_properties = {visitors + "_Lines:Frequency": self.frequency,
                                visitors + "_Lines:Shift": self.shift,
                                visitors + "_Lines:Rotation": self.rotation,
-                               visitors + "_Lines:Center": self.center}
+                               visitors + "_Lines:Center": self.center,
+                               visitors + "_Lines:DutyCycle": self.duty_cycle}
 
         constraint_properties = {}
         for k, animated_property in animated_properties.items():
