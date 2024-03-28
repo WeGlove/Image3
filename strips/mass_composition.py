@@ -50,4 +50,4 @@ class MassComposition(Strip):
         self.compositor.free()
 
     def get_animated_properties(self):
-        return self.compositor.get_animated_properties("")
+        return self.compositor.get_animated_properties("MassComposition")

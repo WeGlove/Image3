@@ -1,17 +1,16 @@
 import math
 import os.path
-from alpha_comp.compositors.Leaves.polar_divsion import PolarDivision
 import numpy as np
 from PIL import Image
 from alpha_comp.renderer import Renderer
 from strips.mass_composition import MassComposition
-from alpha_comp.compositors.Leaves.Closeness import Closeness
-from alpha_comp.compositors.Nodes.SizeSplit import SizeSplit
 import torch
-from strips.constraints import identity, mat_split, rotation
-from alpha_comp.compositors.Leaves.lines import Lines
-from mat_math.homo_kernels import rotation_2D
+from alpha_comp.compositors.Leaves.point_maps.lines import Lines
 from strips.constraints.jitter import Jitter
+from alpha_comp.compositors.Leaves.point_mapping import PointMapping
+from alpha_comp.compositors.Leaves.point_maps.circles import Circles
+from alpha_comp.compositors.Leaves.point_maps.spirals import Spirals
+from alpha_comp.compositors.Leaves.point_maps.lines import Lines
 
 
 if __name__ == "__main__":
@@ -34,20 +33,13 @@ if __name__ == "__main__":
         template_images = images[4:] + [torch.zeros(1920, 1080, device=cuda)]
         images = images[:4]
 
-        comp = Lines(rotation=0)
+        b = Lines(rotation=70/360*math.pi*2, frequency=0.01)
+        comp = PointMapping([Lines(frequency=0.001), b], duty_cycle=torch.tensor([1,2,4,8], device=cuda))
 
         strip = MassComposition(3600, images, comp)
-
-        freq_prop = strip.get_animated_properties()['_Lines:Frequency']
-        rotation = strip.get_animated_properties()['_Lines:Rotation']
-        dc = strip.get_animated_properties()['_Lines:DutyCycle']
-        rotation.set_constraint(Jitter(frequency=0.1, amplitude=0.000001, device=cuda))
-        #freq_prop.set_key_frame(0, 0.01)
-        rotation.set_key_frame(0, 0)
-        dc.set_key_frame(0, torch.tensor([1,2,3,4], device=cuda))
-
-        #freq_prop.set_key_frame(1000, 0.001)
-        #rotation.set_key_frame(10000, 2*math.pi)
+        shift = strip.get_animated_properties()['MassComposition_PointMapping:PointMap-1_Lines:Shift']
+        shift.set_key_frame(0, 0)
+        shift.set_key_frame(10000, 10000)
 
         strips.append(strip)
 

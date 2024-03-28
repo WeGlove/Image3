@@ -1,12 +1,10 @@
 import os.path
-from alpha_comp.compositors.Leaves.polar_divsion import PolarDivision
 import numpy as np
 from PIL import Image
 from alpha_comp.renderer import Renderer
 from strips.mass_composition import MassComposition
 from alpha_comp.compositors.Leaves.Closeness import Closeness
 import torch
-from strips.constraints import identity, mat_split, rotation
 
 if __name__ == "__main__":
     path = os.path.join("../playground", "news")

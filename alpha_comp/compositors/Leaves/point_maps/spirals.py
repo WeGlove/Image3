@@ -1,11 +1,11 @@
-from alpha_comp.compositor import Compositor
 from alpha_comp.Geos import get_polar
 import torch
 from strips.animated_property import AnimatedProperty
 import math
+from alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
 
 
-class PolarDivision(Compositor):
+class Spirals(PointMap):
 
     def __init__(self, points, scale_radius=1, scale=5, shift=0, ratio=0.5, rotation=0, frequency=1, weights_rad=None, weights_angles=None):
         super().__init__()
@@ -35,13 +35,10 @@ class PolarDivision(Compositor):
         rad_out = None
         angles_out = None
         points = self.points.get()
-        weights_rad = self.weights_rad.get()
-        weights_rad = weights_rad / torch.sum(weights_rad)
         weights_angle = self.weights_angle.get()
         weights_angle = weights_angle / torch.sum(weights_angle)
         for i in range(points.shape[0]):
             rad, angle = get_polar(self.width, self.height, self.device, points[i])
-            rad = rad * weights_rad[i]
             angle = angle * weights_angle[i]
             if rad_out is None:
                 rad_out = rad
@@ -50,18 +47,11 @@ class PolarDivision(Compositor):
                 rad_out += rad
                 angles_out += angle
 
-        print(self.shift.get())
         angles = (((angles_out + torch.pi) * self.frequency.get() + self.rotation.get()) % (2 * torch.pi)) / (2 * torch.pi)
-        rad_out = ((rad_out * self.scale.get() + self.shift.get()) % math.sqrt((self.width/2)**2 + (self.height/2)**2)) / math.sqrt((self.width/2)**2 + (self.height/2)**2)
 
-        ratio = self.ratio.get()
-        arr_map = (angles * ratio + rad_out * (1-ratio))
+        arr_map = angles
 
-        arr = torch.floor(arr_map * self.limit)
-        out_arr[arr == index] = 1
-
-        out_arr = torch.stack([out_arr, out_arr, out_arr]).transpose(0, 1).transpose(1, 2)
-        return out_arr
+        return arr_map
 
     def get_animated_properties(self, visitors):
         animated_properties = {visitors + "_" + "PolarDivision:Points": self.points,

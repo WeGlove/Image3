@@ -1,5 +1,5 @@
 import os.path
-from alpha_comp.compositors.Leaves.polar_divsion import PolarDivision
+from alpha_comp.compositors.Leaves.point_maps.polar_divsion import PolarDivision
 import numpy as np
 from PIL import Image
 from alpha_comp.renderer import Renderer
