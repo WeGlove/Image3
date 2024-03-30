@@ -21,12 +21,15 @@ class Lines(PointMap):
 
     def composite(self, index, img):
         vector_map = get_centered_vector_map(self.width, self.height, self.device, center=self.center.get())
-        vector_map = torch.abs(math.cos(self.rotation.get()) * -vector_map[:, :, 1] -
-                               math.sin(self.rotation.get()) * -vector_map[:, :, 0])
-        vector_map = (vector_map + self.shift.get()) * self.frequency.get()
-        vector_map = vector_map % (2*math.sqrt(self.width**2 + self.height**2))
-        vector_map = vector_map - math.sqrt(self.width**2 + self.height**2)
+
+        vector_map = torch.abs(math.cos(self.rotation.get()/360 * 2*math.pi) * -vector_map[:, :, 1] -
+                               math.sin(self.rotation.get()/360 * 2*math.pi) * -vector_map[:, :, 0])
+
+        vector_map = (vector_map * self.frequency.get() + self.shift.get())
+        border = min(self.width, self.height) / 2
+        vector_map = vector_map % border
         vector_map = torch.abs(vector_map)
+        vector_map = vector_map / border
 
         return vector_map
 

@@ -26,6 +26,7 @@ class PointMapping(Compositor):
 
         arr_map = composite_point_map / len(self.point_maps)
         arr_map = arr_map % 1
+        b= arr_map.cpu().numpy()
 
         duty_cycle = self.duty_cycle.get()
         duty_cycle = duty_cycle / torch.sum(duty_cycle)
