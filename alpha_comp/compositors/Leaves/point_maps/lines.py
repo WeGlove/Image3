@@ -8,7 +8,7 @@ from alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
 
 class Lines(PointMap):
 
-    def __init__(self, frequency=10, shift=0, rotation=0):
+    def __init__(self, frequency=1, shift=0, rotation=0):
         super().__init__()
         self.frequency = AnimatedProperty(initial_value=frequency)
         self.shift = AnimatedProperty(initial_value=shift)
