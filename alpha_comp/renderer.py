@@ -80,7 +80,7 @@ class Renderer:
 
                     if self.save:
                         mask = Image.fromarray(np.uint8(stack_img.cpu()))
-                        mask.save(os.path.join(self.save_path, f"out_{i}.png"))
+                        mask.save(os.path.join(self.save_path, f"out_{counter}.png"))
 
                     delta = time.time() - before_time
                     if fps_wait:

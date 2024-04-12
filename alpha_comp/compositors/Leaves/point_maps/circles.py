@@ -7,13 +7,12 @@ from alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
 
 class Circles(PointMap):
 
-    def __init__(self, points, scale_radius=1, scale=5, shift=0, ratio=0.5, rotation=0, frequency=1, weights_rad=None, weights_angles=None):
+    def __init__(self, points, scale_radius=1, scale=5, shift=0, ratio=0.5, rotation=0, frequency=1, weights_rad=None):
         super().__init__()
         self.points = AnimatedProperty(initial_value=points)
         self.rotation = AnimatedProperty(initial_value=rotation)
         self.frequency = AnimatedProperty(initial_value=frequency)
         self.weights_rad = AnimatedProperty(initial_value=weights_rad)
-        self.weights_angle = AnimatedProperty(initial_value=weights_angles)
         self.scale = AnimatedProperty(initial_value=scale)
         self.shift = AnimatedProperty(initial_value=shift)
         self.ratio = AnimatedProperty(initial_value=ratio)
@@ -24,8 +23,6 @@ class Circles(PointMap):
         super().initialize(width, height, limit, device)
         if self.weights_rad.initial_value is None:
             self.weights_rad.initial_value = torch.tensor([1/self.points.get().shape[0]]*self.points.get().shape[0], device=self.device)
-        if self.weights_angle.initial_value is None:
-            self.weights_angle.initial_value = torch.tensor([1/self.points.get().shape[0]]*self.points.get().shape[0], device=self.device)
 
         self.angle_space = 2 * torch.pi / self.limit
 
@@ -55,8 +52,7 @@ class Circles(PointMap):
                                visitors + "_" + "PolarDivision:Ratio": self.ratio,
                                visitors + "_" + "PolarDivision:Rotation": self.rotation,
                                visitors + "_" + "PolarDivision:Frequency": self.frequency,
-                               visitors + "_" + "PolarDivision:Weights_rad": self.weights_rad,
-                               visitors + "_" + "PolarDivision:Weights_angle": self.weights_angle}
+                               visitors + "_" + "PolarDivision:Weights_rad": self.weights_rad}
 
         constraint_properties = {}
         for k, animated_property in animated_properties.items():
