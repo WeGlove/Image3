@@ -3,6 +3,7 @@ import torch
 from strips.animated_property import AnimatedProperty
 from alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
 import math
+from abc import abstractmethod
 
 
 class Line(PointMap):
@@ -10,6 +11,15 @@ class Line(PointMap):
     def __init__(self, line):
         super().__init__()
         self.line = AnimatedProperty(initial_value=line)
+
+    @staticmethod
+    def from_2_points(x_0, x_1, device):
+        AB = x_1 - x_0
+        a = AB[0]
+        b = AB[1]
+        c = x_0[1]
+
+        return Line(torch.tensor([a, b, c], device=device))
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)
