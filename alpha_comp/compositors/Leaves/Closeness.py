@@ -38,7 +38,7 @@ class Closeness(Compositor):
         size = int(weights[index])
         b = torch.argsort(brightness.flatten())
         brightness_sorted = torch.flip(b, [0])
-        highest_indices = brightness_sorted[:size]
+        highest_indices = brightness_sorted[int(torch.sum(weights[:index])):int(torch.sum(weights[:index])) + size]  # TODO: BUG! it always takes the last one, it needs to increment
 
         mask = mask.flatten()
         mask[highest_indices] = 1
