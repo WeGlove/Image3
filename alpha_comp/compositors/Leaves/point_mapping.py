@@ -5,11 +5,13 @@ from strips.animated_property import AnimatedProperty
 
 class PointMapping(Compositor):
 
-    def __init__(self, point_maps, duty_cycle=None, weights=None):
+    def __init__(self, point_maps, shift=0, frequency=1, duty_cycle=None, weights=None):
         super().__init__()
         self.point_maps = point_maps
         self.duty_cycle = AnimatedProperty(duty_cycle)
         self.weights = AnimatedProperty(weights)
+        self.shift = AnimatedProperty(shift)
+        self.frequency = AnimatedProperty(frequency)
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)
@@ -30,7 +32,7 @@ class PointMapping(Compositor):
         for point_map, weight in zip(self.point_maps, weights):
             composite_point_map += weight * point_map.composite(index, img)
 
-        arr_map = composite_point_map % 1
+        arr_map = (composite_point_map * self.frequency.get() + self.shift.get()) % 1
 
         duty_cycle = self.duty_cycle.get()
         duty_cycle = duty_cycle / torch.sum(duty_cycle)
@@ -46,7 +48,9 @@ class PointMapping(Compositor):
 
     def get_animated_properties(self, visitors):
         animated_properties = {visitors + "_PointMapping:DutyCycle": self.duty_cycle,
-                               visitors + "_PointMapping:Weights": self.weights}
+                               visitors + "_PointMapping:Weights": self.weights,
+                               visitors + "_PointMapping:Shift": self.shift,
+                               visitors + "_PointMapping:Frequency": self.frequency}
         for k, point_map in enumerate(self.point_maps):
             animated_properties.update(point_map.get_animated_properties(visitors + f"_PointMapping:PointMap-{k}"))
 

@@ -28,11 +28,19 @@ if __name__ == "__main__":
             images.append(img)
 
         #comp = PointMapping(ThreeGon.get_3Gons(torch.tensor([0., 0.], device=cuda), 1., cuda))
-        comp = PointMapping(ThreeGon.get_NGons(3, torch.tensor([0., 0.], device=cuda), 1., cuda))
+        comp = PointMapping(ThreeGon.get_NGons(5, torch.tensor([0., 0.], device=cuda), 1., cuda))
 
         strip = MassComposition(16271, images, comp)
         properties = strip.get_animated_properties()
+        print(properties)
+        shift = properties["MassComposition_PointMapping:Shift"]
+        frequency = properties["MassComposition_PointMapping:Frequency"]
 
+        shift.set_key_frame(0, 0)
+        shift.set_key_frame(1000, 9)
+
+        frequency.set_key_frame(0, 1)
+        frequency.set_key_frame(1000, 10)
 
         strips.append(strip)
 
