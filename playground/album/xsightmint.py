@@ -12,7 +12,7 @@ from alpha_comp.compositors.Leaves.Closeness import Closeness
 
 
 if __name__ == "__main__":
-    path = os.path.join("album")
+    path = os.path.join("")
     out_path = os.path.join(os.path.join("C:", "Users", "tobia", "Desktop", "out_out"))
 
     print("cuda", torch.cuda.is_available())
