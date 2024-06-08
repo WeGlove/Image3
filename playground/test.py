@@ -6,7 +6,7 @@ from strips.mass_composition import MassComposition
 import torch
 from alpha_comp.compositors.Leaves.point_mapping import PointMapping
 from alpha_comp.compositors.Leaves.point_maps.line import Line
-from alpha_comp.compositors.Leaves.point_maps.ThreeGon import ThreeGon
+from alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
 
 
 if __name__ == "__main__":
@@ -27,8 +27,8 @@ if __name__ == "__main__":
             img = torch.tensor(img, device=cuda)
             images.append(img)
 
-        #comp = PointMapping(ThreeGon.get_3Gons(torch.tensor([0., 0.], device=cuda), 1., cuda))
-        comp = PointMapping(ThreeGon.get_NGons(5, torch.tensor([0., 0.], device=cuda), 1., cuda))
+        #comp = PointMapping(LineConfigs.get_NGons(3, torch.tensor([0., 0.], device=cuda), 1., cuda))
+        comp = PointMapping(LineConfigs.get_star(3, torch.tensor([0., 0.], device=cuda), 1., cuda))
 
         strip = MassComposition(16271, images, comp)
         properties = strip.get_animated_properties()
