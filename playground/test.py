@@ -27,7 +27,8 @@ if __name__ == "__main__":
             img = torch.tensor(img, device=cuda)
             images.append(img)
 
-        comp = PointMapping(ThreeGon.get_3Gons(torch.tensor([0., 0.], device=cuda), 1., cuda))
+        #comp = PointMapping(ThreeGon.get_3Gons(torch.tensor([0., 0.], device=cuda), 1., cuda))
+        comp = PointMapping(ThreeGon.get_NGons(3, torch.tensor([0., 0.], device=cuda), 1., cuda))
 
         strip = MassComposition(16271, images, comp)
         properties = strip.get_animated_properties()
