@@ -42,12 +42,17 @@ class RenderGui(QMainWindow):
             self.is_paused = not self.is_paused
         self.pause_button.clicked.connect(on_pause)
 
-
         self.reset_button = QPushButton("Reset", self)
 
         def on_reset():
             self.current_frame = 0
         self.reset_button.clicked.connect(on_reset)
+
+        self.render_button = QPushButton("Render", self)
+
+        def on_render():
+            self.save = True
+        self.render_button.clicked.connect(on_render)
 
         self.text_widget = QLabel("0")
 
@@ -55,6 +60,7 @@ class RenderGui(QMainWindow):
         layout = QVBoxLayout()
         layout.addWidget(self.reset_button)
         layout.addWidget(self.pause_button)
+        layout.addWidget(self.render_button)
         layout.addWidget(self.text_widget)
 
         widget = QWidget()
