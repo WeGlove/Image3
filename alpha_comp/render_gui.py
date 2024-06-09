@@ -9,7 +9,7 @@ import numpy as np
 import os
 from threading import Lock
 from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtWidgets import QMainWindow, QPushButton
+from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel
 
 
 class RenderGui(QMainWindow):
@@ -31,22 +31,37 @@ class RenderGui(QMainWindow):
         self.image_lock = Lock()
         self.run_display_thread = True
         self.new_image = True
+        self.current_frame = 0
 
         self.setWindowTitle("NightmareMachine")
 
-        button = QPushButton("Pause")
-
-        self.setFixedSize(QSize(400, 300))
-
-        # Set the central widget of the Window.
-        self.setCentralWidget(button)
-
+        self.pause_button = QPushButton("Pause", self)
         self.is_paused = False
 
         def on_pause():
             self.is_paused = not self.is_paused
+        self.pause_button.clicked.connect(on_pause)
 
-        button.clicked.connect(on_pause)
+
+        self.reset_button = QPushButton("Reset", self)
+
+        def on_reset():
+            self.current_frame = 0
+        self.reset_button.clicked.connect(on_reset)
+
+        self.text_widget = QLabel("0")
+
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.reset_button)
+        layout.addWidget(self.pause_button)
+        layout.addWidget(self.text_widget)
+
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
+
+        self.setFixedSize(QSize(400, 300))
 
     def _display_thread(self):
         while self.run_display_thread:
@@ -70,7 +85,7 @@ class RenderGui(QMainWindow):
         last_image = torch.zeros((self.width, self.height), device=self.device)
 
         while True:
-            counter = 0
+            self.current_frame = 0
             for strip in strips:
                 strip.initialize(self.width, self.height, self.fps, self.start_frame, last_image, self.device)
 
@@ -80,16 +95,17 @@ class RenderGui(QMainWindow):
 
                     before_time = time.time()
 
-                    if counter < self.start_frame:
-                        counter += 1
+                    if self.current_frame < self.start_frame:
+                        self.current_frame += 1
                         continue
-                    if counter >= self.stop_frame and self.stop_frame >= 0:
+                    if self.current_frame >= self.stop_frame and self.stop_frame >= 0:
                         break
 
-                    print(counter)
-                    stack_img = strip.produce(last_image, counter)
+                    print(self.current_frame)
+                    stack_img = strip.produce(last_image, self.current_frame)
 
-                    counter += 1
+                    self.current_frame += 1
+                    self.text_widget.setText(f"frame: {self.current_frame}")
 
                     if self.display:
                         with self.image_lock:
@@ -98,7 +114,7 @@ class RenderGui(QMainWindow):
 
                     if self.save:
                         mask = Image.fromarray(np.uint8(stack_img.cpu()))
-                        mask.save(os.path.join(self.save_path, f"out_{counter}.png"))
+                        mask.save(os.path.join(self.save_path, f"out_{self.current_frame}.png"))
 
                     delta = time.time() - before_time
                     if fps_wait:
