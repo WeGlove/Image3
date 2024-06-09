@@ -6,8 +6,8 @@ from strips.mass_composition import MassComposition
 import torch
 from alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
 from alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
-from strips.constraints.keyboard import KeyboardConstraint
-from strips.constraints.buffer import Buffer, MeanBuffer
+from strips.constraints.buffer import MeanBuffer
+from strips.constraints.fromfile import FromFile
 
 if __name__ == "__main__":
     path = os.path.join(".", "wood")
@@ -34,7 +34,7 @@ if __name__ == "__main__":
         properties = strip.get_animated_properties()
         print(properties)
 
-        constraint = KeyboardConstraint({"a": 0, "b": 0.9})
+        constraint = FromFile(os.path.join(".", "2.png"))
         constraint_buffer = MeanBuffer(constraint, 100)
 
         shift = properties['MassComposition_PointMapping:Shift']
