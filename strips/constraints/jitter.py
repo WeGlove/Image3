@@ -18,8 +18,5 @@ class Jitter(Constraint):
         interp = interp + math.sin(self.frame * self.frequency.get()) * self.amplitude.get()
         return interp
 
-    def set_frame(self, frame):
-        super().set_frame(frame)
-
     def get_animated_properties(self, visitor):
         return {visitor + "_Jitter:" + "Amplitude": self.amplitude, visitor + "_jitter:" + "Frequency": self.frequency}

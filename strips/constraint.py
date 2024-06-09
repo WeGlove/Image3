@@ -10,6 +10,12 @@ class Constraint:
     def constrain(self, interp):
         pass
 
+    def set_next(self):
+        self.frame += 1
+
+    def set_previous(self):
+        self.frame -= 1
+
     def set_frame(self, frame):
         self.frame = frame
 

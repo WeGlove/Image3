@@ -43,3 +43,13 @@ class MeanBuffer(Constraint):
         super().set_frame(frame)
         self.constraint.set_frame(frame)
         self.has_constrained = False
+
+    def set_next(self):
+        super().set_next()
+        self.constraint.set_next()
+        self.has_constrained = False
+
+    def set_previous(self):
+        super().set_previous()
+        self.constraint.set_previous()
+        self.has_constrained = False

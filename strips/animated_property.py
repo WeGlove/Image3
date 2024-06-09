@@ -98,6 +98,16 @@ class AnimatedProperty:
 
         return interp
 
+    def set_next(self):
+        self.frame += 1
+        if self.constraint is not None:
+            self.constraint.set_next()
+
+    def set_previous(self):
+        self.frame -= 1
+        if self.constraint is not None:
+            self.constraint.set_previous()
+
     def set_frame(self, frame):
         self.frame = frame
         if self.constraint is not None:
