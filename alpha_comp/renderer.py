@@ -132,7 +132,7 @@ class Renderer:
         self.current_strip.set_frame(self.current_frame)
 
     def render(self):
-        self.save = True
+        self.save = not self.save
 
     def run(self, strips: List[Strip], fps_wait=False):
         self.display_thread = threading.Thread(target=self._display_thread)

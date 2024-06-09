@@ -18,6 +18,7 @@ class RenderGui(QMainWindow):
         def on_pause():
             self.frame_renderer.pause_unpause()
         self.pause_button.clicked.connect(on_pause)
+        self.pause_button.setCheckable(True)
 
         self.reset_button = QPushButton("Reset", self)
 
@@ -30,13 +31,15 @@ class RenderGui(QMainWindow):
         def on_render():
             self.frame_renderer.render()
         self.render_button.clicked.connect(on_render)
+        self.render_button.setCheckable(True)
 
-        self.forward_button = QPushButton("Forward", self)
+        self.forward_button = QPushButton("Backwards", self)
 
         def on_forward():
             self.frame_renderer.forwads_backwards()
 
         self.forward_button.clicked.connect(on_forward)
+        self.forward_button.setCheckable(True)
 
         self.line_edit = QLineEdit("", parent=self)
 

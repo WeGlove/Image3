@@ -13,7 +13,7 @@ class FromFile(Constraint):
 
     def set_frame(self, frame):
         super().set_frame(frame)
-        self.f.seek(frame)
+        self.f.seek(frame) # TODO mod file size
 
     def set_next(self):
         super().set_next()
