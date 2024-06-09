@@ -1,13 +1,15 @@
 import os.path
 import numpy as np
 from PIL import Image
-from alpha_comp.renderer import Renderer
+from alpha_comp.render_gui import RenderGui
 from strips.mass_composition import MassComposition
 import torch
 from alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
 from alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
 from strips.constraints.buffer import MeanBuffer
 from strips.constraints.fromfile import FromFile
+from PyQt6.QtWidgets import QApplication
+
 
 if __name__ == "__main__":
     path = os.path.join(".", "wood")
@@ -42,5 +44,8 @@ if __name__ == "__main__":
 
         strips.append(strip)
 
-        renderer = Renderer(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True, save_path="C:\\Users\\tobia\\Desktop\\out_out", save=False)
-        renderer.run(strips, fps_wait=True)
+        app = QApplication([])
+        window = RenderGui(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,
+                           save_path="C:\\Users\\tobia\\Desktop\\out_out", save=False)
+
+        window.run(app, strips, fps_wait=True)
