@@ -1,7 +1,7 @@
 from typing import List
 from strips.strip import Strip
 from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel
+from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
 from alpha_comp.renderer import Renderer
 
 
@@ -38,10 +38,14 @@ class RenderGui(QMainWindow):
 
         self.forward_button.clicked.connect(on_forward)
 
+        self.line_edit = QLineEdit("", parent=self)
+
         self.set_frame_button = QPushButton("Set Frame", self)
 
         def on_set_frame():
-            self.frame_renderer.set_frame(0)
+            text = self.line_edit.text()
+            if text.isnumeric():
+                self.frame_renderer.set_frame(int(float(text)))
         self.set_frame_button.clicked.connect(on_set_frame)
 
         self.text_widget = QLabel("0")
@@ -53,6 +57,7 @@ class RenderGui(QMainWindow):
         layout.addWidget(self.render_button)
         layout.addWidget(self.forward_button)
         layout.addWidget(self.set_frame_button)
+        layout.addWidget(self.line_edit)
         layout.addWidget(self.text_widget)
 
         widget = QWidget()
