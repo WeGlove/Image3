@@ -38,6 +38,12 @@ class RenderGui(QMainWindow):
 
         self.forward_button.clicked.connect(on_forward)
 
+        self.set_frame_button = QPushButton("Set Frame", self)
+
+        def on_set_frame():
+            self.frame_renderer.set_frame(0)
+        self.set_frame_button.clicked.connect(on_set_frame)
+
         self.text_widget = QLabel("0")
         self.frame_renderer.on_frame = lambda frame:  self.text_widget.setText(f"frame: {frame}")
 
@@ -46,6 +52,7 @@ class RenderGui(QMainWindow):
         layout.addWidget(self.pause_button)
         layout.addWidget(self.render_button)
         layout.addWidget(self.forward_button)
+        layout.addWidget(self.set_frame_button)
         layout.addWidget(self.text_widget)
 
         widget = QWidget()

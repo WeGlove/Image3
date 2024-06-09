@@ -30,6 +30,7 @@ class Renderer:
         self.run_display_thread = True
         self.new_image = True
         self.current_frame = 0
+        self.current_strip = None
 
         self.is_paused = False
         self.is_forward = True
@@ -64,6 +65,7 @@ class Renderer:
             self.current_frame = 0
             for strip in strips:
                 strip.initialize(self.width, self.height, self.fps, self.start_frame, last_image, self.device)
+                self.current_strip = strip
 
                 for i in range(strip.get_length()):
                     while self.is_paused:
@@ -121,8 +123,13 @@ class Renderer:
     def forwads_backwards(self):
         self.is_forward = not self.is_forward
 
+    def set_frame(self, frame):
+        self.current_frame = frame
+        self.current_strip.set_frame(frame)
+
     def reset(self):
         self.current_frame = 0
+        self.current_strip.set_frame(self.current_frame)
 
     def render(self):
         self.save = True
