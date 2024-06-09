@@ -134,6 +134,12 @@ class Renderer:
     def render(self):
         self.save = not self.save
 
+    def set_stopframe(self, frame):
+        self.stop_frame = frame
+
+    def repeat_unrepeat(self):
+        self.repeat = not self.repeat
+
     def run(self, strips: List[Strip], fps_wait=False):
         self.display_thread = threading.Thread(target=self._display_thread)
         self.display_thread.start()

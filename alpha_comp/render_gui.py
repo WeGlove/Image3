@@ -24,6 +24,7 @@ class RenderGui(QMainWindow):
 
         def on_reset():
             self.frame_renderer.reset()
+            self.text_widget.setText(f"frame: 0 / {self.frame_renderer.stop_frame}")
         self.reset_button.clicked.connect(on_reset)
 
         self.render_button = QPushButton("Render", self)
@@ -34,6 +35,14 @@ class RenderGui(QMainWindow):
         self.render_button.setCheckable(True)
 
         self.forward_button = QPushButton("Backwards", self)
+
+        self.repeat_button = QPushButton("Don't Repeat", self)
+        self.repeat_button.setCheckable(True)
+
+        def on_repeat():
+            self.frame_renderer.repeat_unrepeat()
+
+        self.repeat_button.clicked.connect(on_repeat)
 
         def on_forward():
             self.frame_renderer.forwads_backwards()
@@ -49,19 +58,34 @@ class RenderGui(QMainWindow):
             text = self.line_edit.text()
             if text.isnumeric():
                 self.frame_renderer.set_frame(int(float(text)))
+                self.text_widget.setText(f"frame: {int(float(text))} / {self.frame_renderer.stop_frame}")
         self.set_frame_button.clicked.connect(on_set_frame)
 
+        self.stopframe_edit = QLineEdit("", parent=self)
+
+        self.stopframe_button = QPushButton("Set Stop Frame", self)
+
+        def on_set_stop_frame():
+            text = self.stopframe_edit.text()
+            if text.isnumeric():
+                self.frame_renderer.set_stopframe(int(float(text)))
+        self.stopframe_button.clicked.connect(on_set_stop_frame)
+
         self.text_widget = QLabel("0")
-        self.frame_renderer.on_frame = lambda frame:  self.text_widget.setText(f"frame: {frame}")
+        self.frame_renderer.on_frame = lambda frame:  self.text_widget.setText(f"frame: {frame} / {self.frame_renderer.stop_frame}")
 
         layout = QVBoxLayout()
         layout.addWidget(self.reset_button)
         layout.addWidget(self.pause_button)
         layout.addWidget(self.render_button)
         layout.addWidget(self.forward_button)
+        layout.addWidget(self.repeat_button)
         layout.addWidget(self.set_frame_button)
         layout.addWidget(self.line_edit)
+        layout.addWidget(self.stopframe_button)
+        layout.addWidget(self.stopframe_edit)
         layout.addWidget(self.text_widget)
+
 
         widget = QWidget()
         widget.setLayout(layout)
