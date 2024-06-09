@@ -32,9 +32,10 @@ class Renderer:
         self.current_frame = 0
 
         self.is_paused = False
+        self.is_forward = True
 
-        def on_frame():
-            return self.current_frame
+        def on_frame(frame):
+            return frame
 
         self.on_frame = on_frame
 
@@ -72,16 +73,23 @@ class Renderer:
 
                     before_time = time.time()
 
-                    if self.current_frame < self.start_frame:
-                        self.current_frame += 1
-                        continue
-                    if self.current_frame >= self.stop_frame and self.stop_frame >= 0:
-                        break
+                    if self.is_forward:
+                        if self.current_frame < self.start_frame:
+                            self.current_frame += 1
+                            continue
+                        if self.current_frame >= self.stop_frame and self.stop_frame >= 0:
+                            break
+                    else:
+                        ...  # TODO
+
 
                     print(self.current_frame)
-                    stack_img = strip.produce_next(last_image)
-
-                    self.current_frame += 1
+                    if self.is_forward:
+                        stack_img = strip.produce_next(last_image)
+                        self.current_frame += 1
+                    else:
+                        stack_img = strip.produce_previous(last_image)
+                        self.current_frame -= 1
 
                     if self.display:
                         with self.image_lock:
@@ -109,6 +117,9 @@ class Renderer:
 
     def pause_unpause(self):
         self.is_paused = not self.is_paused
+
+    def forwads_backwards(self):
+        self.is_forward = not self.is_forward
 
     def reset(self):
         self.current_frame = 0
