@@ -2,6 +2,7 @@ import os.path
 import numpy as np
 from PIL import Image
 from alpha_comp.render_gui import RenderGui
+from alpha_comp.renderer import Renderer
 from strips.mass_composition import MassComposition
 import torch
 from alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
@@ -45,7 +46,8 @@ if __name__ == "__main__":
         strips.append(strip)
 
         app = QApplication([])
-        window = RenderGui(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,
-                           save_path="C:\\Users\\tobia\\Desktop\\out_out", save=False)
+        renderer = Renderer(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,
+                            save_path="C:\\Users\\tobia\\Desktop\\out_out", save=False)
+        window = RenderGui(renderer)
 
         window.run(app, strips, fps_wait=True)

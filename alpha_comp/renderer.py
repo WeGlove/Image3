@@ -1,7 +1,6 @@
 import threading
 import time
-from typing import List, Tuple
-from alpha_comp.compositor import Compositor
+from typing import List
 from strips.strip import Strip
 import cv2
 import torch
@@ -14,6 +13,7 @@ from threading import Lock
 class Renderer:
 
     def __init__(self, fps, device, start_frame=0, stop_frame=-1, width=None, height=None, repeat=False, display=True, save=False, save_path="."):
+        super().__init__()
         self.start_frame = start_frame
         self.stop_frame = stop_frame
         self.fps = fps
@@ -29,6 +29,14 @@ class Renderer:
         self.image_lock = Lock()
         self.run_display_thread = True
         self.new_image = True
+        self.current_frame = 0
+
+        self.is_paused = False
+
+        def on_frame():
+            return self.current_frame
+
+        self.on_frame = on_frame
 
     def _display_thread(self):
         while self.run_display_thread:
@@ -48,30 +56,32 @@ class Renderer:
             if delta > 0:
                 time.sleep(delta)
 
-    def run(self, strips: List[Strip], fps_wait=False):
-        thread = threading.Thread(target=self._display_thread)
-        thread.start()
-
+    def _render_thread(self, strips: List[Strip], fps_wait=False):
         last_image = torch.zeros((self.width, self.height), device=self.device)
 
         while True:
-            counter = 0
+            self.current_frame = 0
             for strip in strips:
                 strip.initialize(self.width, self.height, self.fps, self.start_frame, last_image, self.device)
 
                 for i in range(strip.get_length()):
+                    while self.is_paused:
+                        time.sleep(1)  # TODO this is terrible
+
+                    self.on_frame(self.current_frame)
+
                     before_time = time.time()
 
-                    if counter < self.start_frame:
-                        counter += 1
+                    if self.current_frame < self.start_frame:
+                        self.current_frame += 1
                         continue
-                    if counter >= self.stop_frame and self.stop_frame >= 0:
+                    if self.current_frame >= self.stop_frame and self.stop_frame >= 0:
                         break
 
-                    print(counter)
-                    stack_img = strip.produce(last_image, counter)
+                    print(self.current_frame)
+                    stack_img = strip.produce(last_image, self.current_frame)
 
-                    counter += 1
+                    self.current_frame += 1
 
                     if self.display:
                         with self.image_lock:
@@ -80,7 +90,7 @@ class Renderer:
 
                     if self.save:
                         mask = Image.fromarray(np.uint8(stack_img.cpu()))
-                        mask.save(os.path.join(self.save_path, f"out_{counter}.png"))
+                        mask.save(os.path.join(self.save_path, f"out_{self.current_frame}.png"))
 
                     delta = time.time() - before_time
                     if fps_wait:
@@ -96,4 +106,26 @@ class Renderer:
 
         with self.image_lock:
             self.run_display_thread = False
-        thread.join()
+
+    def pause_unpause(self):
+        self.is_paused = not self.is_paused
+
+    def reset(self):
+        self.current_frame = 0
+
+    def render(self):
+        self.save = True
+
+    def run(self, strips: List[Strip], fps_wait=False):
+        self.display_thread = threading.Thread(target=self._display_thread)
+        self.display_thread.start()
+
+        self.render_thread = threading.Thread(target=self._render_thread, args=(strips, fps_wait))
+        self.render_thread.start()
+
+    def join(self):
+        self.display_thread.join()
+        self.render_thread.join()
+
+
+
