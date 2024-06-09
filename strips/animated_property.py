@@ -104,7 +104,7 @@ class AnimatedProperty:
             self.constraint.set_frame(frame)
 
     def is_animated(self):
-        return len(self.keyframes) != 0
+        return len(self.keyframes) != 0 or self.constraint is not None
 
     def set_constraint(self, constraint):
         self.constraint = constraint

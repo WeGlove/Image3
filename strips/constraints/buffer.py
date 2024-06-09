@@ -27,11 +27,19 @@ class MeanBuffer(Constraint):
         self.constraint = constraint
         self.buffer = []
         self.n = n
+        self.has_constrained = False
 
     def constrain(self, interp):
-        self.buffer.append(self.constraint.constrain(interp))
+        if not self.has_constrained:
+            self.buffer.append(self.constraint.constrain(interp))
+            if len(self.buffer) > self.n:
+                self.buffer = self.buffer[1:]
 
-        if len(self.buffer) > self.n:
-            self.buffer = self.buffer[1:]
+            self.has_constrained = True
 
         return sum(self.buffer) / len(self.buffer)
+
+    def set_frame(self, frame):
+        super().set_frame(frame)
+        self.constraint.set_frame(frame)
+        self.has_constrained = False
