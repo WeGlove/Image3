@@ -6,7 +6,7 @@ from strips.mass_composition import MassComposition
 import torch
 from alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
 from alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
-
+from strips.constraints.keyboard import KeyboardConstraint
 
 if __name__ == "__main__":
     path = os.path.join(".", "wood")
@@ -32,14 +32,11 @@ if __name__ == "__main__":
         strip = MassComposition(16271, images, comp)
         properties = strip.get_animated_properties()
         print(properties)
+
+        constraint = KeyboardConstraint({"a": 0, "b": 0.9})
+
         shift = properties['MassComposition_PointMapping:Shift']
-        frequency = properties['MassComposition_PointMapping:Frequency']
-
-        shift.set_key_frame(0, 0)
-        shift.set_key_frame(1000, 2)
-
-        frequency.set_key_frame(0, 1)
-        frequency.set_key_frame(1000, 4)
+        shift.set_constraint(constraint)
 
         strips.append(strip)
 
