@@ -79,7 +79,7 @@ class Renderer:
                         break
 
                     print(self.current_frame)
-                    stack_img = strip.produce(last_image, self.current_frame)
+                    stack_img = strip.produce_next(last_image)
 
                     self.current_frame += 1
 

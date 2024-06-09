@@ -27,10 +27,7 @@ class MassComposition(Strip):
         self.animated_properties = new_dict
         print(self.animated_properties)
 
-    def produce(self, last_image, frame):
-        for animated_property in self.animated_properties.values():
-            animated_property.set_frame(frame)
-
+    def produce(self, last_image):
         stack_img = None
 
         for i, img in enumerate(self.images):
@@ -42,6 +39,22 @@ class MassComposition(Strip):
             stack_img = stack_img + torch.multiply(img, mask.transpose(0, 1))
 
         return stack_img
+
+    def produce_next(self, last_image):
+        for animated_property in self.animated_properties.values():
+            animated_property.set_next()
+
+        return self.produce(last_image)
+
+    def produce_previous(self, last_image):
+        for animated_property in self.animated_properties.values():
+            animated_property.set_previous()
+
+        return self.produce(last_image)
+
+    def set_frame(self, frame):
+        for animated_property in self.animated_properties.values():
+            animated_property.set_frame(frame)
 
     def free(self):
         for img in self.images:

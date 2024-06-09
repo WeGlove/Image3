@@ -19,11 +19,6 @@ class MatSplit(Constraint):
         mat = torch.stack(interps)
         return mat
 
-    def set_frame(self, frame):
-        super().set_frame(frame)
-        for constraint in self.constraints:
-            constraint.set_frame(frame)
-
     def get_animated_properties(self, visitor):
         animated_properties = [constraint.get_animated_properties(visitor + "_" + f"MatSplit:Constraint-{k}") for k, constraint in enumerate(self.constraints)]
         out_dict = {}

@@ -26,7 +26,15 @@ class Strip:
         self.height = height
 
     @abstractmethod
-    def produce(self, last_image, frame):
+    def produce_next(self, last_image):
+        pass
+
+    @abstractmethod
+    def produce_previous(self, last_image):
+        pass
+
+    @abstractmethod
+    def set_frame(self, frame):
         pass
 
     @abstractmethod
