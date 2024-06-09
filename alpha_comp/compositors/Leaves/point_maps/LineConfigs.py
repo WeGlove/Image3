@@ -1,8 +1,8 @@
 import torch
-from strips.animated_property import AnimatedProperty
 from alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
 import math
 from alpha_comp.compositors.Leaves.point_maps.line import Line
+import random
 
 
 class LineConfigs(PointMap):
@@ -41,3 +41,14 @@ class LineConfigs(PointMap):
 
         return lines
 
+
+    @staticmethod
+    def get_random(n, position, size, device):
+        unit = torch.tensor([[size, 0]], device=device)
+
+        lines = []
+        for i in range(n):
+            point = position + torch.matmul(unit, LineConfigs.rotation_2D(2*math.pi*random.random()/n, device))[0]
+            lines.append(Line.from_2_points(position, point, device))
+
+        return lines
