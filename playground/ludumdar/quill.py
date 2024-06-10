@@ -1,14 +1,11 @@
-import math
 import os.path
 import numpy as np
 from PIL import Image
-from alpha_comp.renderer import Renderer
+from Nodes.alpha_comp import Renderer
 from strips.mass_composition import MassComposition
 import torch
-from alpha_comp.compositors.Leaves.point_mapping import PointMapping
-from alpha_comp.compositors.Leaves.point_maps.lines import Lines
-from alpha_comp.compositors.Leaves.Closeness import Closeness
-
+from Nodes.alpha_comp.compositors.Leaves.point_mapping import PointMapping
+from Nodes.alpha_comp.compositors import Lines
 
 if __name__ == "__main__":
     path = os.path.join("..", "ludumdar", "quill")

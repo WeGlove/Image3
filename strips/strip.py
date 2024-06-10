@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from typing import Dict
-from strips.animated_property import AnimatedProperty
+from Nodes.animated_property import AnimatedProperty
 
 
 class Strip:

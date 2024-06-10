@@ -1,8 +1,8 @@
 import os.path
-from alpha_comp.compositors.Leaves.point_weights import PointWeights
+from Nodes.alpha_comp.compositors.Leaves import PointWeights
 import numpy as np
 from PIL import Image
-from alpha_comp.renderer import Renderer
+from Nodes.alpha_comp import Renderer
 from strips.mass_composition import MassComposition
 import torch
 

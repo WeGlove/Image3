@@ -1,7 +1,4 @@
-import torch
-from strips.constraint import Constraint
-from strips.animated_property import AnimatedProperty
-from mat_math.homo_kernels import rotation_2D
+from Nodes.constraint import Constraint
 
 
 class Identity(Constraint):

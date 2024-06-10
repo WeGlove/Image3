@@ -1,12 +1,12 @@
 import os.path
 import numpy as np
 from PIL import Image
-from alpha_comp.render_gui import RenderGui
-from alpha_comp.renderer import Renderer
+from render_gui import RenderGui
+from renderer import Renderer
 from strips.mass_composition import MassComposition
 import torch
-from alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
-from alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
+from Nodes.alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
+from Nodes.alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
 from strips.constraints.buffer import MeanBuffer
 from strips.constraints.fromfile import FromFile
 from PyQt6.QtWidgets import QApplication

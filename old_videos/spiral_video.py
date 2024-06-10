@@ -1,10 +1,8 @@
-import math
 import os.path
-from alpha_comp.compositors.Leaves.spirals import Spirals
-from alpha_comp.compositors.Nodes.TransformationHomoMatrix import TransformationHomoMatrix
+from Nodes.alpha_comp.compositors.Leaves import Spirals
 import numpy as np
 from PIL import Image
-from alpha_comp.renderer import Renderer
+from Nodes.alpha_comp import Renderer
 from strips.mass_composition import MassComposition
 import torch
 

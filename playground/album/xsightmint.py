@@ -1,14 +1,10 @@
-import math
 import os.path
 import numpy as np
 from PIL import Image
-from alpha_comp.renderer import Renderer
+from Nodes.alpha_comp import Renderer
 from strips.mass_composition import MassComposition
 import torch
-from alpha_comp.compositors.Leaves.point_mapping import PointMapping
-from alpha_comp.compositors.Leaves.point_maps.lines import Lines
-from alpha_comp.compositors.Nodes.TensorComp import TensorComp
-from alpha_comp.compositors.Leaves.Closeness import Closeness
+from Nodes.alpha_comp.compositors.Leaves.Closeness import Closeness
 
 
 if __name__ == "__main__":

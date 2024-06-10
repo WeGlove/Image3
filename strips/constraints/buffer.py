@@ -1,4 +1,4 @@
-from strips.constraint import Constraint
+from Nodes.constraint import Constraint
 
 
 class Buffer(Constraint):

@@ -1,9 +1,7 @@
 import math
 
-import torch
-from strips.constraint import Constraint
-from strips.animated_property import AnimatedProperty
-from mat_math.homo_kernels import rotation_2D
+from Nodes.constraint import Constraint
+from Nodes.animated_property import AnimatedProperty
 
 
 class Jitter(Constraint):
