@@ -6,7 +6,7 @@ from strips.animated_property import AnimatedProperty
 class Closeness(Compositor):
 
     def __init__(self, comp_img, rev=True, weights=None):
-        super().__init__()
+        super().__init__("Closeness")
         self.block_mask = None
         self.comp_img = AnimatedProperty(comp_img)
         self.rev = rev

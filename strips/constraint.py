@@ -19,6 +19,9 @@ class Constraint:
     def set_frame(self, frame):
         self.frame = frame
 
+    def to_dict(self):
+        return {"Constraint": None}
+
     @abstractmethod
     def get_animated_properties(self, visitors):
         return {}

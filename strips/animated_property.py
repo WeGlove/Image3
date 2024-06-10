@@ -124,3 +124,7 @@ class AnimatedProperty:
             return {}
         else:
             return self.constraint.get_animated_properties(visitor + "_" + "AnimatedProperty:Constraint")
+
+    def to_dict(self):
+        return {"AnimatedProperty": self.constraint if self.constraint is None else self.constraint.to_dict(),
+                "Keyframe": len(self.keyframes)}

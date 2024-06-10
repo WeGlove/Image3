@@ -6,7 +6,7 @@ import torch
 class Brightness(Compositor):
 
     def __init__(self, rev=False):
-        super().__init__()
+        super().__init__("Brightness")
         self.block_mask = None
         self.sizes = []
         self.rev = rev
@@ -39,4 +39,3 @@ class Brightness(Compositor):
         mask = np.array([mask, mask, mask])
         mask = np.transpose(mask, (1, 2, 0))
         return torch.tensor(mask, device=self.device)
-

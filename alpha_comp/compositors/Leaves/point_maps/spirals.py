@@ -8,13 +8,14 @@ from alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
 class Spirals(PointMap):
 
     def __init__(self, points, scale_radius=1, scale=5, shift=0, ratio=0.5, rotation=0, frequency=1, weights_angles=None):
-        super().__init__()
         self.points = AnimatedProperty(initial_value=points)
         self.rotation = AnimatedProperty(initial_value=rotation)
         self.frequency = AnimatedProperty(initial_value=frequency)
         self.weights_angle = AnimatedProperty(initial_value=weights_angles)
 
         self.angle_space = None
+        super().__init__("Spirals", [self.points, self.rotation, self.frequency, self.weights_angle])
+
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)

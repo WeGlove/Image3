@@ -6,12 +6,13 @@ from strips.animated_property import AnimatedProperty
 class PointMapping(Compositor):
 
     def __init__(self, point_maps, shift=0, frequency=1, duty_cycle=None, weights=None):
-        super().__init__()
+        super().__init__("PointMapping")
         self.point_maps = point_maps
         self.duty_cycle = AnimatedProperty(duty_cycle)
         self.weights = AnimatedProperty(weights)
         self.shift = AnimatedProperty(shift)
         self.frequency = AnimatedProperty(frequency)
+        self.set_subnodes(self.point_maps)
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)
@@ -60,3 +61,4 @@ class PointMapping(Compositor):
 
         animated_properties.update(constraint_properties)
         return animated_properties
+

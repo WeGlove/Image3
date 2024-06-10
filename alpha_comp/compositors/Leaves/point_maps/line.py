@@ -9,8 +9,8 @@ from abc import abstractmethod
 class Line(PointMap):
 
     def __init__(self, line):
-        super().__init__()
         self.line = AnimatedProperty(initial_value=line)
+        super().__init__("Line", [self.line])
 
     @staticmethod
     def from_2_points(x_0, x_1, device):

@@ -32,6 +32,7 @@ if __name__ == "__main__":
 
         #comp = PointMappingMin(LineConfigs.get_NGons(3, torch.tensor([0., 0.], device=cuda), 1., cuda))
         comp = PointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=cuda), 1., cuda))
+        input(comp.to_dict())
 
         strip = MassComposition(16271, images, comp)
         properties = strip.get_animated_properties()

@@ -8,7 +8,6 @@ from alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
 class Circles(PointMap):
 
     def __init__(self, points, scale_radius=1, scale=5, shift=0, ratio=0.5, rotation=0, frequency=1, weights_rad=None):
-        super().__init__()
         self.points = AnimatedProperty(initial_value=points)
         self.rotation = AnimatedProperty(initial_value=rotation)
         self.frequency = AnimatedProperty(initial_value=frequency)
@@ -18,6 +17,9 @@ class Circles(PointMap):
         self.ratio = AnimatedProperty(initial_value=ratio)
 
         self.angle_space = None
+
+        super().__init__("Circles",
+                         [self.points, self.rotation, self.frequency, self.weights_rad, self.scale, self.shift, self.ratio,])
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)

@@ -6,11 +6,13 @@ from strips.animated_property import AnimatedProperty
 class PointMappingMin(Compositor):
 
     def __init__(self, point_maps, shift=0, frequency=1, duty_cycle=None):
-        super().__init__()
+        super().__init__("PointMappingMin")
         self.point_maps = point_maps
         self.duty_cycle = AnimatedProperty(duty_cycle)
         self.shift = AnimatedProperty(shift)
         self.frequency = AnimatedProperty(frequency)
+        self.set_subnodes(self.point_maps)
+        self.set_animate_properties([self.duty_cycle, self.shift, self.frequency])
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)

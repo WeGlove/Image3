@@ -1,11 +1,13 @@
 from abc import abstractmethod
 import numpy as np
 import torch
+from alpha_comp.Node import Node
 
 
-class Compositor:
+class Compositor(Node):
 
-    def __init__(self):
+    def __init__(self, node_name="Compositor"):
+        super().__init__(node_name)
         self.width = None
         self.height = None
         self.limit = None

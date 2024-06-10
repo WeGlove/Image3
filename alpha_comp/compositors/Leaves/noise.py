@@ -27,3 +27,6 @@ class Noise(Compositor):
 
     def free(self):
         del self.noise_map
+
+    def to_dict(self):
+        return {"Noise": {}}
