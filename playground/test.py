@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
         #comp = PointMappingMin(LineConfigs.get_NGons(3, torch.tensor([0., 0.], device=cuda), 1., cuda))
         comp = PointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=cuda), 1., cuda))
-        input(comp.to_dict())
+        print(comp.to_dict())
 
         strip = MassComposition(16271, images, comp)
         properties = strip.get_animated_properties()
@@ -41,7 +41,8 @@ if __name__ == "__main__":
         constraint = FromFile(os.path.join(".", "2.png"))
         constraint_buffer = MeanBuffer(constraint, 100)
 
-        shift = properties['MassComposition_PointMapping:Shift']
+        shift = comp.get_subnode(1)
+        shift.set_key_frame(0, 0)
         shift.set_constraint(constraint_buffer)
 
         strips.append(strip)

@@ -22,6 +22,5 @@ class Constraint:
     def to_dict(self):
         return {"Constraint": None}
 
-    @abstractmethod
-    def get_animated_properties(self, visitors):
-        return {}
+    def get_animated_properties(self):
+        return []

@@ -4,13 +4,12 @@ from Nodes.Node import Node
 
 class PointMap(Node):
 
-    def __init__(self, node_name="PointMap", animated_properties=None):
-        super().__init__(node_name)
+    def __init__(self, node_name="PointMap", subnodes=None):
+        super().__init__(node_name, [] if subnodes is None else subnodes)
         self.device = None
         self.limit = None
         self.width = None
         self.height = None
-        self.set_animated_properties(animated_properties)
 
     def initialize(self, width, height, limit, device=None):
         self.device = device

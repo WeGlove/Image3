@@ -1,19 +1,55 @@
 from typing import List
 
 
-class Node:
+class NodeSocket:
 
-    def __init__(self, node_name):
-        self.node_name = node_name
-        self.subnodes: List[Node] = []
-        self.animated_properties = []
+    def __init__(self, is_necesseary, default=None):
+        self.is_necessary = is_necesseary
+        self.connected = False
+        self.node = None
+        self.default = default
 
-    def set_subnodes(self, subnodes):
-        self.subnodes = subnodes
+    def is_connected(self):
+        return self.connected
 
-    def set_animated_properties(self, animated_properties):
-        self.animated_properties = animated_properties
+    def connect(self, node):
+        self.node = node
+        self.connected = True
+
+    def disconnect(self):
+        self.node = None
+        self.connected = False
+
+    def get(self):
+        if self.is_connected():
+            return self.node
+        elif self.is_necessary:
+            raise ValueError("Tried to get Value from a Node marked as necessary")
+        else:
+            return self.default
 
     def to_dict(self):
-        return {self.node_name: {"Subnodes": {k: subnode.to_dict() for k, subnode in enumerate(self.subnodes)},
-                                 "AnimatedProperties": [animated_property.to_dict() for animated_property in self.animated_properties]}}
+        return {"IsNecessary": self.is_necessary,
+                "Node": self.node.to_dict() if self.node is not None else self.node,
+                "Default": self.node.to_dict() if self.node is not None else self.node,
+                "Connected": self.connected}
+
+
+class Node:
+
+    def __init__(self, node_name, subnode_sockets: List[NodeSocket]):
+        self.node_name = node_name
+        self.subnode_sockets = subnode_sockets
+        self.animated_properties = []
+
+    def get_subnode_count(self):
+        return len(self.subnode_sockets)
+
+    def get_subnode(self, k):
+        return self.subnode_sockets[k].get()
+
+    def connect_subnode(self, subnode_id, subnode):
+        self.subnode_sockets[subnode_id].connect(subnode)
+
+    def to_dict(self):
+        return {"Name": self.node_name, "SubnodeSocekts": [subnode_socket.to_dict() for subnode_socket in self.subnode_sockets]}

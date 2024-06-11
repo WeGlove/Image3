@@ -6,8 +6,8 @@ from Nodes.Node import Node
 
 class Compositor(Node):
 
-    def __init__(self, node_name="Compositor"):
-        super().__init__(node_name)
+    def __init__(self, node_name="Compositor", subnode_sockets=None):
+        super().__init__(node_name, [] if subnode_sockets is None else subnode_sockets)
         self.width = None
         self.height = None
         self.limit = None
@@ -26,5 +26,5 @@ class Compositor(Node):
     def composite(self, index, img) -> np.ndarray:
         pass
 
-    def get_animated_properties(self, visitors):
+    def get_animated_properties(self):
         return dict()

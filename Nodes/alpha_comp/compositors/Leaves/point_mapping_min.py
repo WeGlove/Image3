@@ -1,25 +1,25 @@
 import torch
 from Nodes.alpha_comp.compositor import Compositor
 from Nodes.animated_property import AnimatedProperty
+from Nodes.Node import NodeSocket
 
 
 class PointMappingMin(Compositor):
 
     def __init__(self, point_maps, shift=0, frequency=1, duty_cycle=None):
-        super().__init__("PointMappingMin")
+        self.duty_cycls_is_none = duty_cycle is None
+        self.noso_duty_cycle = NodeSocket(False, AnimatedProperty(duty_cycle))
+        self.noso_shift = NodeSocket(False, AnimatedProperty(shift))
+        self.noso_frequency = NodeSocket(False, AnimatedProperty(frequency))
+        super().__init__("PointMappingMin", [self.noso_duty_cycle, self.noso_shift, self.noso_frequency])
         self.point_maps = point_maps
-        self.duty_cycle = AnimatedProperty(duty_cycle)
-        self.shift = AnimatedProperty(shift)
-        self.frequency = AnimatedProperty(frequency)
-        self.set_subnodes(self.point_maps)
-        self.set_animated_properties([self.duty_cycle, self.shift, self.frequency])
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)
         for point_map in self.point_maps:
             point_map.initialize(width, height, limit, device=device)
-        if self.duty_cycle.initial_value is None:
-            self.duty_cycle.initial_value = torch.tensor([1/limit] * self.limit, device=self.device)
+        if self.duty_cycls_is_none:
+            self.noso_duty_cycle.default = AnimatedProperty(torch.tensor([1/limit] * self.limit, device=self.device))
 
     def composite(self, index, img):
         out_arr = torch.zeros(self.width, self.height, device=self.device)
@@ -31,9 +31,9 @@ class PointMappingMin(Compositor):
         maps = torch.stack(maps)
         maps, _ = torch.min(maps, dim=0)
 
-        arr_map = (maps * self.frequency.get() + self.shift.get()) % 1
+        arr_map = (maps * self.noso_frequency.get().get() + self.noso_shift.get().get()) % 1
 
-        duty_cycle = self.duty_cycle.get()
+        duty_cycle = self.noso_duty_cycle.get().get()
         duty_cycle = duty_cycle / torch.sum(duty_cycle)
         duty_cycle = torch.cumsum(duty_cycle, 0)
 
@@ -45,16 +45,9 @@ class PointMappingMin(Compositor):
         out_arr = torch.stack([out_arr, out_arr, out_arr]).transpose(0, 1).transpose(1, 2)
         return out_arr
 
-    def get_animated_properties(self, visitors):
-        animated_properties = {visitors + "_PointMapping:DutyCycle": self.duty_cycle,
-                               visitors + "_PointMapping:Shift": self.shift,
-                               visitors + "_PointMapping:Frequency": self.frequency}
-        for k, point_map in enumerate(self.point_maps):
-            animated_properties.update(point_map.get_animated_properties(visitors + f"_PointMapping:PointMap-{k}"))
-
-        constraint_properties = {}
-        for k, animated_property in animated_properties.items():
-            constraint_properties.update(animated_property.get_animated_properties(k))
-
-        animated_properties.update(constraint_properties)
+    def get_animated_properties(self):
+        animated_properties = [self.noso_duty_cycle.get(), self.noso_shift.get(), self.noso_frequency.get()]
+        for animated_property in animated_properties:
+            if animated_property.is_constrained():
+                animated_properties = animated_properties + animated_property.constraint.get_animated_properties()
         return animated_properties
