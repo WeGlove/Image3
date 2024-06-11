@@ -31,7 +31,7 @@ class NodeSocket:
     def to_dict(self):
         return {"IsNecessary": self.is_necessary,
                 "Node": self.node.to_dict() if self.node is not None else self.node,
-                "Default": self.node.to_dict() if self.node is not None else self.node,
+                "Default": self.default.to_dict() if self.default is not None else self.default,
                 "Connected": self.connected}
 
 

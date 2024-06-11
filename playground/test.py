@@ -32,11 +32,8 @@ if __name__ == "__main__":
 
         #comp = PointMappingMin(LineConfigs.get_NGons(3, torch.tensor([0., 0.], device=cuda), 1., cuda))
         comp = PointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=cuda), 1., cuda))
-        print(comp.to_dict())
 
         strip = MassComposition(16271, images, comp)
-        properties = strip.get_animated_properties()
-        print(properties)
 
         constraint = FromFile(os.path.join(".", "2.png"))
         constraint_buffer = MeanBuffer(constraint, 100)
@@ -45,7 +42,7 @@ if __name__ == "__main__":
         shift.set_key_frame(0, 0)
         shift.set_constraint(constraint_buffer)
 
-        strips.append(strip)
+        print(comp.to_dict())
 
         app = QApplication([])
         renderer = Renderer(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,
