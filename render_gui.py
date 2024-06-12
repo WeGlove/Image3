@@ -5,6 +5,26 @@ from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLab
 from renderer import Renderer
 
 
+class NodeEditor(QWidget):
+
+    def __init__(self, nodes=None):
+        super().__init__()
+        self.nodes = []
+        self.labels = []
+        self.x = 0
+
+        if nodes is not None:
+            self.add_nodes(nodes)
+
+    def add_nodes(self, nodes):
+        self.nodes.extend(nodes)
+        self.labels = []
+        for node in self.nodes:
+            self.labels.append(QLabel(node.node_name, parent=self))
+            self.labels[self.x].move(self.x * 110, 10)
+            self.x += 1
+
+
 class RenderGui(QMainWindow):
 
     def __init__(self, frame_renderer: Renderer):
@@ -93,7 +113,11 @@ class RenderGui(QMainWindow):
 
         self.setFixedSize(QSize(400, 300))
 
+        self.editor = NodeEditor()
+
     def run(self, app, strips: List[Strip], fps_wait=False):
+        self.editor.add_nodes(strips[0].compositor.get_all_subnodes())
         self.frame_renderer.run(strips, fps_wait)
         self.show()
+        self.editor.show()
         app.exec()

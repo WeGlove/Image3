@@ -1,10 +1,12 @@
 import torch
 import math
+from Nodes.Node import Node
 
 
-class AnimatedProperty:
+class AnimatedProperty(Node):
 
     def __init__(self, initial_value):
+        super().__init__("Animated Property", [])
         self.keyframes = []
         self.initial_value = initial_value
         self.frame = -1

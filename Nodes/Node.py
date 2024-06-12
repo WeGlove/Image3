@@ -1,4 +1,5 @@
 from typing import List
+import itertools
 
 
 class NodeSocket:
@@ -53,3 +54,11 @@ class Node:
 
     def to_dict(self):
         return {"Name": self.node_name, "SubnodeSocekts": [subnode_socket.to_dict() for subnode_socket in self.subnode_sockets]}
+
+    def get_all_subnodes(self):
+        subnodes = [self.get_subnode(k).get_all_subnodes() for k in range(self.get_subnode_count())]
+        out_subnodes = []
+        for subnodes_list in subnodes:
+            out_subnodes.extend(subnodes_list)
+        out_subnodes.append(self)
+        return out_subnodes
