@@ -6,13 +6,41 @@ from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLab
 from renderer import Renderer
 
 
+class NodeSocketWidget(QLabel):
+    def __init__(self, name, parent, socket):
+        super().__init__(name, parent=parent)
+        self.parent = parent
+        self.socket = socket
+
+        self.connection_label = None
+
+    def mousePressEvent(self, event):
+        ...
+
+    def mouseReleaseEvent(self, event):
+        print("####################")
+        for node_widget in self.parent.node_widgets:
+            hit = node_widget.geometry().contains(self.pos()+event.pos()), node_widget.node.node_name
+            print(hit)
+            if hit:
+                self.socket.disconnect()
+                self.socket.connect(node_widget.node)
+                #self.connection_label = QLabel("===Wire===", parent=self.parent)
+
+                break
+
+
+
 class NodeWidget(QLabel):
 
     def __init__(self, node, parent):
         super().__init__(node.node_name, parent=parent)
         self.node = node
         self.parent = parent
-        self.socket_labels = [QLabel(socket.get_socket_name(), parent=self.parent) for socket in node.subnode_sockets]
+        self.socket_labels = [NodeSocketWidget(socket.get_socket_name(), self.parent, socket) for socket in node.subnode_sockets]
+        for k, socket in enumerate(self.socket_labels):
+            pos = self.pos()
+            socket.move(pos.x(), pos.y() + 15 + k*10)
 
     def mousePressEvent(self, event):
         ...
@@ -27,26 +55,21 @@ class NodeWidget(QLabel):
 
 class NodeEditor(QWidget):
 
-    def __init__(self, nodes=None, sockets=None):
+    def __init__(self, nodes=None):
         super().__init__()
-        self.nodes = []
         self.sockets = []
-        self.labels = []
+        self.node_widgets = []
         self.x = 0
 
         if nodes is not None:
-            self.add_nodes(nodes, sockets)
+            self.add_nodes(nodes)
 
         self.setWindowTitle("Node Editor")
 
     def add_nodes(self, nodes):
-        self.nodes.extend(nodes)
-        self.labels = []
-
-        for node in self.nodes:
+        for node in nodes:
             label = NodeWidget(node, parent=self)
-            self.labels.append(label)
-            self.labels[self.x].move(self.x * 110, 10)
+            self.node_widgets.append(label)
             self.x += 1
 
 
