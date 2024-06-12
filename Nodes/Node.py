@@ -1,17 +1,20 @@
 from typing import List
-import itertools
 
 
 class NodeSocket:
 
-    def __init__(self, is_necesseary, default=None):
+    def __init__(self, is_necesseary, socket_name, default=None):
         self.is_necessary = is_necesseary
         self.connected = False
         self.node = None
         self.default = default
+        self.socket_name = socket_name
 
     def is_connected(self):
         return self.connected
+
+    def get_socket_name(self):
+        return self.socket_name
 
     def connect(self, node):
         self.node = node

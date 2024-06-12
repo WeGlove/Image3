@@ -1,26 +1,51 @@
 from typing import List
 from strips.strip import Strip
 from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
+from PyQt6.QtGui import QPainter, QPen, qRed, QColor
+from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QFrame
 from renderer import Renderer
+
+
+class NodeWidget(QLabel):
+
+    def __init__(self, node, parent):
+        super().__init__(node.node_name, parent=parent)
+        self.node = node
+        self.parent = parent
+        self.socket_labels = [QLabel(socket.get_socket_name(), parent=self.parent) for socket in node.subnode_sockets]
+
+    def mousePressEvent(self, event):
+        ...
+
+    def mouseReleaseEvent(self, event):
+        offset = event.pos()
+        pos = self.pos()
+        self.move(pos.x() + offset.x(), pos.y() + offset.y())
+        for label in self.socket_labels:
+            label.move(label.pos().x() + offset.x(), label.pos().y() + offset.y())
 
 
 class NodeEditor(QWidget):
 
-    def __init__(self, nodes=None):
+    def __init__(self, nodes=None, sockets=None):
         super().__init__()
         self.nodes = []
+        self.sockets = []
         self.labels = []
         self.x = 0
 
         if nodes is not None:
-            self.add_nodes(nodes)
+            self.add_nodes(nodes, sockets)
+
+        self.setWindowTitle("Node Editor")
 
     def add_nodes(self, nodes):
         self.nodes.extend(nodes)
         self.labels = []
+
         for node in self.nodes:
-            self.labels.append(QLabel(node.node_name, parent=self))
+            label = NodeWidget(node, parent=self)
+            self.labels.append(label)
             self.labels[self.x].move(self.x * 110, 10)
             self.x += 1
 

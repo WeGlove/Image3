@@ -8,9 +8,9 @@ class PointMappingMin(Compositor):
 
     def __init__(self, point_maps, shift=0, frequency=1, duty_cycle=None):
         self.duty_cycls_is_none = duty_cycle is None
-        self.noso_duty_cycle = NodeSocket(False, AnimatedProperty(duty_cycle))
-        self.noso_shift = NodeSocket(False, AnimatedProperty(shift))
-        self.noso_frequency = NodeSocket(False, AnimatedProperty(frequency))
+        self.noso_duty_cycle = NodeSocket(False, "Duty Cycle", AnimatedProperty(duty_cycle))
+        self.noso_shift = NodeSocket(False, "Shift", AnimatedProperty(shift))
+        self.noso_frequency = NodeSocket(False, "Frequency", AnimatedProperty(frequency))
         super().__init__("PointMappingMin", [self.noso_duty_cycle, self.noso_shift, self.noso_frequency])
         self.point_maps = point_maps
 

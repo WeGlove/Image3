@@ -1,9 +1,11 @@
 from abc import abstractmethod
+from Nodes.Node import Node
 
 
-class Constraint:
+class Constraint(Node):
 
     def __init__(self):
+        super().__init__("Constraint", [])
         self.frame = 0
 
     @abstractmethod
