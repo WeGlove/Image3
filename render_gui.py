@@ -12,23 +12,20 @@ class NodeSocketWidget(QLabel):
         self.parent = parent
         self.socket = socket
 
-        self.connection_label = None
+        self.connection_label = QLabel("===Wire===", parent=self.parent)
 
     def mousePressEvent(self, event):
         ...
 
     def mouseReleaseEvent(self, event):
-        print("####################")
-        for node_widget in self.parent.node_widgets:
+        for k, node_widget in enumerate(self.parent.node_widgets):
             hit = node_widget.geometry().contains(self.pos()+event.pos()), node_widget.node.node_name
-            print(hit)
             if hit:
                 self.socket.disconnect()
                 self.socket.connect(node_widget.node)
-                #self.connection_label = QLabel("===Wire===", parent=self.parent)
+                self.connection_label.move((self.pos() + self.parent.node_widgets[k].pos()) / 2)
 
                 break
-
 
 
 class NodeWidget(QLabel):
