@@ -3,6 +3,8 @@ from strips.strip import Strip
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
 from renderer import Renderer
+from Nodes.Node import NodeSocket
+import traceback
 
 
 class NodeSocketWidget(QLabel):
@@ -10,8 +12,8 @@ class NodeSocketWidget(QLabel):
     def __init__(self, name, parent, socket):
         super().__init__(name, parent=parent)
         self.parent = parent
-        self.socket = socket
-        self.connected_node_widget = None
+        self.socket: NodeSocket = socket
+        self.connected_node_widget: NodeWidget = None
 
         self.connection_label = QLabel("===Wire===", parent=self.parent)
 
@@ -22,10 +24,15 @@ class NodeSocketWidget(QLabel):
         for k, node_widget in enumerate(self.parent.node_widgets):
             hit = node_widget.geometry().contains(self.pos()+event.pos())
             if hit:
+                connected = self.socket.is_connected()
+                if connected:
+                    self.connected_node_widget.disconnect_socket(self)
                 self.socket.disconnect()
+
                 self.socket.connect(node_widget.node)
                 self.connection_label.move((self.pos() + node_widget.pos()) / 2)
                 self.connected_node_widget = node_widget
+                self.connected_node_widget.connect_socket(self)
 
                 break
 
@@ -42,6 +49,8 @@ class NodeWidget(QLabel):
         self.node = node
         self.parent = parent
         self.socket_labels = [NodeSocketWidget(socket.get_socket_name(), self.parent, socket) for socket in node.subnode_sockets]
+        self.connected_sockets = []
+
         for k, socket in enumerate(self.socket_labels):
             pos = self.pos()
             print(pos.x(), pos.y() + 15 + k*15)
@@ -50,12 +59,27 @@ class NodeWidget(QLabel):
     def mousePressEvent(self, event):
         ...
 
+    def connect_socket(self, socket):
+        self.connected_sockets.append(socket)
+
+    def disconnect_socket(self, socket):
+        for in_socket in self.connected_sockets:
+            if in_socket is socket:
+                out = in_socket
+                self.connected_sockets.remove(out)
+                break
+
     def mouseReleaseEvent(self, event):
         offset = event.pos()
         pos = self.pos()
         self.move(pos.x() + offset.x(), pos.y() + offset.y())
         for label in self.socket_labels:
             label.move(label.pos().x() + offset.x(), label.pos().y() + offset.y())
+
+    def move(self, *a0):
+        super().move(*a0)
+        for connected_socket in self.connected_sockets:
+            connected_socket.move(connected_socket.pos())
 
 
 class NodeEditor(QWidget):
