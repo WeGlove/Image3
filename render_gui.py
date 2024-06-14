@@ -4,6 +4,7 @@ from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
 from renderer import Renderer
 from Nodes.Node import NodeSocket
+from PyQt6.QtGui import QFont
 import traceback
 
 
@@ -44,8 +45,16 @@ class NodeSocketWidget(QLabel):
 
 class NodeWidget(QLabel):
 
+    SOCKET_OFFSET = 20
+    LINE_SIZE = 15
+
     def __init__(self, node, parent):
         super().__init__(node.node_name, parent=parent)
+
+        self.font = QFont()
+        self.font.setBold(True)
+        self.setFont(self.font)
+
         self.node = node
         self.parent = parent
         self.socket_labels = [NodeSocketWidget(socket.get_socket_name(), self.parent, socket) for socket in node.subnode_sockets]
@@ -53,8 +62,7 @@ class NodeWidget(QLabel):
 
         for k, socket in enumerate(self.socket_labels):
             pos = self.pos()
-            print(pos.x(), pos.y() + 15 + k*15)
-            socket.move(pos.x(), pos.y() + 15 + k*15)
+            socket.move(pos.x(), pos.y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
 
     def mousePressEvent(self, event):
         ...
