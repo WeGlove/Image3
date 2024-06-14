@@ -1,8 +1,7 @@
 from typing import List
 from strips.strip import Strip
 from PyQt6.QtCore import QSize
-from PyQt6.QtGui import QPainter, QPen, qRed, QColor
-from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QFrame
+from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
 from renderer import Renderer
 
 
@@ -12,6 +11,7 @@ class NodeSocketWidget(QLabel):
         super().__init__(name, parent=parent)
         self.parent = parent
         self.socket = socket
+        self.connected_node_widget = None
 
         self.connection_label = QLabel("===Wire===", parent=self.parent)
 
@@ -24,10 +24,15 @@ class NodeSocketWidget(QLabel):
             if hit:
                 self.socket.disconnect()
                 self.socket.connect(node_widget.node)
-                print(self.pos(), node_widget.pos(), (self.pos() + node_widget.pos()) / 2)
                 self.connection_label.move((self.pos() + node_widget.pos()) / 2)
+                self.connected_node_widget = node_widget
 
                 break
+
+    def move(self, *a0):
+        super().move(*a0)
+        if self.connected_node_widget is not None:
+            self.connection_label.move((self.pos() + self.connected_node_widget.pos()) / 2)
 
 
 class NodeWidget(QLabel):
@@ -39,7 +44,8 @@ class NodeWidget(QLabel):
         self.socket_labels = [NodeSocketWidget(socket.get_socket_name(), self.parent, socket) for socket in node.subnode_sockets]
         for k, socket in enumerate(self.socket_labels):
             pos = self.pos()
-            socket.move(pos.x(), pos.y() + 15 + k*10)
+            print(pos.x(), pos.y() + 15 + k*15)
+            socket.move(pos.x(), pos.y() + 15 + k*15)
 
     def mousePressEvent(self, event):
         ...
