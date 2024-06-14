@@ -7,6 +7,7 @@ from renderer import Renderer
 
 
 class NodeSocketWidget(QLabel):
+
     def __init__(self, name, parent, socket):
         super().__init__(name, parent=parent)
         self.parent = parent
@@ -19,11 +20,12 @@ class NodeSocketWidget(QLabel):
 
     def mouseReleaseEvent(self, event):
         for k, node_widget in enumerate(self.parent.node_widgets):
-            hit = node_widget.geometry().contains(self.pos()+event.pos()), node_widget.node.node_name
+            hit = node_widget.geometry().contains(self.pos()+event.pos())
             if hit:
                 self.socket.disconnect()
                 self.socket.connect(node_widget.node)
-                self.connection_label.move((self.pos() + self.parent.node_widgets[k].pos()) / 2)
+                print(self.pos(), node_widget.pos(), (self.pos() + node_widget.pos()) / 2)
+                self.connection_label.move((self.pos() + node_widget.pos()) / 2)
 
                 break
 
