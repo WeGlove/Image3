@@ -1,17 +1,19 @@
 import torch
 import math
 from Nodes.Node import Node
+from Nodes.value_property import ValueProperty
+from Nodes.Node import NodeSocket
 
 
 class AnimatedProperty(Node):
 
-    def __init__(self, initial_value):
-        super().__init__("Animated Property", [])
+    def __init__(self, initial_value, device):
         self.keyframes = []
-        self.initial_value = initial_value
+        self.initial_value = NodeSocket(False, "Initial Value", ValueProperty(initial_value, device))
         self.frame = -1
         self.animation_style = "Linear"
         self.constraint = None
+        super().__init__("Animated Property", [self.initial_value], device)
 
     def set_anim_style(self, style):
         self.animation_style = style
@@ -22,7 +24,7 @@ class AnimatedProperty(Node):
 
     def linear_interp(self):
         if len(self.keyframes) == 0:
-            return self.initial_value
+            return self.initial_value.get().get()
 
         for k, (frame, value) in enumerate(self.keyframes):
             position = frame - self.frame
@@ -42,7 +44,7 @@ class AnimatedProperty(Node):
 
     def sin_interp(self):
         if len(self.keyframes) == 0:
-            return self.initial_value
+            return self.initial_value.get().get()
 
         for k, (frame, value) in enumerate(self.keyframes):
             position = frame - self.frame
@@ -63,7 +65,7 @@ class AnimatedProperty(Node):
 
     def nearest_neighbor(self):
         if len(self.keyframes) == 0:
-            return self.initial_value
+            return self.initial_value.get().get()
 
         for k, (frame, value) in enumerate(self.keyframes):
             position = frame - self.frame

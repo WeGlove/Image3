@@ -5,7 +5,8 @@ from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLab
 from renderer import Renderer
 from Nodes.Node import NodeSocket
 from PyQt6.QtGui import QFont
-import traceback
+from Nodes.value_property import ValueProperty
+import torch
 
 
 class NodeSocketWidget(QLabel):
@@ -90,6 +91,38 @@ class NodeWidget(QLabel):
             connected_socket.move(connected_socket.pos())
 
 
+class ValueNodeWidget(NodeWidget):
+
+    def __init__(self, node, parent):
+        super().__init__(node, parent)
+        self.edit = QLineEdit(parent=parent)
+        self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
+
+        def on_edit(_):
+            text = self.edit.text()
+            if text.isnumeric():
+                try:
+                    value = float(text)
+                    self.node.set_value(value)
+                except Exception:
+                    pass
+            elif text[0] == "[":
+                try:
+                    value = eval(text) # TODO this is pretty dangeorus. Should change this to a more proper evaluation at some point.
+                    value = torch.tensor(value, device=self.node.device)
+                    self.node.set_value(value)
+                except Exception:
+                    pass
+            else:
+                self.node.set_value(text)
+
+        self.edit.textEdited.connect(on_edit)
+
+    def move(self, *a0):
+        super().move(*a0)
+        self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
+
+
 class NodeEditor(QWidget):
 
     def __init__(self, nodes=None):
@@ -105,7 +138,10 @@ class NodeEditor(QWidget):
 
     def add_nodes(self, nodes):
         for node in nodes:
-            label = NodeWidget(node, parent=self)
+            if type(node) == ValueProperty:
+                label = ValueNodeWidget(node, parent=self)
+            else:
+                label = NodeWidget(node, parent=self)
             self.node_widgets.append(label)
             self.x += 1
 

@@ -7,8 +7,8 @@ import math
 
 class Line(PointMap):
 
-    def __init__(self, line):
-        self.line = AnimatedProperty(initial_value=line)
+    def __init__(self, line, device):
+        self.line = AnimatedProperty(initial_value=line, device=device)
         super().__init__("Line", [self.line])
 
     @staticmethod
@@ -18,7 +18,7 @@ class Line(PointMap):
         b = AB[1]
         c = x_0[1]
 
-        return Line(torch.tensor([a, b, c], device=device))
+        return Line(torch.tensor([a, b, c], device=device), device=device)
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)

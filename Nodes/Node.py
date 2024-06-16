@@ -28,7 +28,7 @@ class NodeSocket:
         if self.is_connected():
             return self.node
         elif self.is_necessary:
-            raise ValueError("Tried to get Value from a Node marked as necessary")
+            raise ValueError("Tried to get Value from a Node marked as necessary that was not connected.")
         else:
             return self.default
 
@@ -41,10 +41,11 @@ class NodeSocket:
 
 class Node:
 
-    def __init__(self, node_name, subnode_sockets: List[NodeSocket]):
+    def __init__(self, node_name, subnode_sockets: List[NodeSocket], device):
         self.node_name = node_name
         self.subnode_sockets = subnode_sockets
         self.animated_properties = []
+        self.device = device
 
     def get_subnode_count(self):
         return len(self.subnode_sockets)

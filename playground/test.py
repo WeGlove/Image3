@@ -31,13 +31,13 @@ if __name__ == "__main__":
             images.append(img)
 
         #comp = PointMappingMin(LineConfigs.get_NGons(3, torch.tensor([0., 0.], device=cuda), 1., cuda))
-        comp = PointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=cuda), 1., cuda))
+        comp = PointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=cuda), 1., cuda), device=cuda)
 
         strip = MassComposition(16271, images, comp)
         strips.append(strip)
 
-        constraint = FromFile(os.path.join(".", "2.png"))
-        constraint_buffer = MeanBuffer(constraint, 100)
+        constraint = FromFile(os.path.join(".", "2.png"), device=cuda)
+        constraint_buffer = MeanBuffer(constraint, 100, device=cuda)
 
         shift = comp.get_subnode(1)
         shift.set_key_frame(0, 0)
