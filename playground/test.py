@@ -40,8 +40,8 @@ if __name__ == "__main__":
         constraint_buffer = MeanBuffer(constraint, 100, device=cuda)
 
         shift = comp.get_subnode(1)
-        shift.set_key_frame(0, 0)
-        shift.set_constraint(constraint_buffer)
+        shift.set_key_frame(0, 0.)
+        #shift.set_constraint(constraint_buffer)
 
         print(comp.to_dict())
 

@@ -1,3 +1,4 @@
+import traceback
 from typing import List
 from strips.strip import Strip
 from PyQt6.QtCore import QSize
@@ -7,6 +8,7 @@ from Nodes.Node import NodeSocket
 from PyQt6.QtGui import QFont
 from Nodes.value_property import ValueProperty
 import torch
+from Nodes.animated_property import AnimatedProperty
 
 
 class NodeSocketWidget(QLabel):
@@ -99,22 +101,45 @@ class ValueNodeWidget(NodeWidget):
         self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
 
         def on_edit(_):
+            try:
+                text = eval(self.edit.text())
+                if type(text) is list:
+                    self.node.set_value(torch.tensor(text, device=self.node.device))
+                else:
+                    self.node.set_value(text)
+                print("valued")
+            except Exception:
+                print(traceback.format_exc())
+
+        self.edit.textEdited.connect(on_edit)
+
+    def move(self, *a0):
+        super().move(*a0)
+        self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
+
+
+class AnimatedPropertyNodeWidget(NodeWidget):
+
+    def __init__(self, node, parent):
+        super().__init__(node, parent)
+        self.edit = QLineEdit(parent=parent)
+        self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
+
+        def on_edit(_):
             text = self.edit.text()
-            if text.isnumeric():
-                try:
-                    value = float(text)
-                    self.node.set_value(value)
-                except Exception:
-                    pass
-            elif text[0] == "[":
-                try:
-                    value = eval(text) # TODO this is pretty dangeorus. Should change this to a more proper evaluation at some point.
-                    value = torch.tensor(value, device=self.node.device)
-                    self.node.set_value(value)
-                except Exception:
-                    pass
-            else:
-                self.node.set_value(text)
+
+            try:
+                value = eval(text)
+                self.node.clear_key_frames()
+                for item in value:
+                    frame = item[0]
+                    object = item[1]
+                    if type(object) == list:
+                        object = torch.tensor(object, device=self.node.device)
+                    self.node.set_key_frame(frame, object)
+                print("pass, animated")
+            except Exception:
+                print(traceback.format_exc())
 
         self.edit.textEdited.connect(on_edit)
 
@@ -140,6 +165,8 @@ class NodeEditor(QWidget):
         for node in nodes:
             if type(node) == ValueProperty:
                 label = ValueNodeWidget(node, parent=self)
+            elif type(node) == AnimatedProperty:
+                label = AnimatedPropertyNodeWidget(node, parent=self)
             else:
                 label = NodeWidget(node, parent=self)
             self.node_widgets.append(label)

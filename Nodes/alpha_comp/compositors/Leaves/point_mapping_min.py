@@ -31,7 +31,6 @@ class PointMappingMin(Compositor):
         maps = torch.stack(maps)
         maps, _ = torch.min(maps, dim=0)
 
-        print(self.noso_frequency.get().get(), self.noso_shift.get().get())
         arr_map = (maps * self.noso_frequency.get().get() + self.noso_shift.get().get()) % 1
 
         duty_cycle = self.noso_duty_cycle.get().get()

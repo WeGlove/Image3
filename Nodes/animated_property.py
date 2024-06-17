@@ -22,6 +22,9 @@ class AnimatedProperty(Node):
         self.keyframes.append((frame, value))
         self.keyframes = sorted(self.keyframes, key=lambda k: k[0])
 
+    def clear_key_frames(self):
+        self.keyframes = []
+
     def linear_interp(self):
         if len(self.keyframes) == 0:
             return self.initial_value.get().get()
