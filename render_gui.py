@@ -5,7 +5,7 @@ from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
 from renderer import Renderer
 from Nodes.Node import NodeSocket
-from PyQt6.QtGui import QFont
+from PyQt6.QtGui import QFont, QKeyEvent
 from Nodes.value_property import ValueProperty
 import torch
 from Nodes.animated_property import AnimatedProperty
@@ -40,6 +40,13 @@ class NodeSocketWidget(QLabel):
 
                 break
 
+    def cut(self):
+        if self.socket.is_connected():
+            self.connected_node_widget.disconnect_socket(self)
+        self.socket.disconnect()
+
+        self.connection_label.setParent(None)
+
     def move(self, *a0):
         super().move(*a0)
         if self.connected_node_widget is not None:
@@ -67,6 +74,12 @@ class NodeWidget(QLabel):
             pos = self.pos()
             socket.move(pos.x(), pos.y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
 
+    def cut(self):
+        for connected_socket in self.connected_sockets:
+            connected_socket.cut()
+        for socket_label in self.socket_labels:
+            socket_label.setParent(None)
+
     def mousePressEvent(self, event):
         ...
 
@@ -81,11 +94,20 @@ class NodeWidget(QLabel):
                 break
 
     def mouseReleaseEvent(self, event):
-        offset = event.pos()
-        pos = self.pos()
-        self.move(pos.x() + offset.x(), pos.y() + offset.y())
-        for label in self.socket_labels:
-            label.move(label.pos().x() + offset.x(), label.pos().y() + offset.y())
+        if self.geometry().contains(self.pos()+event.pos()):
+            self.parent.select(self)
+        else:
+            offset = event.pos()
+            pos = self.pos()
+            self.move(pos.x() + offset.x(), pos.y() + offset.y())
+            for label in self.socket_labels:
+                label.move(label.pos().x() + offset.x(), label.pos().y() + offset.y())
+
+    def select(self):
+        self.setStyleSheet("color:red")
+
+    def deselect(self):
+        self.setStyleSheet("color:black")
 
     def move(self, *a0):
         super().move(*a0)
@@ -112,6 +134,10 @@ class ValueNodeWidget(NodeWidget):
                 print(traceback.format_exc())
 
         self.edit.textEdited.connect(on_edit)
+
+    def cut(self):
+        super().cut()
+        self.edit.setParent(None)
 
     def move(self, *a0):
         super().move(*a0)
@@ -143,6 +169,10 @@ class AnimatedPropertyNodeWidget(NodeWidget):
 
         self.edit.textEdited.connect(on_edit)
 
+    def cut(self):
+        super().cut()
+        self.edit.setParent(None)
+
     def move(self, *a0):
         super().move(*a0)
         self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
@@ -155,11 +185,27 @@ class NodeEditor(QWidget):
         self.sockets = []
         self.node_widgets = []
         self.x = 0
+        self.selected = None
 
         if nodes is not None:
             self.add_nodes(nodes)
 
         self.setWindowTitle("Node Editor")
+
+    def select(self, selection):
+        if self.selected is not None:
+            self.selected.deselect()
+        self.selected = selection
+        self.selected.select()
+
+    def keyPressEvent(self, event):
+        if isinstance(event, QKeyEvent):
+            key_text = event.text()
+            print(f"Last Key Pressed: {key_text}")
+            if key_text in ["\n", "\r"]:
+                self.selected.cut()
+                self.selected.setParent(None)
+                self.selected = None
 
     def add_nodes(self, nodes):
         for node in nodes:
