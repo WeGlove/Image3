@@ -2,7 +2,7 @@ import traceback
 from typing import List
 from strips.strip import Strip
 from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
+from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QMenu
 from renderer import Renderer
 from Nodes.Node import NodeSocket
 from PyQt6.QtGui import QFont, QKeyEvent
@@ -186,6 +186,8 @@ class NodeEditor(QWidget):
         self.node_widgets = []
         self.x = 0
         self.selected = None
+        self.menu = QMenu(self)
+        self.quitact = self.menu.addAction("Quit")
 
         if nodes is not None:
             self.add_nodes(nodes)
@@ -217,6 +219,11 @@ class NodeEditor(QWidget):
                 label = NodeWidget(node, parent=self)
             self.node_widgets.append(label)
             self.x += 1
+
+    def contextMenuEvent(self, event):
+        action = self.menu.exec()
+        if action == self.quitact:
+            print("yeee")
 
 
 class RenderGui(QMainWindow):
