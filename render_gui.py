@@ -4,15 +4,15 @@ import traceback
 from typing import List
 from strips.strip import Strip
 from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QMenu, QScrollArea
+from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QMenu
 from renderer import Renderer
 from Nodes.Node import NodeSocket
 from PyQt6.QtGui import QFont, QKeyEvent
 from Nodes.value_property import ValueProperty
 import torch
 from Nodes.animated_property import AnimatedProperty
-from Nodes.alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
 from Nodes.alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
+from node_factory import NodeFactory
 
 
 class NodeSocketWidget(QLabel):
@@ -195,7 +195,7 @@ class AnimatedPropertyNodeWidget(NodeWidget):
 
 class NodeEditor(QWidget):
 
-    def __init__(self, device, nodes=None):
+    def __init__(self, factory: NodeFactory, nodes=None):
         super().__init__()
         self.sockets = []
         self.node_widgets = []
@@ -203,7 +203,10 @@ class NodeEditor(QWidget):
         self.selected = None
         self.menu = QMenu(self)
         self.act_point_mapping_min = self.menu.addAction("PointMappingMin")
-        self.device = device
+        self.act_animated_property = self.menu.addAction("AnimatedProperty")
+        self.act_value_property = self.menu.addAction("ValueProperty")
+        self.factory: NodeFactory = factory
+        self.device = factory.device
 
         if nodes is not None:
             self.add_nodes(nodes)
@@ -256,18 +259,26 @@ class NodeEditor(QWidget):
             action = self.menu.exec()
             if action == self.act_point_mapping_min:
                 self.menu.move(self.mapToGlobal(event.pos()))
-                node = PointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=self.device), 1., self.x, self.device), device=self.device, node_id=self.x)
+                node = self.factory.pointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=self.device), 1., node_id=-1, device=self.device))
                 self.add_nodes([node])
-                self.node_widgets[-1].update()
+            elif action == self.act_animated_property:
+                self.menu.move(self.mapToGlobal(event.pos()))
+                node = self.factory.animated_poperty()
+                self.add_nodes([node])
+            elif action == self.act_value_property:
+                self.menu.move(self.mapToGlobal(event.pos()))
+                node = self.factory.value_property()
+                self.add_nodes([node])
         except Exception:
             print(traceback.format_exc())
 
 
 class RenderGui(QMainWindow):
 
-    def __init__(self, frame_renderer: Renderer):
+    def __init__(self, frame_renderer: Renderer, node_factory):
         super().__init__()
         self.frame_renderer = frame_renderer
+        self.node_factory = node_factory
 
         self.setWindowTitle("NightmareMachine")
 
@@ -350,7 +361,7 @@ class RenderGui(QMainWindow):
 
         self.setFixedSize(QSize(400, 300))
 
-        self.editor = NodeEditor(self.frame_renderer.device)
+        self.editor = NodeEditor(self.node_factory)
 
     def run(self, app, strips: List[Strip], fps_wait=False):
         self.editor.add_nodes(strips[0].compositor.get_all_subnodes())
