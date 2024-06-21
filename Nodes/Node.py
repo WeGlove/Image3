@@ -34,18 +34,19 @@ class NodeSocket:
 
     def to_dict(self):
         return {"IsNecessary": self.is_necessary,
-                "Node": self.node.to_dict() if self.node is not None else self.node,
+                "ConnectedID": self.node.node_id if self.connected else None,
                 "Default": self.default.to_dict() if self.default is not None else self.default,
                 "Connected": self.connected}
 
 
 class Node:
 
-    def __init__(self, node_name, subnode_sockets: List[NodeSocket], device):
+    def __init__(self, node_id, node_name, subnode_sockets: List[NodeSocket], device):
         self.node_name = node_name
         self.subnode_sockets = subnode_sockets
         self.animated_properties = []
         self.device = device
+        self.node_id = node_id
 
     def get_subnode_count(self):
         return len(self.subnode_sockets)
@@ -57,7 +58,7 @@ class Node:
         self.subnode_sockets[subnode_id].connect(subnode)
 
     def to_dict(self):
-        return {"Name": self.node_name, "SubnodeSocekts": [subnode_socket.to_dict() for subnode_socket in self.subnode_sockets]}
+        return {"Name": self.node_name, "SubnodeSocekts": [subnode_socket.to_dict() for subnode_socket in self.subnode_sockets], "NodeID": self.node_id}
 
     def get_all_subnodes(self):
         subnodes = [self.get_subnode(k).get_all_subnodes() for k in range(self.get_subnode_count())]

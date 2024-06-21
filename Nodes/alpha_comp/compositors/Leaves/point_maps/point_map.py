@@ -4,8 +4,8 @@ from Nodes.Node import Node
 
 class PointMap(Node):
 
-    def __init__(self, device, node_name="PointMap", subnodes=None):
-        super().__init__(node_name, [] if subnodes is None else subnodes, device=device)
+    def __init__(self, device, node_id, node_name="PointMap", subnodes=None):
+        super().__init__(node_id, node_name, [] if subnodes is None else subnodes, device=device)
         self.device = None
         self.limit = None
         self.width = None

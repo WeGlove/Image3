@@ -4,8 +4,8 @@ from Nodes.Node import Node
 
 class Constraint(Node):
 
-    def __init__(self, device):
-        super().__init__("Constraint", [], device)
+    def __init__(self, device, node_id):
+        super().__init__(node_id, "Constraint", [], device)
         self.frame = 0
 
     @abstractmethod

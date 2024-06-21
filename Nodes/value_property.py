@@ -1,11 +1,12 @@
+import torch
+
 from Nodes.Node import Node
 
 
 class ValueProperty(Node):
 
-    def __init__(self, initial_value, device):
-        super().__init__("Value Property", [], device)
-        self.keyframes = []
+    def __init__(self, initial_value, node_id, device):
+        super().__init__(node_id, "Value Property", [], device)
         self.initial_value = initial_value
 
     def set_value(self, x):
@@ -42,4 +43,16 @@ class ValueProperty(Node):
         return {}
 
     def to_dict(self):
-        return {"Value": self.initial_value}
+        property_dict = super().to_dict()
+        value = self.initial_value
+
+        if type(value) == torch.Tensor:
+            value = value.tolist()
+
+        property_dict["value"] = value
+        return property_dict
+
+    @staticmethod
+    def from_dict(properties, device):
+        value = properties["value"]
+        return ValueProperty(value, device=device)

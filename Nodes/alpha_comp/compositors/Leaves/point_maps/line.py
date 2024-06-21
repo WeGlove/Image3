@@ -7,18 +7,18 @@ import math
 
 class Line(PointMap):
 
-    def __init__(self, line, device):
-        self.line = AnimatedProperty(initial_value=line, device=device)
+    def __init__(self, line, node_id, device):
+        self.line = AnimatedProperty(initial_value=line, device=device, node_id=node_id)
         super().__init__("Line", [self.line])
 
     @staticmethod
-    def from_2_points(x_0, x_1, device):
+    def from_2_points(x_0, x_1, device, node_id):
         AB = x_1 - x_0
         a = AB[0]
         b = AB[1]
         c = x_0[1]
 
-        return Line(torch.tensor([a, b, c], device=device), device=device)
+        return Line(torch.tensor([a, b, c], device=device), node_id, device=device)
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)

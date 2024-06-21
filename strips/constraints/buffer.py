@@ -22,8 +22,8 @@ class Buffer(Constraint):
 
 class MeanBuffer(Constraint):
 
-    def __init__(self, constraint, n, device):
-        super().__init__(device=device)
+    def __init__(self, constraint, n, device, node_id):
+        super().__init__(device=device, node_id=node_id)
         self.constraint = constraint
         self.buffer = []
         self.n = n

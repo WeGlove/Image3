@@ -1,3 +1,5 @@
+import json
+import os.path
 import traceback
 from typing import List
 from strips.strip import Strip
@@ -123,7 +125,7 @@ class NodeWidget(QLabel):
             connected_socket.move(connected_socket.pos())
 
     def to_dict(self):
-        return {"Node": self.node, "Sockets": [socket.to_dict() for socket in self.socket_labels]}
+        return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels]}
 
 
 class ValueNodeWidget(NodeWidget):
@@ -223,7 +225,7 @@ class NodeEditor(QWidget):
                 self.selected.setParent(None)
                 self.selected = None
             elif ord(key_text[0]) == 27:
-                self.save("")
+                self.save("out.nmm")
 
     def add_nodes(self, nodes):
         for node in nodes:
@@ -240,7 +242,14 @@ class NodeEditor(QWidget):
         widgets = []
         for node_widget in self.node_widgets:
             widgets.append(node_widget.to_dict())
+
         print(widgets)
+
+        try:
+            with open(os.path.join(path), "w+") as f:
+                json.dump(widgets, f, indent=1)
+        except Exception:
+            print(traceback.format_exc())
 
     def contextMenuEvent(self, event):
         try:

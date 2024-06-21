@@ -3,8 +3,8 @@ from Nodes.constraint import Constraint
 
 class FromFile(Constraint):
 
-    def __init__(self, path, device):
-        super().__init__(device)
+    def __init__(self, path, node_id, device):
+        super().__init__(node_id, device)
         self.f = open(path, "rb")
         self.x = 0
 
