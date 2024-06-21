@@ -70,7 +70,7 @@ class NodeWidget(QLabel):
             connected_socket.move(connected_socket.pos())
 
     def to_dict(self):
-        return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels]}
+        return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels], "Position": [self.pos().x(), self.pos().y()]}
 
 
 class ValueNodeWidget(NodeWidget):

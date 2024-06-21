@@ -13,11 +13,12 @@ from Nodes.animated_property import AnimatedProperty
 from Nodes.alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
 from node_factory import NodeFactory
 from node_widgets import NodeWidget, AnimatedPropertyNodeWidget, ValueNodeWidget
+from Nodes.out import Out
 
 
 class NodeEditor(QWidget):
 
-    def __init__(self, factory: NodeFactory, nodes=None):
+    def __init__(self, factory: NodeFactory, strip, nodes=None):
         super().__init__()
         self.sockets = []
         self.node_widgets: List[NodeWidget] = []
@@ -29,6 +30,7 @@ class NodeEditor(QWidget):
         self.act_value_property = self.menu.addAction("ValueProperty")
         self.factory: NodeFactory = factory
         self.device = factory.device
+        self.strip = strip
 
         if nodes is not None:
             self.add_nodes(nodes)
@@ -81,14 +83,11 @@ class NodeEditor(QWidget):
             node.cut()
         self.node_widgets = []
 
-        nodes = []
-
         for node_dict in data:
             node = node_dict["Node"]["properties"]
             name = node_dict["Node"]["name"]
-            nodes.append(self.factory.node_from_dict(node, name))
-
-        self.add_nodes(nodes)
+            add_node = self.factory.node_from_dict(node, name)
+            self.add_nodes([add_node])
 
         for k, node_dict in enumerate(data):
             socket_widgets = node_dict["Sockets"]
@@ -110,6 +109,14 @@ class NodeEditor(QWidget):
 
                 in_node_widget = self.node_widgets[k]
                 in_node_widget.socket_labels[j].connect(widget_to_connect)
+
+        for node_dict in data:
+            position = node_dict["Position"]
+            self.node_widgets[-1].move(position[0], position[1])
+
+        for widget in self.node_widgets:
+            if type(widget.node) == Out:
+                self.strip.compositor = widget.node
 
     def contextMenuEvent(self, event):
         try:
@@ -138,10 +145,12 @@ class NodeEditor(QWidget):
 
 class RenderGui(QMainWindow):
 
-    def __init__(self, frame_renderer: Renderer, node_factory):
+    def __init__(self, frame_renderer: Renderer, node_factory, strip):
         super().__init__()
         self.frame_renderer = frame_renderer
         self.node_factory = node_factory
+
+        self.strip = strip
 
         self.setWindowTitle("NightmareMachine")
 
@@ -224,7 +233,7 @@ class RenderGui(QMainWindow):
 
         self.setFixedSize(QSize(400, 300))
 
-        self.editor = NodeEditor(self.node_factory)
+        self.editor = NodeEditor(self.node_factory, strip)
 
     def run(self, app, strips: List[Strip], fps_wait=False):
         self.editor.add_nodes(strips[0].compositor.get_all_subnodes())

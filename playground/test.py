@@ -38,6 +38,6 @@ if __name__ == "__main__":
         app = QApplication([])
         renderer = Renderer(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,
                             save_path="C:\\Users\\tobia\\Desktop\\out_out", save=False)
-        window = RenderGui(renderer, factory)
+        window = RenderGui(renderer, factory, strip)
 
         window.run(app, strips, fps_wait=True)
