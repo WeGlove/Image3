@@ -56,6 +56,9 @@ class NodeSocketWidget(QLabel):
         if self.connected_node_widget is not None:
             self.connection_label.move((self.pos() + self.connected_node_widget.pos()) / 2)
 
+    def to_dict(self):
+        return {"Socket": self.socket.to_dict()}
+
 
 class NodeWidget(QLabel):
 
@@ -118,6 +121,9 @@ class NodeWidget(QLabel):
         super().move(*a0)
         for connected_socket in self.connected_sockets:
             connected_socket.move(connected_socket.pos())
+
+    def to_dict(self):
+        return {"Node": self.node, "Sockets": [socket.to_dict() for socket in self.socket_labels]}
 
 
 class ValueNodeWidget(NodeWidget):
@@ -211,11 +217,13 @@ class NodeEditor(QWidget):
     def keyPressEvent(self, event):
         if isinstance(event, QKeyEvent):
             key_text = event.text()
-            print(f"Last Key Pressed: {key_text}")
+            print(f"Last Key Pressed: {key_text}", ord(key_text[0]))
             if key_text in ["\n", "\r"]:
                 self.selected.cut()
                 self.selected.setParent(None)
                 self.selected = None
+            elif ord(key_text[0]) == 27:
+                self.save("")
 
     def add_nodes(self, nodes):
         for node in nodes:
@@ -228,22 +236,25 @@ class NodeEditor(QWidget):
             self.node_widgets.append(label)
             self.x += 1
 
+    def save(self, path):
+        widgets = []
+        for node_widget in self.node_widgets:
+            widgets.append(node_widget.to_dict())
+        print(widgets)
+
     def contextMenuEvent(self, event):
         try:
             action = self.menu.exec()
             if action == self.act_point_mapping_min:
                 self.menu.move(self.mapToGlobal(event.pos()))
-                print("yee")
                 node = PointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=self.device), 1., self.device), device=self.device)
                 self.add_nodes([node])
-                print([(widget.frameGeometry()) for widget in self.node_widgets])
                 self.node_widgets[-1].update()
         except Exception:
-            print("aaa")
             print(traceback.format_exc())
 
 
-class RenderGui(QMainWindow): # TODO add QScrollArea
+class RenderGui(QMainWindow):
 
     def __init__(self, frame_renderer: Renderer):
         super().__init__()
@@ -323,7 +334,6 @@ class RenderGui(QMainWindow): # TODO add QScrollArea
         layout.addWidget(self.stopframe_button)
         layout.addWidget(self.stopframe_edit)
         layout.addWidget(self.text_widget)
-
 
         widget = QWidget()
         widget.setLayout(layout)
