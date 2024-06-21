@@ -33,9 +33,7 @@ class NodeSocket:
             return self.default
 
     def to_dict(self):
-        return {"IsNecessary": self.is_necessary,
-                "ConnectedID": self.node.node_id if self.connected else None,
-                "Default": self.default.to_dict() if self.default is not None else self.default,
+        return {"ConnectedID": self.node.node_id if self.connected else None,
                 "Connected": self.connected}
 
 
@@ -58,7 +56,7 @@ class Node:
         self.subnode_sockets[subnode_id].connect(subnode)
 
     def to_dict(self):
-        return {"Name": self.node_name, "SubnodeSocekts": [subnode_socket.to_dict() for subnode_socket in self.subnode_sockets], "NodeID": self.node_id}
+        return {"properties": {"node_id": self.node_id}, "name": self.node_name}
 
     def get_all_subnodes(self):
         subnodes = [self.get_subnode(k).get_all_subnodes() for k in range(self.get_subnode_count()) if self.subnode_sockets[k].is_connected()]

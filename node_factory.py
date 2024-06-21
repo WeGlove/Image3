@@ -13,22 +13,37 @@ class NodeFactory:
     def reset(self):
         self.next_id = 0
 
-    def out(self):
-        node = Out(device=self.device, node_id=self.next_id)
-        self.next_id += 1
+    def node_from_dict(self, properties, name):
+        if name == "Value Property":
+            return self.value_property(**properties)
+        elif name == "Animated Property":
+            return self.animated_poperty(**properties)
+        elif name == "Point":
+            return self.pointMappingMin(**properties)
+        elif name == "Ouuuuuuuuuuuuuut":
+            return self.out(**properties)
+        else:
+            raise ValueError()
+
+    def out(self, node_id=None):
+        node = Out(device=self.device, node_id=node_id)
+        if node_id is not None:
+            self.next_id += 1
         return node
 
-    def pointMappingMin(self, maps):
-        node = PointMappingMin(maps, device=self.device, node_id=self.next_id)
-        self.next_id += 1
+    def pointMappingMin(self, maps, node_id=None):
+        node = PointMappingMin(maps, device=self.device, node_id=self.next_id if node_id is None else node_id)
+        if node_id is not None:
+            self.next_id += 1
         return node
 
-    def animated_poperty(self):
-        node = AnimatedProperty(initial_value=None, device=self.device, node_id=self.next_id)
-        self.next_id += 1
+    def animated_poperty(self, node_id=None):
+        node = AnimatedProperty(initial_value=None, device=self.device, node_id=self.next_id if node_id is None else node_id)
+        if node_id is not None:
+            self.next_id += 1
         return node
 
-    def value_property(self):
-        node = ValueProperty(initial_value=None, device=self.device, node_id=self.next_id)
+    def value_property(self, initial_value=None, node_id=None):
+        node = ValueProperty(initial_value=initial_value, device=self.device, node_id=self.next_id if node_id is None else node_id)
         self.next_id += 1
         return node
