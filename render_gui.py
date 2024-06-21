@@ -7,7 +7,7 @@ from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QMenu
 from renderer import Renderer
 from Nodes.Node import NodeSocket
-from PyQt6.QtGui import QFont, QKeyEvent
+from PyQt6.QtGui import QFont, QKeyEvent, QGuiApplication
 from Nodes.value_property import ValueProperty
 import torch
 from Nodes.animated_property import AnimatedProperty
@@ -246,13 +246,18 @@ class NodeEditor(QWidget):
         for node_widget in self.node_widgets:
             widgets.append(node_widget.to_dict())
 
-        print(widgets)
+        with open(os.path.join(path), "w+") as f:
+            json.dump(widgets, f, indent=1)
 
-        try:
-            with open(os.path.join(path), "w+") as f:
-                json.dump(widgets, f, indent=1)
-        except Exception:
-            print(traceback.format_exc())
+    def load(self, path):
+        with open(os.path.join(path), "r") as f:
+            data = json.load(f)
+
+        self.factory.reset()
+        self.node_widgets = []
+
+        for node in data:
+            print(node)
 
     def contextMenuEvent(self, event):
         try:
@@ -271,6 +276,12 @@ class NodeEditor(QWidget):
                 self.add_nodes([node])
         except Exception:
             print(traceback.format_exc())
+
+    def mousePressEvent(self, event):
+        focused_widget = QGuiApplication.focusObject()
+        if isinstance(focused_widget, QLineEdit):
+            focused_widget.clearFocus()
+        super().mousePressEvent(event)
 
 
 class RenderGui(QMainWindow):

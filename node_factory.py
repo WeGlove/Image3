@@ -10,6 +10,9 @@ class NodeFactory:
         self.next_id = 0
         self.device = device
 
+    def reset(self):
+        self.next_id = 0
+
     def out(self):
         node = Out(device=self.device, node_id=self.next_id)
         self.next_id += 1
