@@ -2,13 +2,15 @@ import traceback
 from typing import List
 from strips.strip import Strip
 from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QMenu
+from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QMenu, QScrollArea
 from renderer import Renderer
 from Nodes.Node import NodeSocket
 from PyQt6.QtGui import QFont, QKeyEvent
 from Nodes.value_property import ValueProperty
 import torch
 from Nodes.animated_property import AnimatedProperty
+from Nodes.alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
+from Nodes.alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
 
 
 class NodeSocketWidget(QLabel):
@@ -20,6 +22,8 @@ class NodeSocketWidget(QLabel):
         self.connected_node_widget: NodeWidget = None
 
         self.connection_label = QLabel("===Wire===", parent=self.parent)
+        self.connection_label.show()
+        self.show()
 
     def mousePressEvent(self, event):
         ...
@@ -64,6 +68,7 @@ class NodeWidget(QLabel):
         self.font = QFont()
         self.font.setBold(True)
         self.setFont(self.font)
+        self.show()
 
         self.node = node
         self.parent = parent
@@ -120,6 +125,7 @@ class ValueNodeWidget(NodeWidget):
     def __init__(self, node, parent):
         super().__init__(node, parent)
         self.edit = QLineEdit(parent=parent)
+        self.edit.show()
         self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
 
         def on_edit(_):
@@ -149,6 +155,7 @@ class AnimatedPropertyNodeWidget(NodeWidget):
     def __init__(self, node, parent):
         super().__init__(node, parent)
         self.edit = QLineEdit(parent=parent)
+        self.edit.show()
         self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
 
         def on_edit(_):
@@ -180,14 +187,15 @@ class AnimatedPropertyNodeWidget(NodeWidget):
 
 class NodeEditor(QWidget):
 
-    def __init__(self, nodes=None):
+    def __init__(self, device, nodes=None):
         super().__init__()
         self.sockets = []
         self.node_widgets = []
         self.x = 0
         self.selected = None
         self.menu = QMenu(self)
-        self.quitact = self.menu.addAction("Quit")
+        self.act_point_mapping_min = self.menu.addAction("PointMappingMin")
+        self.device = device
 
         if nodes is not None:
             self.add_nodes(nodes)
@@ -221,12 +229,21 @@ class NodeEditor(QWidget):
             self.x += 1
 
     def contextMenuEvent(self, event):
-        action = self.menu.exec()
-        if action == self.quitact:
-            print("yeee")
+        try:
+            action = self.menu.exec()
+            if action == self.act_point_mapping_min:
+                self.menu.move(self.mapToGlobal(event.pos()))
+                print("yee")
+                node = PointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=self.device), 1., self.device), device=self.device)
+                self.add_nodes([node])
+                print([(widget.frameGeometry()) for widget in self.node_widgets])
+                self.node_widgets[-1].update()
+        except Exception:
+            print("aaa")
+            print(traceback.format_exc())
 
 
-class RenderGui(QMainWindow):
+class RenderGui(QMainWindow): # TODO add QScrollArea
 
     def __init__(self, frame_renderer: Renderer):
         super().__init__()
@@ -314,7 +331,7 @@ class RenderGui(QMainWindow):
 
         self.setFixedSize(QSize(400, 300))
 
-        self.editor = NodeEditor()
+        self.editor = NodeEditor(self.frame_renderer.device)
 
     def run(self, app, strips: List[Strip], fps_wait=False):
         self.editor.add_nodes(strips[0].compositor.get_all_subnodes())
