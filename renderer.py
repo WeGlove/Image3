@@ -32,7 +32,7 @@ class Renderer:
         self.current_frame = 0
         self.current_strip = None
 
-        self.is_paused = False
+        self.is_paused = True
         self.is_forward = True
 
         def on_frame(frame):

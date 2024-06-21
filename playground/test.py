@@ -10,6 +10,7 @@ from Nodes.alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfi
 from strips.constraints.buffer import MeanBuffer
 from strips.constraints.fromfile import FromFile
 from PyQt6.QtWidgets import QApplication
+from Nodes.out import Out
 
 
 if __name__ == "__main__":
@@ -30,17 +31,10 @@ if __name__ == "__main__":
             img = torch.tensor(img, device=cuda)
             images.append(img)
 
-        #comp = PointMappingMin(LineConfigs.get_NGons(3, torch.tensor([0., 0.], device=cuda), 1., cuda))
-        comp = PointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=cuda), 1., 0, cuda), device=cuda, node_id=2)
+        out = Out(cuda, 4)
 
-        strip = MassComposition(16271, images, comp)
+        strip = MassComposition(16271, images, out)
         strips.append(strip)
-
-        #constraint = FromFile(os.path.join(".", "2.png"), device=cuda, node_id=1)
-        #constraint_buffer = MeanBuffer(constraint, 100, device=cuda, node_id=2)
-        #shift.set_constraint(constraint_buffer)
-
-        print(comp.to_dict())
 
         app = QApplication([])
         renderer = Renderer(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,

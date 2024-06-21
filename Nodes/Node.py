@@ -28,7 +28,7 @@ class NodeSocket:
         if self.is_connected():
             return self.node
         elif self.is_necessary:
-            raise ValueError("Tried to get Value from a Node marked as necessary that was not connected.")
+            raise ValueError("NodeSocket marked as necessary but not connected")
         else:
             return self.default
 
@@ -61,7 +61,7 @@ class Node:
         return {"Name": self.node_name, "SubnodeSocekts": [subnode_socket.to_dict() for subnode_socket in self.subnode_sockets], "NodeID": self.node_id}
 
     def get_all_subnodes(self):
-        subnodes = [self.get_subnode(k).get_all_subnodes() for k in range(self.get_subnode_count())]
+        subnodes = [self.get_subnode(k).get_all_subnodes() for k in range(self.get_subnode_count()) if self.subnode_sockets[k].is_connected()]
         out_subnodes = []
         for subnodes_list in subnodes:
             out_subnodes.extend(subnodes_list)

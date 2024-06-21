@@ -256,7 +256,7 @@ class NodeEditor(QWidget):
             action = self.menu.exec()
             if action == self.act_point_mapping_min:
                 self.menu.move(self.mapToGlobal(event.pos()))
-                node = PointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=self.device), 1., self.device), device=self.device)
+                node = PointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=self.device), 1., self.x, self.device), device=self.device, node_id=self.x)
                 self.add_nodes([node])
                 self.node_widgets[-1].update()
         except Exception:
