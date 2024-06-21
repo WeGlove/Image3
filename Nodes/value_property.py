@@ -49,7 +49,7 @@ class ValueProperty(Node):
         if type(value) == torch.Tensor:
             value = value.tolist()
 
-        property_dict["value"] = value
+        property_dict["properties"]["initial_value"] = value
         return property_dict
 
     @staticmethod
