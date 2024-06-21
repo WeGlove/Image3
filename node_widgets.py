@@ -1,17 +1,8 @@
-import json
-import os.path
 import traceback
-from typing import List
-from strips.strip import Strip
-from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QMenu
-from renderer import Renderer
-from PyQt6.QtGui import QFont, QKeyEvent, QGuiApplication
+from PyQt6.QtWidgets import QLabel, QLineEdit
+from PyQt6.QtGui import QFont
 from Nodes.value_property import ValueProperty
 import torch
-from Nodes.animated_property import AnimatedProperty
-from Nodes.alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
-from node_factory import NodeFactory
 from node_socket import NodeSocketWidget
 
 

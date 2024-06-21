@@ -6,13 +6,12 @@ from strips.strip import Strip
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QMenu
 from renderer import Renderer
-from PyQt6.QtGui import QFont, QKeyEvent, QGuiApplication
+from PyQt6.QtGui import QKeyEvent, QGuiApplication
 from Nodes.value_property import ValueProperty
 import torch
 from Nodes.animated_property import AnimatedProperty
 from Nodes.alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
 from node_factory import NodeFactory
-from node_socket import NodeSocketWidget
 from node_widgets import NodeWidget, AnimatedPropertyNodeWidget, ValueNodeWidget
 
 
@@ -104,17 +103,13 @@ class NodeEditor(QWidget):
                 for node_widget in self.node_widgets:
                     out_id = node_widget.node.node_id
                     if out_id == connected_id:
+                        widget_to_connect = node_widget
                         break
                 else:
                     ValueError()
 
                 in_node_widget = self.node_widgets[k]
-                in_node_socket = in_node_widget.socket_labels[j]
-                in_node_socket.socket.disconnect()
-
-                in_node_socket.socket.connect(in_node_widget.node)
-                in_node_socket.connected_node_widget = node_widget
-                in_node_socket.connected_node_widget.connect_socket(self)
+                in_node_widget.socket_labels[j].connect(widget_to_connect)
 
     def contextMenuEvent(self, event):
         try:

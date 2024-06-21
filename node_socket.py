@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QMenu
+from PyQt6.QtWidgets import QLabel
 from Nodes.Node import NodeSocket
 
 
@@ -21,17 +21,19 @@ class NodeSocketWidget(QLabel):
         for k, node_widget in enumerate(self.parent.node_widgets):
             hit = node_widget.geometry().contains(self.pos()+event.pos())
             if hit:
-                connected = self.socket.is_connected()
-                if connected:
-                    self.connected_node_widget.disconnect_socket(self)
-                self.socket.disconnect()
-
-                self.socket.connect(node_widget.node)
-                self.connection_label.move((self.pos() + node_widget.pos()) / 2)
-                self.connected_node_widget = node_widget
-                self.connected_node_widget.connect_socket(self)
-
+                self.connect(node_widget)
                 break
+
+    def connect(self, node_widget):
+        connected = self.socket.is_connected()
+        if connected:
+            self.connected_node_widget.disconnect_socket(self)
+        self.socket.disconnect()
+
+        self.socket.connect(node_widget.node)
+        self.connection_label.move((self.pos() + node_widget.pos()) / 2)
+        self.connected_node_widget = node_widget
+        self.connected_node_widget.connect_socket(self)
 
     def cut(self):
         if self.socket.is_connected():

@@ -1,5 +1,4 @@
 import torch
-
 from Nodes.Node import Node
 
 
