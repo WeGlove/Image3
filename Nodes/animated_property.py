@@ -1,8 +1,8 @@
 import torch
 import math
-from Nodes.Node import Node
+from Nodes.node import Node
 from Nodes.value_property import ValueProperty
-from Nodes.Node import NodeSocket
+from Nodes.node import NodeSocket
 
 
 class AnimatedProperty(Node):

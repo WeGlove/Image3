@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from Nodes.Node import Node
+from Nodes.node import Node
 
 
 class Constraint(Node):

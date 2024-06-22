@@ -1,7 +1,7 @@
 import torch
 from Nodes.alpha_comp.compositor import Compositor
 from Nodes.animated_property import AnimatedProperty
-from Nodes.Node import NodeSocket
+from Nodes.node import NodeSocket
 
 
 class PointMappingMin(Compositor):

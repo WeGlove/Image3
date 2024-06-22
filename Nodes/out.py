@@ -1,6 +1,6 @@
 import torch
 from Nodes.alpha_comp.compositor import Compositor
-from Nodes.Node import NodeSocket
+from Nodes.node import NodeSocket
 from Nodes.alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
 from Nodes.alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
 

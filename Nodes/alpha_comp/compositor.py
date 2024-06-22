@@ -1,7 +1,7 @@
 from abc import abstractmethod
 import numpy as np
 import torch
-from Nodes.Node import Node
+from Nodes.node import Node
 
 
 class Compositor(Node):

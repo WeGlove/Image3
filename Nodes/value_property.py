@@ -1,5 +1,5 @@
 import torch
-from Nodes.Node import Node
+from Nodes.node import Node
 
 
 class ValueProperty(Node):

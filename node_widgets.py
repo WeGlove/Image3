@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QLabel, QLineEdit
 from PyQt6.QtGui import QFont
 from Nodes.value_property import ValueProperty
 import torch
-from node_socket import NodeSocketWidget
+from node_socket_widget import NodeSocketWidget
 
 
 class NodeWidget(QLabel):

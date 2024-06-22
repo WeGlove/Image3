@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QLabel
-from Nodes.Node import NodeSocket
+from Nodes.node import NodeSocket
 
 
 class NodeSocketWidget(QLabel):
