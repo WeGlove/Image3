@@ -11,7 +11,7 @@ class NodeSocketWidget(QLabel):
         self.connected_node_widget = None
 
         self.connection_label = QLabel("===Wire===", parent=self.parent)
-        self.connection_label.show()
+        self.connection_label.hide()
         self.show()
 
     def mousePressEvent(self, event):
@@ -23,6 +23,12 @@ class NodeSocketWidget(QLabel):
             if hit:
                 self.connect(node_widget)
                 break
+        else:
+            connected = self.socket.is_connected()
+            if connected:
+                self.connected_node_widget.disconnect_socket(self)
+            self.socket.disconnect()
+            self.connection_label.hide()
 
     def connect(self, node_widget):
         connected = self.socket.is_connected()
@@ -34,6 +40,7 @@ class NodeSocketWidget(QLabel):
         self.connection_label.move((self.pos() + node_widget.pos()) / 2)
         self.connected_node_widget = node_widget
         self.connected_node_widget.connect_socket(self)
+        self.connection_label.show()
 
     def cut(self):
         if self.socket.is_connected():

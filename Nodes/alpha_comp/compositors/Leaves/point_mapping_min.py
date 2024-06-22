@@ -2,21 +2,23 @@ import torch
 from Nodes.alpha_comp.compositor import Compositor
 from Nodes.animated_property import AnimatedProperty
 from Nodes.node import NodeSocket
+from Nodes.value_property import ValueProperty
 
 
 class PointMappingMin(Compositor):
 
-    def __init__(self, point_maps, device, node_id, shift=0., frequency=1., duty_cycle=None):
+    def __init__(self, device, node_id, shift=0., frequency=1., duty_cycle=None):
         self.duty_cycls_is_none = duty_cycle is None
         self.noso_duty_cycle = NodeSocket(False, "Duty Cycle", AnimatedProperty(-1, duty_cycle, device))
         self.noso_shift = NodeSocket(False, "Shift", AnimatedProperty(-1, shift, device))
         self.noso_frequency = NodeSocket(False, "Frequency", AnimatedProperty(-1, frequency, device))
-        super().__init__(device, node_id,"PointMappingMin", [self.noso_duty_cycle, self.noso_shift, self.noso_frequency])
-        self.point_maps = point_maps
+        self.noso_point_maps = NodeSocket(False, "Point Maps", ValueProperty([], -1, device))
+        super().__init__(device, node_id, "PointMappingMin",
+                         [self.noso_duty_cycle, self.noso_shift, self.noso_frequency, self.noso_point_maps])
 
     def initialize(self, width, height, limit, device=None):
         super().initialize(width, height, limit, device)
-        for point_map in self.point_maps:
+        for point_map in self.noso_point_maps.get().get():
             point_map.initialize(width, height, limit, device=device)
         if self.duty_cycls_is_none:
             self.noso_duty_cycle.default = AnimatedProperty(torch.tensor([1/limit] * self.limit, device=self.device), device=device, node_id=-1)
@@ -25,7 +27,7 @@ class PointMappingMin(Compositor):
         out_arr = torch.zeros(self.width, self.height, device=self.device)
 
         maps = []
-        for point_map in self.point_maps:
+        for point_map in self.noso_point_maps.get().get():
             maps.append(point_map.composite(index, img))
 
         maps = torch.stack(maps)

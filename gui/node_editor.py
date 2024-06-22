@@ -29,6 +29,7 @@ class NodeEditor(QWidget):
         self.act_animated_property = self.menu.addAction("AnimatedProperty")
         self.act_value_property = self.menu.addAction("ValueProperty")
         self.act_line = self.menu.addAction("Line")
+        self.act_pointMapComb = self.menu.addAction("PointMapComb")
         self.factory: NodeFactory = factory
         self.device = factory.device
         self.strip = strip
@@ -124,11 +125,11 @@ class NodeEditor(QWidget):
             nodes = []
             if action == self.act_point_mapping_min:
                 self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.pointMappingMin(LineConfigs.get_random(5, torch.tensor([0., 0.], device=self.device), 1., node_id=-1, device=self.device))
+                node = self.factory.pointMappingMin()
                 nodes.append(node)
             elif action == self.act_animated_property:
                 self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.animated_poperty()
+                node = self.factory.animated_property()
                 nodes.append(node)
             elif action == self.act_value_property:
                 self.menu.move(self.mapToGlobal(event.pos()))
@@ -137,6 +138,10 @@ class NodeEditor(QWidget):
             elif action == self.act_line:
                 self.menu.move(self.mapToGlobal(event.pos()))
                 node = self.factory.line()
+                nodes.append(node)
+            elif action == self.act_pointMapComb:
+                self.menu.move(self.mapToGlobal(event.pos()))
+                node = self.factory.pointMapComb()
                 nodes.append(node)
 
             self.add_nodes(nodes)
