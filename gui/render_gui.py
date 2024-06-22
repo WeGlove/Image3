@@ -12,7 +12,7 @@ import torch
 from Nodes.animated_property import AnimatedProperty
 from Nodes.alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
 from node_factory import NodeFactory
-from node_widgets import NodeWidget, AnimatedPropertyNodeWidget, ValueNodeWidget
+from gui.node_widgets import NodeWidget, AnimatedPropertyNodeWidget
 from Nodes.out import Out
 
 

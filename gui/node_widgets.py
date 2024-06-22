@@ -1,9 +1,8 @@
 import traceback
 from PyQt6.QtWidgets import QLabel, QLineEdit
 from PyQt6.QtGui import QFont
-from Nodes.value_property import ValueProperty
 import torch
-from node_socket_widget import NodeSocketWidget
+from gui.node_socket_widget import NodeSocketWidget
 
 
 class NodeWidget(QLabel):

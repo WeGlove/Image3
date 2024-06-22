@@ -1,14 +1,12 @@
 import os.path
 import numpy as np
 from PIL import Image
-from render_gui import RenderGui
+from gui.render_gui import RenderGui
 from renderer import Renderer
 from strips.mass_composition import MassComposition
 import torch
 from node_factory import NodeFactory
 from PyQt6.QtWidgets import QApplication
-from Nodes.out import Out
-
 
 if __name__ == "__main__":
     path = os.path.join(".", "wood")
