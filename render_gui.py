@@ -58,7 +58,7 @@ class NodeEditor(QWidget):
     def add_nodes(self, nodes):
         for node in nodes:
             if type(node) == ValueProperty:
-                label = ValueNodeWidget(node, parent=self)
+                label = NodeWidget(node, parent=self)
             elif type(node) == AnimatedProperty:
                 label = AnimatedPropertyNodeWidget(node, parent=self)
             else:

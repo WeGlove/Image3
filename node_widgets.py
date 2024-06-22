@@ -22,11 +22,34 @@ class NodeWidget(QLabel):
         self.node = node
         self.parent = parent
         self.socket_labels = [NodeSocketWidget(socket.get_socket_name(), self.parent, socket) for socket in node.subnode_sockets]
+
+        def get_on_edit(k):
+            def on_edit(_):
+                try:
+                    text = eval(self.edit_fields[k].text())
+                    if type(text) is list:
+                        self.node.set_node_edit(torch.tensor(k, text, device=self.node.device))
+                    else:
+                        self.node.set_node_edit(k, text)
+                    print("valued")
+                except Exception:
+                    print(traceback.format_exc())
+
+            return on_edit
+
+        self.edit_fields = [QLineEdit(parent=self.parent) for _ in range(self.node.get_edit_count())]
+        for k, edit_field in enumerate(self.edit_fields):
+            edit_field.textEdited.connect(get_on_edit(k))
+            edit_field.show()
+
         self.connected_sockets = []
 
         for k, socket in enumerate(self.socket_labels):
             pos = self.pos()
             socket.move(pos.x(), pos.y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
+        for j, edit in enumerate(self.edit_fields):
+            pos = self.pos()
+            edit.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
 
     def cut(self):
         for connected_socket in self.connected_sockets:
@@ -68,40 +91,11 @@ class NodeWidget(QLabel):
         super().move(*a0)
         for connected_socket in self.connected_sockets:
             connected_socket.move(connected_socket.pos())
+        for k, edit_field in enumerate(self.edit_fields):
+            edit_field.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + k*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
 
     def to_dict(self):
         return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels], "Position": [self.pos().x(), self.pos().y()]}
-
-
-class ValueNodeWidget(NodeWidget):
-
-    def __init__(self, node: ValueProperty, parent):
-        super().__init__(node, parent)
-        self.edit = QLineEdit(parent=parent)
-        self.edit.show()
-        self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
-        self.edit.setText(str(self.node.initial_value))
-
-        def on_edit(_):
-            try:
-                text = eval(self.edit.text())
-                if type(text) is list:
-                    self.node.set_value(torch.tensor(text, device=self.node.device))
-                else:
-                    self.node.set_value(text)
-                print("valued")
-            except Exception:
-                print(traceback.format_exc())
-
-        self.edit.textEdited.connect(on_edit)
-
-    def cut(self):
-        super().cut()
-        self.edit.setParent(None)
-
-    def move(self, *a0):
-        super().move(*a0)
-        self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
 
 
 class AnimatedPropertyNodeWidget(NodeWidget):

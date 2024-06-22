@@ -13,7 +13,7 @@ class AnimatedProperty(Node):
         self.frame = -1
         self.animation_style = "Linear"
         self.constraint = None
-        super().__init__(node_id, "Animated Property", [self.initial_value], device)
+        super().__init__(node_id, "Animated Property", [self.initial_value], device, [])
 
     def set_anim_style(self, style):
         self.animation_style = style

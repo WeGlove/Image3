@@ -1,15 +1,13 @@
 import torch
 from Nodes.node import Node
+from Nodes.node_edit import NodeEdit
 
 
 class ValueProperty(Node):
 
     def __init__(self, initial_value, node_id, device):
-        super().__init__(node_id, "Value Property", [], device)
-        self.initial_value = initial_value
-
-    def set_value(self, x):
-        self.initial_value = x
+        self.initial_value = NodeEdit(initial_value)
+        super().__init__(node_id, "Value Property", [], device, [self.initial_value])
 
     def set_anim_style(self, style):
         pass
@@ -18,7 +16,7 @@ class ValueProperty(Node):
         pass
 
     def get(self):
-        return self.initial_value
+        return self.initial_value.get()
 
     def set_next(self):
         pass
