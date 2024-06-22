@@ -2,6 +2,7 @@ from Nodes.alpha_comp.Geos import get_centered_vector_map
 import torch
 from Nodes.animated_property import AnimatedProperty
 from Nodes.alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
+from Nodes.node_socket import NodeSocket
 import math
 
 
@@ -9,7 +10,7 @@ class Line(PointMap):
 
     def __init__(self, line, node_id, device):
         self.line = AnimatedProperty(initial_value=line, device=device, node_id=node_id)
-        super().__init__("Line", [self.line])
+        super().__init__(device, node_id, "Line", [NodeSocket(False, "Line", self.line)])
 
     @staticmethod
     def from_2_points(x_0, x_1, device, node_id):
