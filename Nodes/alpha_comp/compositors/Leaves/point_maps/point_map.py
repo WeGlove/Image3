@@ -19,5 +19,5 @@ class PointMap(Node):
     def composite(self, index, img):
         pass
 
-    def get_animated_properties(self, visitors):
+    def get_animated_properties(self, visitors=None):
         pass

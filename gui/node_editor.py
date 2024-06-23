@@ -46,14 +46,14 @@ class NodeEditor(QWidget):
     def keyPressEvent(self, event):
         if isinstance(event, QKeyEvent):
             key_text = event.text()
-            print(key_text)
-            if ord(key_text) == 127:  # This is the delete button
-                self.selected.cut()
-                self.selected = None
-            elif key_text[0] == self.SAVE_KEY:
-                self.save("out.nmm")
-            elif key_text[0] == self.LOAD_KEY:
-                self.load("out.nmm")
+            if len(key_text) > 0:
+                if ord(key_text[0]) == 127:  # This is the delete button
+                    self.selected.cut()
+                    self.selected = None
+                elif key_text[0] == self.SAVE_KEY:
+                    self.save("out.nmm")
+                elif key_text[0] == self.LOAD_KEY:
+                    self.load("out.nmm")
 
     def add_nodes(self, nodes):
         for node in nodes:

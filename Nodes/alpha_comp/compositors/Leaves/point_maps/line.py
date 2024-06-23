@@ -49,12 +49,5 @@ class Line(PointMap):
 
         return vector_map
 
-    def get_animated_properties(self, visitors):
-        animated_properties = {visitors + "_" + "Line:line": self.line_noso.get().get()}
-
-        constraint_properties = {}
-        for k, animated_property in animated_properties.items():
-            constraint_properties.update(animated_property.get_animated_properties(k))
-
-        animated_properties.update(constraint_properties)
-        return animated_properties
+    def get_animated_properties(self, visitors=None):
+        return self.line_noso.get().get_animated_properties()

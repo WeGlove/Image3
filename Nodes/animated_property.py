@@ -137,5 +137,5 @@ class AnimatedProperty(Node):
 
     def to_dict(self): # TODO Constraint
         property_dict = super().to_dict()
-        property_dict["keyframes"] = self.keyframes
+        property_dict["keyframes"] = str(self.keyframes)
         return property_dict

@@ -44,3 +44,11 @@ class PointMapComb(PointMap):
             maps.append(self.j_el.get())
 
         return maps
+
+    def get_animated_properties(self, visitors):
+        maps = self.get()
+        animated_properties = []
+        for map in maps:
+            animated_properties.extend(map.get_animated_properties())
+
+        return maps

@@ -33,37 +33,36 @@ class NodeFactory:
 
     def out(self, node_id=None):
         node = Out(device=self.device, node_id=node_id)
-        if node_id is not None:
+        if node_id is None:
             self.next_id += 1
         return node
 
     def pointMappingMin(self, node_id=None):
         node = PointMappingMin(device=self.device, node_id=self.next_id if node_id is None else node_id)
-        if node_id is not None:
+        if node_id is None:
             self.next_id += 1
         return node
 
     def animated_property(self, node_id=None):
         node = AnimatedProperty(initial_value=None, device=self.device, node_id=self.next_id if node_id is None else node_id)
-        if node_id is not None:
+        if node_id is None:
             self.next_id += 1
         return node
 
     def value_property(self, initial_value=None, node_id=None):
         node = ValueProperty(initial_value=initial_value, device=self.device, node_id=self.next_id if node_id is None else node_id)
-        if node_id is not None:
+        if node_id is None:
             self.next_id += 1
         return node
 
     def line(self, node_id=None):
         node = Line(line=None, device=self.device, node_id=self.next_id if node_id is None else node_id)
-        if node_id is not None:
+        if node_id is None:
             self.next_id += 1
         return node
 
     def pointMapComb(self, node_id=None):
         node = PointMapComb(device=self.device, node_id=self.next_id if node_id is None else node_id)
-        if node_id is not None:
+        if node_id is None:
             self.next_id += 1
         return node
-
