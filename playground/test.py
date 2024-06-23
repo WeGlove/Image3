@@ -7,6 +7,8 @@ from strips.mass_composition import MassComposition
 import torch
 from node_factory import NodeFactory
 from PyQt6.QtWidgets import QApplication
+from strips.frame_counter import FrameCounter
+
 
 if __name__ == "__main__":
     path = os.path.join(".", "wood")
@@ -26,7 +28,8 @@ if __name__ == "__main__":
             img = torch.tensor(img, device=cuda)
             images.append(img)
 
-        factory = NodeFactory(cuda)
+        frame_counter = FrameCounter()
+        factory = NodeFactory(cuda, frame_counter)
 
         out = factory.out()
 
@@ -35,7 +38,7 @@ if __name__ == "__main__":
 
         app = QApplication([])
         renderer = Renderer(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,
-                            save_path="C:\\Users\\tobia\\Desktop\\out_out", save=False)
+                            save_path="C:\\Users\\tobia\\Desktop\\out_out", save=False, frame_counter=frame_counter)
         window = RenderGui(renderer, factory, strip)
 
         window.run(app, strips, fps_wait=True)

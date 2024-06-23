@@ -26,20 +26,9 @@ class Strip:
         self.height = height
 
     @abstractmethod
-    def produce_next(self, last_image):
-        pass
-
-    @abstractmethod
-    def produce_previous(self, last_image):
-        pass
-
-    @abstractmethod
-    def set_frame(self, frame):
+    def produce(self, last_image):
         pass
 
     @abstractmethod
     def free(self):
-        pass
-
-    def get_animated_properties(self) -> Dict[str, AnimatedProperty]:
         pass

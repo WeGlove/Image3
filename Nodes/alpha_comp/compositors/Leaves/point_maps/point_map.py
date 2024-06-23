@@ -4,8 +4,8 @@ from Nodes.node import Node
 
 class PointMap(Node):
 
-    def __init__(self, device, node_id, node_name="PointMap", subnodes=None):
-        super().__init__(node_id, node_name, [] if subnodes is None else subnodes, device=device)
+    def __init__(self, device, node_id, frame_counter, node_name="PointMap", subnodes=None):
+        super().__init__(node_id, node_name, frame_counter, [] if subnodes is None else subnodes, device, [])
         self.limit = None
         self.width = None
         self.height = None
@@ -14,10 +14,4 @@ class PointMap(Node):
         self.limit = limit
         self.width = width
         self.height = height
-
-    @abstractmethod
-    def composite(self, index, img):
-        pass
-
-    def get_animated_properties(self, visitors=None):
-        pass
+        super().initialize(width, height, limit)

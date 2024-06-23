@@ -1,25 +1,26 @@
 from Nodes.node import NodeSocket
 from Nodes.alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
+from Nodes.value_property import ValueProperty
 
 
 class PointMapComb(PointMap):
 
-    def __init__(self, node_id, device):
-        self.a_el = NodeSocket(False, "Element A", None)
-        self.b_el = NodeSocket(False, "Element B", None)
-        self.c_el = NodeSocket(False, "Element C", None)
-        self.d_el = NodeSocket(False, "Element D", None)
-        self.e_el = NodeSocket(False, "Element E", None)
-        self.f_el = NodeSocket(False, "Element F", None)
-        self.g_el = NodeSocket(False, "Element G", None)
-        self.h_el = NodeSocket(False, "Element H", None)
-        self.i_el = NodeSocket(False, "Element I", None)
-        self.j_el = NodeSocket(False, "Element J", None)
-        super().__init__(device, node_id, "Point Map Comb",
+    def __init__(self, node_id, device, frame_counter):
+        self.a_el = NodeSocket(False, "Element A", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
+        self.b_el = NodeSocket(False, "Element B", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
+        self.c_el = NodeSocket(False, "Element C", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
+        self.d_el = NodeSocket(False, "Element D", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
+        self.e_el = NodeSocket(False, "Element E", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
+        self.f_el = NodeSocket(False, "Element F", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
+        self.g_el = NodeSocket(False, "Element G", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
+        self.h_el = NodeSocket(False, "Element H", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
+        self.i_el = NodeSocket(False, "Element I", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
+        self.j_el = NodeSocket(False, "Element J", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
+        super().__init__(device, node_id, frame_counter, "Point Map Comb",
                          [self.a_el, self.b_el, self.c_el, self.d_el, self.e_el, self.f_el, self.g_el,
                           self.h_el, self.i_el, self.j_el])
 
-    def get(self):
+    def produce(self):
         maps = []
 
         if self.a_el.is_connected():
@@ -42,13 +43,5 @@ class PointMapComb(PointMap):
             maps.append(self.i_el.get())
         if self.j_el.is_connected():
             maps.append(self.j_el.get())
-
-        return maps
-
-    def get_animated_properties(self, visitors):
-        maps = self.get()
-        animated_properties = []
-        for map in maps:
-            animated_properties.extend(map.get_animated_properties())
 
         return maps

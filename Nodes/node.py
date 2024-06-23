@@ -5,9 +5,10 @@ from Nodes.node_edit import NodeEdit
 
 class Node:
 
-    def __init__(self, node_id, node_name, subnode_sockets: List[NodeSocket], device, node_edits: List[NodeEdit]=None):
+    def __init__(self, node_id, node_name, frame_counter, subnode_sockets: List[NodeSocket], device, node_edits: List[NodeEdit]):
         self.node_name = node_name
         self.subnode_sockets = subnode_sockets
+        self.frame_counter = frame_counter
         self.nodes_edits = node_edits if node_edits is not None else []
         self.animated_properties = []
         self.device = device
@@ -33,6 +34,13 @@ class Node:
 
     def to_dict(self):
         return {"properties": {"node_id": self.node_id}, "name": self.node_name}
+
+    def produce(self, *args):
+        return None
+
+    def initialize(self, width, height, limit):
+        for socket in self.subnode_sockets:
+            socket.get().initialize(width, height, limit)
 
     def get_all_subnodes(self):
         subnodes = [self.get_subnode(k).get_all_subnodes() for k in range(self.get_subnode_count()) if self.subnode_sockets[k].is_connected()]

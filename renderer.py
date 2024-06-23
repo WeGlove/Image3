@@ -12,10 +12,12 @@ from threading import Lock
 
 class Renderer:
 
-    def __init__(self, fps, device, start_frame=0, stop_frame=-1, width=None, height=None, repeat=False, display=True, save=False, save_path="."):
+    def __init__(self, fps, device, frame_counter, start_frame=0, stop_frame=-1, width=None, height=None, repeat=False, display=True,
+                 save=False, save_path="."):
         super().__init__()
         self.start_frame = start_frame
         self.stop_frame = stop_frame
+        self.frame_counter = frame_counter
         self.fps = fps
         self.repeat = repeat
         self.display = display
@@ -29,7 +31,6 @@ class Renderer:
         self.image_lock = Lock()
         self.run_display_thread = True
         self.new_image = True
-        self.current_frame = 0
         self.current_strip = None
 
         self.is_paused = True
@@ -63,7 +64,7 @@ class Renderer:
         last_image = torch.zeros((self.width, self.height), device=self.device)
 
         while True:
-            self.current_frame = 0
+            self.frame_counter.set_frame(0)
             for strip in strips:
                 strip.initialize(self.width, self.height, self.fps, self.start_frame, last_image, self.device)
                 self.current_strip = strip
@@ -71,31 +72,32 @@ class Renderer:
                 for i in range(strip.get_length()):
                     while self.is_paused:
                         time.sleep(1)  # TODO this is terrible
-                    if self.is_reset:
+
+                    if self.frame_counter.was_set:
                         self.is_reset = False
                         strip.initialize(self.width, self.height, self.fps, self.start_frame, last_image, self.device)
 
-                    self.on_frame(self.current_frame)
+                    current_frame = self.frame_counter.get()
+
+                    self.on_frame(current_frame)
 
                     before_time = time.time()
 
                     if self.is_forward:
-                        if self.current_frame < self.start_frame:
-                            self.current_frame += 1
+                        if current_frame < self.start_frame:
+                            self.frame_counter.next()
                             continue
-                        if self.current_frame >= self.stop_frame and self.stop_frame >= 0:
+                        if current_frame >= self.stop_frame and self.stop_frame >= 0:
                             break
                     else:
                         ...  # TODO
 
+                    stack_img = strip.produce(last_image)
 
-                    print(self.current_frame)
                     if self.is_forward:
-                        stack_img = strip.produce_next(last_image)
-                        self.current_frame += 1
+                        self.frame_counter.next()
                     else:
-                        stack_img = strip.produce_previous(last_image)
-                        self.current_frame -= 1
+                        self.frame_counter.previous()
 
                     if self.display:
                         with self.image_lock:
@@ -104,7 +106,7 @@ class Renderer:
 
                     if self.save:
                         mask = Image.fromarray(np.uint8(stack_img.cpu()))
-                        mask.save(os.path.join(self.save_path, f"out_{self.current_frame}.png"))
+                        mask.save(os.path.join(self.save_path, f"out_{current_frame}.png"))
 
                     delta = time.time() - before_time
                     if fps_wait:
@@ -128,13 +130,10 @@ class Renderer:
         self.is_forward = not self.is_forward
 
     def set_frame(self, frame):
-        self.current_frame = frame
-        self.current_strip.set_frame(frame)
+        self.frame_counter.set_frame(frame)
 
     def reset(self):
-        self.current_frame = 0
-        self.current_strip.set_frame(self.current_frame)
-        self.is_reset = True
+        self.frame_counter.set_frame(0)
 
     def render(self):
         self.save = not self.save

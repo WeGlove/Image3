@@ -43,12 +43,12 @@ class LineConfigs(PointMap):
 
 
     @staticmethod
-    def get_random(n, position, size, node_id, device):
+    def get_random(n, position, size, node_id, device, frame_counter):
         unit = torch.tensor([[size, 0]], device=device)
 
         lines = []
         for i in range(n):
             point = position + torch.matmul(unit, LineConfigs.rotation_2D(2*math.pi*random.random()/n, device))[0]
-            lines.append(Line.from_2_points(position, point, device, node_id=node_id))
+            lines.append(Line.from_2_points(position, point, device, node_id=node_id, frame_counter=frame_counter))
 
         return lines

@@ -75,48 +75,51 @@ class NodeEditor(QWidget):
             json.dump(widgets, f, indent=1)
 
     def load(self, path):
-        with open(os.path.join(path), "r") as f:
-            data = json.load(f)
+        try:
+            with open(os.path.join(path), "r") as f:
+                data = json.load(f)
 
-        self.factory.reset()
-        for node in self.node_widgets:
-            node.cut()
-        self.node_widgets = []
+            self.factory.reset()
+            for node in self.node_widgets:
+                node.cut()
+            self.node_widgets = []
 
-        for node_dict in data:
-            node = node_dict["Node"]["properties"]
-            name = node_dict["Node"]["name"]
-            add_node = self.factory.node_from_dict(node, name)
-            self.add_nodes([add_node])
+            for node_dict in data:
+                node = node_dict["Node"]["properties"]
+                name = node_dict["Node"]["name"]
+                add_node = self.factory.node_from_dict(node, name)
+                self.add_nodes([add_node])
 
-        for k, node_dict in enumerate(data):
-            socket_widgets = node_dict["Sockets"]
-            for j, socket_widget in enumerate(socket_widgets):
-                socket = socket_widget["Socket"]
+            for k, node_dict in enumerate(data):
+                socket_widgets = node_dict["Sockets"]
+                for j, socket_widget in enumerate(socket_widgets):
+                    socket = socket_widget["Socket"]
 
-                is_connected = socket["Connected"]
-                if not is_connected:
-                    continue
+                    is_connected = socket["Connected"]
+                    if not is_connected:
+                        continue
 
-                connected_id = socket["ConnectedID"]
-                for node_widget in self.node_widgets:
-                    out_id = node_widget.node.node_id
-                    if out_id == connected_id:
-                        widget_to_connect = node_widget
-                        break
-                else:
-                    ValueError()
+                    connected_id = socket["ConnectedID"]
+                    for node_widget in self.node_widgets:
+                        out_id = node_widget.node.node_id
+                        if out_id == connected_id:
+                            widget_to_connect = node_widget
+                            break
+                    else:
+                        ValueError()
 
-                in_node_widget = self.node_widgets[k]
-                in_node_widget.socket_labels[j].connect(widget_to_connect)
+                    in_node_widget = self.node_widgets[k]
+                    in_node_widget.socket_labels[j].connect(widget_to_connect)
 
-        for k, node_dict in enumerate(data):
-            position = node_dict["Position"]
-            self.node_widgets[k].move(position[0], position[1])
+            for k, node_dict in enumerate(data):
+                position = node_dict["Position"]
+                self.node_widgets[k].move(position[0], position[1])
 
-        for widget in self.node_widgets:
-            if type(widget.node) == Out:
-                self.strip.compositor = widget.node
+            for widget in self.node_widgets:
+                if type(widget.node) == Out:
+                    self.strip.compositor = widget.node
+        except Exception:
+            print(traceback.format_exc())
 
     def contextMenuEvent(self, event):
         try:

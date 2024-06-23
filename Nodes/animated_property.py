@@ -7,13 +7,13 @@ from Nodes.node import NodeSocket
 
 class AnimatedProperty(Node):
 
-    def __init__(self, initial_value, node_id, device):
+    def __init__(self, initial_value, node_id, device, frame_counter):
         self.keyframes = []
-        self.initial_value = NodeSocket(False, "Initial Value", ValueProperty(initial_value, node_id, device))
-        self.frame = -1
+        self.initial_value = NodeSocket(False, "Initial Value",
+                                        ValueProperty(initial_value, node_id, device, frame_counter))
         self.animation_style = "Linear"
         self.constraint = None
-        super().__init__(node_id, "Animated Property", [self.initial_value], device, [])
+        super().__init__(node_id, "Animated Property", frame_counter, [self.initial_value], device, [])
 
     def set_anim_style(self, style):
         self.animation_style = style
@@ -27,10 +27,10 @@ class AnimatedProperty(Node):
 
     def linear_interp(self):
         if len(self.keyframes) == 0:
-            return self.initial_value.get().get()
+            return self.initial_value.get().produce()
 
         for k, (frame, value) in enumerate(self.keyframes):
-            position = frame - self.frame
+            position = frame - self.frame_counter.get()
             if position > 0:
                 if k == 0:
                     return self.keyframes[0][1]
@@ -50,7 +50,7 @@ class AnimatedProperty(Node):
             return self.initial_value.get().get()
 
         for k, (frame, value) in enumerate(self.keyframes):
-            position = frame - self.frame
+            position = frame - self.frame_counter.get()
             if position > 0:
                 if k == 0:
                     return self.keyframes[0][1]
@@ -71,7 +71,7 @@ class AnimatedProperty(Node):
             return self.initial_value.get().get()
 
         for k, (frame, value) in enumerate(self.keyframes):
-            position = frame - self.frame
+            position = frame - self.frame_counter.get()
             if position > 0:
                 if k == 0:
                     return self.keyframes[0][1]
@@ -90,7 +90,7 @@ class AnimatedProperty(Node):
         else:
             return self.keyframes[-1][1]
 
-    def get(self):
+    def produce(self):
         if self.animation_style == "Linear":
             interp = self.linear_interp()
         elif self.animation_style == "Sine":
@@ -105,21 +105,6 @@ class AnimatedProperty(Node):
 
         return interp
 
-    def set_next(self):
-        self.frame += 1
-        if self.constraint is not None:
-            self.constraint.set_next()
-
-    def set_previous(self):
-        self.frame -= 1
-        if self.constraint is not None:
-            self.constraint.set_previous()
-
-    def set_frame(self, frame):
-        self.frame = frame
-        if self.constraint is not None:
-            self.constraint.set_frame(frame)
-
     def is_animated(self):
         return len(self.keyframes) != 0 or self.is_constrained()
 
@@ -128,12 +113,6 @@ class AnimatedProperty(Node):
 
     def is_constrained(self):
         return self.constraint is not None
-
-    def get_animated_properties(self, visitor):
-        if self.constraint is None:
-            return {}
-        else:
-            return self.constraint.get_animated_properties(visitor + "_" + "AnimatedProperty:Constraint")
 
     def to_dict(self): # TODO Constraint
         property_dict = super().to_dict()
