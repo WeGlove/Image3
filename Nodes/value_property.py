@@ -41,7 +41,7 @@ class ValueProperty(Node):
 
     def to_dict(self):
         property_dict = super().to_dict()
-        value = self.initial_value
+        value = self.initial_value.get()
 
         if type(value) == torch.Tensor:
             value = value.tolist()

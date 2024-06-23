@@ -7,23 +7,23 @@ from Nodes.value_property import ValueProperty
 
 class PointMappingMin(Compositor):
 
-    def __init__(self, device, node_id, shift=0., frequency=1., duty_cycle=None):
-        self.duty_cycls_is_none = duty_cycle is None
-        self.noso_duty_cycle = NodeSocket(False, "Duty Cycle", AnimatedProperty(-1, duty_cycle, device))
-        self.noso_shift = NodeSocket(False, "Shift", AnimatedProperty(-1, shift, device))
-        self.noso_frequency = NodeSocket(False, "Frequency", AnimatedProperty(-1, frequency, device))
+    def __init__(self, device, node_id):
+        self.noso_duty_cycle = NodeSocket(False, "Duty Cycle", AnimatedProperty(-1, None, device))
+        self.noso_shift = NodeSocket(False, "Shift", AnimatedProperty(-1, 0., device))
+        self.noso_frequency = NodeSocket(False, "Frequency", AnimatedProperty(-1, 1., device))
         self.noso_point_maps = NodeSocket(False, "Point Maps", ValueProperty([], -1, device))
         super().__init__(device, node_id, "PointMappingMin",
                          [self.noso_duty_cycle, self.noso_shift, self.noso_frequency, self.noso_point_maps])
 
-    def initialize(self, width, height, limit, device=None):
-        super().initialize(width, height, limit, device)
+    def initialize(self, width, height, limit):
+        super().initialize(width, height, limit)
         for point_map in self.noso_point_maps.get().get():
-            point_map.initialize(width, height, limit, device=device)
-        if self.duty_cycls_is_none:
-            self.noso_duty_cycle.default = AnimatedProperty(torch.tensor([1/limit] * self.limit, device=self.device), device=device, node_id=-1)
+            point_map.initialize(width, height, limit)
+        if not self.noso_duty_cycle.is_connected():
+            self.noso_duty_cycle.default = AnimatedProperty(torch.tensor([1/limit] * self.limit, device=self.device), node_id=-1, device=self.device)
 
     def composite(self, index, img):
+        print(self.width, self.height)
         out_arr = torch.zeros(self.width, self.height, device=self.device)
 
         maps = []

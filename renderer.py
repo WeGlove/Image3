@@ -34,6 +34,7 @@ class Renderer:
 
         self.is_paused = True
         self.is_forward = True
+        self.is_reset = False
 
         def on_frame(frame):
             return frame
@@ -70,6 +71,9 @@ class Renderer:
                 for i in range(strip.get_length()):
                     while self.is_paused:
                         time.sleep(1)  # TODO this is terrible
+                    if self.is_reset:
+                        self.is_reset = False
+                        strip.initialize(self.width, self.height, self.fps, self.start_frame, last_image, self.device)
 
                     self.on_frame(self.current_frame)
 
@@ -130,6 +134,7 @@ class Renderer:
     def reset(self):
         self.current_frame = 0
         self.current_strip.set_frame(self.current_frame)
+        self.is_reset = True
 
     def render(self):
         self.save = not self.save

@@ -24,10 +24,11 @@ class NodeWidget(QLabel):
 
         def get_on_edit(k):
             def on_edit(_):
+                print("editing")
                 try:
                     text = eval(self.edit_fields[k].text())
                     if type(text) is list:
-                        self.node.set_node_edit(torch.tensor(k, text, device=self.node.device))
+                        self.node.set_node_edit(k, torch.tensor(text, device=self.node.device))
                     else:
                         self.node.set_node_edit(k, text)
                     print("valued")
@@ -77,8 +78,6 @@ class NodeWidget(QLabel):
             offset = event.pos()
             pos = self.pos()
             self.move(pos.x() + offset.x(), pos.y() + offset.y())
-            for label in self.socket_labels:
-                label.move(label.pos().x() + offset.x(), label.pos().y() + offset.y())
 
     def select(self):
         self.setStyleSheet("color:red")
@@ -92,6 +91,8 @@ class NodeWidget(QLabel):
             connected_socket.move(connected_socket.pos())
         for k, edit_field in enumerate(self.edit_fields):
             edit_field.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + k*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
+        for k, label in enumerate(self.socket_labels):
+            label.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
 
     def to_dict(self):
         return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels], "Position": [self.pos().x(), self.pos().y()]}
