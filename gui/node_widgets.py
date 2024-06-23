@@ -48,8 +48,12 @@ class NodeWidget(QLabel):
             pos = self.pos()
             socket.move(pos.x(), pos.y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
         for j, edit in enumerate(self.edit_fields):
-            pos = self.pos()
-            edit.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
+            try:
+                pos = self.pos()
+                edit.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
+                edit.setText(str(self.node.get_node_edit(j)))
+            except Exception:
+                print(traceback.format_exc())
 
     def cut(self):
         for connected_socket in self.connected_sockets:
