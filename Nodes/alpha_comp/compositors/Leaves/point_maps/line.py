@@ -9,8 +9,14 @@ import math
 class Line(PointMap):
 
     def __init__(self, line, node_id, device):
-        self.line = AnimatedProperty(initial_value=line, device=device, node_id=node_id)
-        super().__init__(device, node_id, "Line", [NodeSocket(False, "Line", self.line)])
+        """
+
+        :param line: as [ax + by + c]
+        :param node_id:
+        :param device:
+        """
+        self.line_noso = NodeSocket(False, "Line", line)
+        super().__init__(device, node_id, "Line", [self.line_noso])
 
     @staticmethod
     def from_2_points(x_0, x_1, device, node_id):
@@ -21,11 +27,11 @@ class Line(PointMap):
 
         return Line(torch.tensor([a, b, c], device=device), node_id, device=device)
 
-    def initialize(self, width, height, limit, device=None):
-        super().initialize(width, height, limit, device)
+    def initialize(self, width, height, limit):
+        super().initialize(width, height, limit)
 
     def composite(self, index, img):
-        position = self.line.get()
+        position = self.line_noso.get().get()
 
         vector_map = get_centered_vector_map(self.width, self.height, self.device)
 
@@ -44,7 +50,7 @@ class Line(PointMap):
         return vector_map
 
     def get_animated_properties(self, visitors):
-        animated_properties = {visitors + "_" + "Line:line": self.line}
+        animated_properties = {visitors + "_" + "Line:line": self.line_noso.get().get()}
 
         constraint_properties = {}
         for k, animated_property in animated_properties.items():

@@ -20,16 +20,16 @@ class NodeFactory:
             return self.value_property(**properties)
         elif name == "Animated Property":
             return self.animated_property(**properties)
-        elif name == "Point":
+        elif name == "PointMappingMin":
             return self.pointMappingMin(**properties)
         elif name == "Ouuuuuuuuuuuuuut":
             return self.out(**properties)
         elif name == "Line":
             return self.line(**properties)
         elif name == "Point Map Comb":
-            return self.line(**properties)
+            return self.pointMapComb(**properties)
         else:
-            raise ValueError()
+            raise ValueError(f"Unknown Node {name}")
 
     def out(self, node_id=None):
         node = Out(device=self.device, node_id=node_id)

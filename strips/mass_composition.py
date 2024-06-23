@@ -19,7 +19,7 @@ class MassComposition(Strip):
         self.width = width
         self.height = height
         self.animated_properties = self.get_animated_properties()
-        self.compositor.initialize(self.width, self.height, len(self.images), self.device)
+        self.compositor.initialize(self.width, self.height, len(self.images))
         self.animated_properties = [animated_property for animated_property in self.animated_properties if animated_property.is_animated()]
         print(self.animated_properties)
 
@@ -32,6 +32,7 @@ class MassComposition(Strip):
 
             mask = self.compositor.composite(i, img)
 
+            print(stack_img.device, img.device, mask.device)
             stack_img = stack_img + torch.multiply(img, mask.transpose(0, 1))
 
         return stack_img

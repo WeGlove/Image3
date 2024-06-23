@@ -5,9 +5,7 @@ from typing import List
 from PyQt6.QtWidgets import QWidget, QLineEdit, QMenu
 from PyQt6.QtGui import QKeyEvent, QGuiApplication
 from Nodes.value_property import ValueProperty
-import torch
 from Nodes.animated_property import AnimatedProperty
-from Nodes.alpha_comp.compositors.Leaves.point_maps.LineConfigs import LineConfigs
 from node_factory import NodeFactory
 from gui.node_widgets import NodeWidget, AnimatedPropertyNodeWidget
 from Nodes.out import Out
@@ -48,6 +46,7 @@ class NodeEditor(QWidget):
     def keyPressEvent(self, event):
         if isinstance(event, QKeyEvent):
             key_text = event.text()
+            print(key_text)
             if ord(key_text) == 127:  # This is the delete button
                 self.selected.cut()
                 self.selected = None
@@ -70,7 +69,7 @@ class NodeEditor(QWidget):
     def save(self, path):
         widgets = []
         for node_widget in self.node_widgets:
-            widgets.append(node_widget.to_dict())
+             widgets.append(node_widget.to_dict())
 
         with open(os.path.join(path), "w+") as f:
             json.dump(widgets, f, indent=1)
@@ -111,9 +110,9 @@ class NodeEditor(QWidget):
                 in_node_widget = self.node_widgets[k]
                 in_node_widget.socket_labels[j].connect(widget_to_connect)
 
-        for node_dict in data:
+        for k, node_dict in enumerate(data):
             position = node_dict["Position"]
-            self.node_widgets[-1].move(position[0], position[1])
+            self.node_widgets[k].move(position[0], position[1])
 
         for widget in self.node_widgets:
             if type(widget.node) == Out:

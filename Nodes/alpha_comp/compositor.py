@@ -12,11 +12,10 @@ class Compositor(Node):
         self.height = None
         self.limit = None
 
-    def initialize(self, width, height, limit, device=None):
+    def initialize(self, width, height, limit):
         self.width = width
         self.height = height
         self.limit = limit
-        self.device = torch.device('cpu') if device is None else device
 
     def free(self):
         pass
