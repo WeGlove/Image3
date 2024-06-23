@@ -7,8 +7,11 @@ from Nodes.node import NodeSocket
 
 class AnimatedProperty(Node):
 
-    def __init__(self, initial_value, node_id, device, frame_counter):
+    def __init__(self, initial_value, node_id, device, frame_counter, keyframes=None):
         self.keyframes = []
+        if keyframes is not None:
+            for keyframe in keyframes:
+                self.set_key_frame(keyframe[0], keyframe[1])
         self.initial_value = NodeSocket(False, "Initial Value",
                                         ValueProperty(initial_value, node_id, device, frame_counter))
         self.animation_style = "Linear"
@@ -114,7 +117,12 @@ class AnimatedProperty(Node):
     def is_constrained(self):
         return self.constraint is not None
 
-    def to_dict(self): # TODO Constraint
+    def to_dict(self):
         property_dict = super().to_dict()
-        property_dict["keyframes"] = str(self.keyframes)
+        key_frame_list = []
+        for (frame, value) in self.keyframes:
+            if type(value) == torch.Tensor:
+                value = value.tolist()
+            key_frame_list.append([frame, value])
+        property_dict["properties"]["keyframes"] = key_frame_list
         return property_dict

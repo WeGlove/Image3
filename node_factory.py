@@ -47,8 +47,11 @@ class NodeFactory:
             self.next_id += 1
         return node
 
-    def animated_property(self, node_id=None):
-        node = AnimatedProperty(initial_value=None, device=self.device, node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
+    def animated_property(self, node_id=None, keyframes=None):
+        keyframes = [(frame, torch.tensor(value, device=self.device) if type(value) == list else value)
+                     for (frame, value) in keyframes]
+        node = AnimatedProperty(keyframes=keyframes, initial_value=None, device=self.device,
+                                node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
         if node_id is None:
             self.next_id += 1
         return node

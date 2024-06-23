@@ -131,6 +131,7 @@ class AnimatedPropertyNodeWidget(NodeWidget):
                 print(traceback.format_exc())
 
         self.edit.textEdited.connect(on_edit)
+        self.edit.setText(str([(frame, value.tolist() if type(value) == torch.Tensor else value) for (frame, value) in self.node.keyframes]))
 
     def cut(self):
         super().cut()
