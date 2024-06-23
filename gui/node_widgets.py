@@ -24,14 +24,12 @@ class NodeWidget(QLabel):
 
         def get_on_edit(k):
             def on_edit(_):
-                print("editing")
                 try:
                     text = eval(self.edit_fields[k].text())
                     if type(text) is list:
                         self.node.set_node_edit(k, torch.tensor(text, device=self.node.device))
                     else:
                         self.node.set_node_edit(k, text)
-                    print("valued")
                 except Exception:
                     print(traceback.format_exc())
 
@@ -52,7 +50,6 @@ class NodeWidget(QLabel):
                 pos = self.pos()
                 edit.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
                 value = self.node.get_node_edit(j)
-                print(type(value))
                 if type(value) == torch.Tensor:
                     value = value.tolist()
                 edit.setText(str(value))
@@ -64,6 +61,8 @@ class NodeWidget(QLabel):
             connected_socket.cut()
         for socket_label in self.socket_labels:
             socket_label.setParent(None)
+        for edit in self.edit_fields:
+            edit.setParent(None)
         self.setParent(None)
 
     def mousePressEvent(self, event):
@@ -126,7 +125,6 @@ class AnimatedPropertyNodeWidget(NodeWidget):
                     if type(object) == list:
                         object = torch.tensor(object, device=self.node.device)
                     self.node.set_key_frame(frame, object)
-                print("pass, animated")
             except Exception:
                 print(traceback.format_exc())
 

@@ -1,7 +1,7 @@
 import json
 import os.path
 import traceback
-from typing import List
+from typing import Dict
 from PyQt6.QtWidgets import QWidget, QLineEdit, QMenu
 from PyQt6.QtGui import QKeyEvent, QGuiApplication
 from Nodes.value_property import ValueProperty
@@ -19,7 +19,7 @@ class NodeEditor(QWidget):
     def __init__(self, factory: NodeFactory, strip, nodes=None):
         super().__init__()
         self.sockets = []
-        self.node_widgets: List[NodeWidget] = []
+        self.node_widgets: Dict[int, NodeWidget] = dict()
         self.x = 0
         self.selected = None
         self.menu = QMenu(self)
@@ -48,6 +48,7 @@ class NodeEditor(QWidget):
             key_text = event.text()
             if len(key_text) > 0:
                 if ord(key_text[0]) == 127:  # This is the delete button
+                    del self.node_widgets[self.selected.node.node_id]
                     self.selected.cut()
                     self.selected = None
                 elif key_text[0] == self.SAVE_KEY:
@@ -63,13 +64,12 @@ class NodeEditor(QWidget):
                 label = AnimatedPropertyNodeWidget(node, parent=self)
             else:
                 label = NodeWidget(node, parent=self)
-            self.node_widgets.append(label)
-            self.x += 1
+            self.node_widgets[node.node_id] = label
 
     def save(self, path):
-        widgets = []
-        for node_widget in self.node_widgets:
-             widgets.append(node_widget.to_dict())
+        widgets = dict()
+        for k, node_widget in self.node_widgets.items():
+             widgets[k] = node_widget.to_dict()
 
         with open(os.path.join(path), "w+") as f:
             json.dump(widgets, f, indent=1)
@@ -80,17 +80,17 @@ class NodeEditor(QWidget):
                 data = json.load(f)
 
             self.factory.reset()
-            for node in self.node_widgets:
+            for node in self.node_widgets.values():
                 node.cut()
-            self.node_widgets = []
+            self.node_widgets = dict()
 
-            for node_dict in data:
+            for k, node_dict in data.items():
                 node = node_dict["Node"]["properties"]
                 name = node_dict["Node"]["name"]
                 add_node = self.factory.node_from_dict(node, name)
                 self.add_nodes([add_node])
 
-            for k, node_dict in enumerate(data):
+            for k, node_dict in data.items():
                 socket_widgets = node_dict["Sockets"]
                 for j, socket_widget in enumerate(socket_widgets):
                     socket = socket_widget["Socket"]
@@ -100,7 +100,7 @@ class NodeEditor(QWidget):
                         continue
 
                     connected_id = socket["ConnectedID"]
-                    for node_widget in self.node_widgets:
+                    for node_widget in self.node_widgets.values():
                         out_id = node_widget.node.node_id
                         if out_id == connected_id:
                             widget_to_connect = node_widget
@@ -111,11 +111,11 @@ class NodeEditor(QWidget):
                     in_node_widget = self.node_widgets[k]
                     in_node_widget.socket_labels[j].connect(widget_to_connect)
 
-            for k, node_dict in enumerate(data):
+            for k, node_dict in data.items():
                 position = node_dict["Position"]
                 self.node_widgets[k].move(position[0], position[1])
 
-            for widget in self.node_widgets:
+            for widget in self.node_widgets.values():
                 if type(widget.node) == Out:
                     self.strip.compositor = widget.node
         except Exception:

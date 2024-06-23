@@ -1,3 +1,5 @@
+import traceback
+
 from PyQt6.QtWidgets import QLabel
 from Nodes.node import NodeSocket
 
@@ -20,17 +22,20 @@ class NodeSocketWidget(QLabel):
         ...
 
     def mouseReleaseEvent(self, event):
-        for k, node_widget in enumerate(self.parent.node_widgets):
-            hit = node_widget.geometry().contains(self.pos()+event.pos())
-            if hit:
-                self.connect(node_widget)
-                break
-        else:
-            connected = self.socket.is_connected()
-            if connected:
-                self.connected_node_widget.disconnect_socket(self)
-            self.socket.disconnect()
-            self.connection_label.hide()
+        try:
+            for k, node_widget in self.parent.node_widgets.items():
+                hit = node_widget.geometry().contains(self.pos()+event.pos())
+                if hit:
+                    self.connect(node_widget)
+                    break
+            else:
+                connected = self.socket.is_connected()
+                if connected:
+                    self.connected_node_widget.disconnect_socket(self)
+                self.socket.disconnect()
+                self.connection_label.hide()
+        except Exception:
+            print(traceback.format_exc())
 
     def connect(self, node_widget):
         connected = self.socket.is_connected()

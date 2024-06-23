@@ -35,7 +35,8 @@ class NodeFactory:
             raise ValueError(f"Unknown Node {name}")
 
     def out(self, node_id=None):
-        node = Out(device=self.device, node_id=node_id, frame_counter=self.frame_counter)
+        node = Out(device=self.device, node_id=self.next_id if node_id is None else node_id,
+                   frame_counter=self.frame_counter)
         if node_id is None:
             self.next_id += 1
         return node
@@ -48,8 +49,9 @@ class NodeFactory:
         return node
 
     def animated_property(self, node_id=None, keyframes=None):
-        keyframes = [(frame, torch.tensor(value, device=self.device) if type(value) == list else value)
-                     for (frame, value) in keyframes]
+        if keyframes is not None:
+            keyframes = [(frame, torch.tensor(value, device=self.device) if type(value) == list else value)
+                         for (frame, value) in keyframes]
         node = AnimatedProperty(keyframes=keyframes, initial_value=None, device=self.device,
                                 node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
         if node_id is None:
