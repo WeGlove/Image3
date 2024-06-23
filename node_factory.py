@@ -1,3 +1,5 @@
+import torch
+
 from Nodes.out import Out
 from Nodes.alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
 from Nodes.value_property import ValueProperty
@@ -52,6 +54,8 @@ class NodeFactory:
         return node
 
     def value_property(self, initial_value=None, node_id=None):
+        if type(initial_value) == list:
+            initial_value = torch.tensor(initial_value, device=self.device)
         node = ValueProperty(initial_value=initial_value, device=self.device, node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
         if node_id is None:
             self.next_id += 1

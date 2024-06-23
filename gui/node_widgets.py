@@ -51,7 +51,11 @@ class NodeWidget(QLabel):
             try:
                 pos = self.pos()
                 edit.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
-                edit.setText(str(self.node.get_node_edit(j)))
+                value = self.node.get_node_edit(j)
+                print(type(value))
+                if type(value) == torch.Tensor:
+                    value = value.tolist()
+                edit.setText(str(value))
             except Exception:
                 print(traceback.format_exc())
 
