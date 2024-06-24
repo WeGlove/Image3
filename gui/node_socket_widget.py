@@ -1,5 +1,4 @@
 import traceback
-
 from PyQt6.QtWidgets import QLabel
 from Nodes.node import NodeSocket
 

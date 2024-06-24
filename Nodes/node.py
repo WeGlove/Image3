@@ -10,7 +10,6 @@ class Node:
         self.subnode_sockets = subnode_sockets
         self.frame_counter = frame_counter
         self.nodes_edits = node_edits if node_edits is not None else []
-        self.animated_properties = []
         self.device = device
         self.node_id = node_id
 

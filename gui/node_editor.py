@@ -108,12 +108,12 @@ class NodeEditor(QWidget):
                     else:
                         ValueError()
 
-                    in_node_widget = self.node_widgets[k]
+                    in_node_widget = self.node_widgets[int(k)]
                     in_node_widget.socket_labels[j].connect(widget_to_connect)
 
             for k, node_dict in data.items():
                 position = node_dict["Position"]
-                self.node_widgets[k].move(position[0], position[1])
+                self.node_widgets[int(k)].move(position[0], position[1])
 
             for widget in self.node_widgets.values():
                 if type(widget.node) == Out:
