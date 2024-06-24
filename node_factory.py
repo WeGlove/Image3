@@ -18,6 +18,9 @@ class NodeFactory:
     def reset(self):
         self.next_id = 0
 
+    def set_next(self, x):
+        self.next_id = x
+
     def node_from_dict(self, properties, name):
         if name == "Value Property":
             return self.value_property(**properties)

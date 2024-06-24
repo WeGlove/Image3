@@ -79,6 +79,8 @@ class NodeEditor(QWidget):
             with open(os.path.join(path), "r") as f:
                 data = json.load(f)
 
+            self.factory.set_next(1 + max([int(node_id) for node_id in data.keys()]))
+
             self.factory.reset()
             for node in self.node_widgets.values():
                 node.cut()
@@ -118,6 +120,7 @@ class NodeEditor(QWidget):
             for widget in self.node_widgets.values():
                 if type(widget.node) == Out:
                     self.strip.compositor = widget.node
+
         except Exception:
             print(traceback.format_exc())
 
