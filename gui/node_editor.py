@@ -79,12 +79,13 @@ class NodeEditor(QWidget):
             with open(os.path.join(path), "r") as f:
                 data = json.load(f)
 
-            self.factory.set_next(1 + max([int(node_id) for node_id in data.keys()]))
-
             self.factory.reset()
             for node in self.node_widgets.values():
                 node.cut()
+
             self.node_widgets = dict()
+
+            self.factory.set_next(1 + max([int(node_id) for node_id in data.keys()]))
 
             for k, node_dict in data.items():
                 node = node_dict["Node"]["properties"]
