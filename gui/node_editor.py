@@ -28,6 +28,10 @@ class NodeEditor(QWidget):
         self.act_value_property = self.menu.addAction("ValueProperty")
         self.act_line = self.menu.addAction("Line")
         self.act_pointMapComb = self.menu.addAction("PointMapComb")
+        self.act_fromfile = self.menu.addAction("FromFile")
+        self.act_mean_buffer = self.menu.addAction("MeanBuffer")
+        self.act_exciter = self.menu.addAction("Exciter")
+        self.act_weight_buffer = self.menu.addAction("WeightBuffer")
         self.factory: NodeFactory = factory
         self.device = factory.device
         self.strip = strip
@@ -148,6 +152,22 @@ class NodeEditor(QWidget):
             elif action == self.act_pointMapComb:
                 self.menu.move(self.mapToGlobal(event.pos()))
                 node = self.factory.pointMapComb()
+                nodes.append(node)
+            elif action == self.act_fromfile:
+                self.menu.move(self.mapToGlobal(event.pos()))
+                node = self.factory.fromfile()
+                nodes.append(node)
+            elif action == self.act_mean_buffer:
+                self.menu.move(self.mapToGlobal(event.pos()))
+                node = self.factory.meanBuffer()
+                nodes.append(node)
+            elif action == self.act_exciter:
+                self.menu.move(self.mapToGlobal(event.pos()))
+                node = self.factory.exciter()
+                nodes.append(node)
+            elif action == self.act_weight_buffer:
+                self.menu.move(self.mapToGlobal(event.pos()))
+                node = self.factory.weightbuffer()
                 nodes.append(node)
 
             self.add_nodes(nodes)

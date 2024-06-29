@@ -1,11 +1,13 @@
 import torch
-
 from Nodes.out import Out
 from Nodes.alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
 from Nodes.value_property import ValueProperty
 from Nodes.animated_property import AnimatedProperty
 from Nodes.alpha_comp.compositors.Leaves.point_maps.line import Line
 from Nodes.pointMapComb import PointMapComb
+from strips.constraints.fromfile import FromFile
+from strips.constraints.buffer import MeanBuffer, WeightBuffer
+from strips.constraints.exciter import Exciter
 
 
 class NodeFactory:
@@ -34,6 +36,14 @@ class NodeFactory:
             return self.line(**properties)
         elif name == "Point Map Comb":
             return self.pointMapComb(**properties)
+        elif name == "FromFile":
+            return self.fromfile(**properties)
+        elif name == "MeanBuffer":
+            return self.meanBuffer(**properties)
+        elif name == "Exciter":
+            return self.exciter(**properties)
+        elif name == "WeightBuffer":
+            return self.weightbuffer(**properties)
         else:
             raise ValueError(f"Unknown Node {name}")
 
@@ -77,6 +87,30 @@ class NodeFactory:
 
     def pointMapComb(self, node_id=None):
         node = PointMapComb(device=self.device, node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
+        if node_id is None:
+            self.next_id += 1
+        return node
+
+    def fromfile(self, node_id=None):
+        node = FromFile(device=self.device, node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
+        if node_id is None:
+            self.next_id += 1
+        return node
+
+    def meanBuffer(self, node_id=None):
+        node = MeanBuffer(device=self.device, node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
+        if node_id is None:
+            self.next_id += 1
+        return node
+
+    def exciter(self, node_id=None):
+        node = Exciter(device=self.device, node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
+        if node_id is None:
+            self.next_id += 1
+        return node
+
+    def weightbuffer(self, node_id=None):
+        node = WeightBuffer(device=self.device, node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
         if node_id is None:
             self.next_id += 1
         return node

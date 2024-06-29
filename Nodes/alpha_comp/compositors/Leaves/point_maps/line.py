@@ -24,8 +24,6 @@ class Line(PointMap):
 
         vector_map = get_centered_vector_map(self.width, self.height, self.device)
 
-        print(position, type(position), self.line_noso.is_connected(), type(vector_map))
-
         vector_map = vector_map * position[:2]
 
         vector_map = torch.sum(vector_map, dim=2)

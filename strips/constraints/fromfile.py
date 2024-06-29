@@ -1,26 +1,24 @@
-from Nodes.constraint import Constraint
+from Nodes.node import Node
+from Nodes.node_socket import NodeSocket
+from strips.frame_counter import FrameCounter
 
 
-class FromFile(Constraint):
+class FromFile(Node):
 
-    def __init__(self, path, node_id, device):
-        super().__init__(node_id, device)
-        self.f = open(path, "rb")
+    def __init__(self, node_id, device, frame_counter: FrameCounter):
+        self.file_name = NodeSocket(True, "File", None)
+        super().__init__(node_id, "FromFile", frame_counter, [self.file_name], device, [])
+        self.f = None
         self.x = 0
 
-    def constrain(self, interp):
-        return self.x
+    def produce(self, *args):
+        frame = self.frame_counter.get()
+        self.f.seek(frame)
+        if self.frame_counter.was_reversed:
+            self.f.seek(frame-1)
 
-    def set_frame(self, frame):
-        super().set_frame(frame)
-        self.f.seek(frame) # TODO mod file size
+        return int.from_bytes(self.f.read(1), "big") / 255
 
-    def set_next(self):
-        super().set_next()
-        x = self.f.read(1)
-        self.x = int(x[0]) / 255
-
-    def set_previous(self):
-        super().set_previous()
-        self.set_frame(self.frame-1)
-        self.set_next()
+    def initialize(self, width, height, limit):
+        super().initialize(width, height, limit)
+        self.f = open(self.file_name.get().produce(), "rb")

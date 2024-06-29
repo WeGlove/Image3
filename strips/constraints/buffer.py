@@ -1,55 +1,41 @@
-from Nodes.constraint import Constraint
+from Nodes.node import Node
+from Nodes.node_socket import NodeSocket
 
 
-class Buffer(Constraint):
+class WeightBuffer(Node):
 
-    def __init__(self, constraint, n):
-        super().__init__()
-        self.constraint = constraint
+    def __init__(self, device, node_id, frame_counter):
+        self.acc = 0
+        self.acc_in = NodeSocket(False, "Input", None)
+        self.reduce = NodeSocket(False, "Reduce", None)
+        super().__init__(node_id, "WeightBuffer", frame_counter, [self.acc_in, self.reduce], device, [])
+
+    def produce(self, *args):
+        self.acc = self.acc * self.reduce.get().produce() + self.acc_in.get().produce() * (1-self.reduce.get().produce())
+        return self.acc
+
+    def initialize(self, width, height, limit):
+        super().initialize(width, height, limit)
+        self.acc = 0
+
+
+class MeanBuffer(Node):
+
+    def __init__(self, device, node_id, frame_counter):
+        self.noso_in = NodeSocket(False, "In", None)
         self.buffer = []
-        self.n = n
+        self.n = NodeSocket(False, "n", None)
+        super().__init__(node_id, "MeanBuffer", frame_counter, [self.noso_in, self.n], device, [])
 
-    def constrain(self, interp):
-        self.buffer.append(self.constraint.constrain(interp))
+    def produce(self, *args):
+        self.buffer.append(self.noso_in.get().produce(*args))
+        if len(self.buffer) > self.n.get().produce():
+            self.buffer = self.buffer[-self.n.get().produce():]
 
-        if len(self.buffer) > self.n:
-            val = self.buffer[0]
-            self.buffer = self.buffer[1:]
-            return val
-
-        return self.buffer[0]
-
-
-class MeanBuffer(Constraint):
-
-    def __init__(self, constraint, n, device, node_id):
-        super().__init__(device=device, node_id=node_id)
-        self.constraint = constraint
-        self.buffer = []
-        self.n = n
-        self.has_constrained = False
-
-    def constrain(self, interp):
-        if not self.has_constrained:
-            self.buffer.append(self.constraint.constrain(interp))
-            if len(self.buffer) > self.n:
-                self.buffer = self.buffer[1:]
-
-            self.has_constrained = True
+        print(self.buffer)
 
         return sum(self.buffer) / len(self.buffer)
 
-    def set_frame(self, frame):
-        super().set_frame(frame)
-        self.constraint.set_frame(frame)
-        self.has_constrained = False
-
-    def set_next(self):
-        super().set_next()
-        self.constraint.set_next()
-        self.has_constrained = False
-
-    def set_previous(self):
-        super().set_previous()
-        self.constraint.set_previous()
-        self.has_constrained = False
+    def initialize(self, width, height, limit):
+        super().initialize(width, height, limit)
+        self.buffer = []
