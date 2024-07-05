@@ -8,6 +8,7 @@ from Nodes.pointMapComb import PointMapComb
 from strips.constraints.fromfile import FromFile
 from strips.constraints.buffer import MeanBuffer, WeightBuffer
 from strips.constraints.exciter import Exciter
+from Nodes.alpha_comp.compositors.Leaves.point_mapping import PointMapping
 
 
 class NodeFactory:
@@ -44,6 +45,8 @@ class NodeFactory:
             return self.exciter(**properties)
         elif name == "WeightBuffer":
             return self.weightbuffer(**properties)
+        elif name == "PointMapping":
+            return self.pointMapping(**properties)
         else:
             raise ValueError(f"Unknown Node {name}")
 
@@ -111,6 +114,12 @@ class NodeFactory:
 
     def weightbuffer(self, node_id=None):
         node = WeightBuffer(device=self.device, node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
+        if node_id is None:
+            self.next_id += 1
+        return node
+
+    def pointMapping(self, node_id=None):
+        node = PointMapping(device=self.device, node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
         if node_id is None:
             self.next_id += 1
         return node

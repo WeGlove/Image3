@@ -1,41 +1,43 @@
 import torch
 from Nodes.alpha_comp.compositor import Compositor
 from Nodes.animated_property import AnimatedProperty
+from Nodes.node import NodeSocket
+from Nodes.value_property import ValueProperty
 
 
 class PointMapping(Compositor):
 
-    def __init__(self, point_maps, shift=0, frequency=1, duty_cycle=None, weights=None):
-        super().__init__("PointMapping")
-        self.point_maps = point_maps
-        self.duty_cycle = AnimatedProperty(duty_cycle)
-        self.weights = AnimatedProperty(weights)
-        self.shift = AnimatedProperty(shift)
-        self.frequency = AnimatedProperty(frequency)
-        self.set_subnodes(self.point_maps)
+    def __init__(self, device, node_id, frame_counter):
+        self.noso_duty_cycle = NodeSocket(False, "Duty Cycle", AnimatedProperty(None, -1, frame_counter, device))
+        self.noso_shift = NodeSocket(False, "Shift", AnimatedProperty(0., -1, frame_counter, device))
+        self.noso_frequency = NodeSocket(False, "Frequency", AnimatedProperty(1., -1, frame_counter, device))
+        self.noso_point_maps = NodeSocket(False, "Point Maps", ValueProperty([], -1, frame_counter, device))
+        self.noso_weights = NodeSocket(False, "Weights", ValueProperty([], -1, frame_counter, device))
+        super().__init__(device, node_id, frame_counter, "PointMapping",
+                         [self.noso_duty_cycle, self.noso_shift, self.noso_frequency, self.noso_point_maps, self.noso_weights])
 
-    def initialize(self, width, height, limit, device=None):
-        super().initialize(width, height, limit, device)
-        for point_map in self.point_maps:
-            point_map.initialize(width, height, limit, device=device)
-        if self.duty_cycle.initial_value is None:
-            self.duty_cycle.initial_value = torch.tensor([1/limit] * self.limit, device=self.device)
-        if self.weights.initial_value is None:
-            self.weights.initial_value = torch.tensor([1/len(self.point_maps)] * len(self.point_maps), device=self.device)
+    def initialize(self, width, height, limit):
+        super().initialize(width, height, limit)
+        for point_map in self.noso_point_maps.get().produce():
+            point_map.initialize(width, height, limit)
+        #if self.noso_duty_cycle.get().initial_value is None:
+        #    self.noso_duty_cycle.get().initial_value = torch.tensor([1/limit] * self.limit, device=self.device)
+        #if self.noso_weights.get().initial_value is None:
+        #    self.noso_weights.get().initial_value = torch.tensor([1/len(self.noso_point_maps.get().produce())] * len(self.noso_point_maps.get().produce()), device=self.device)
 
-    def composite(self, index, img):
+    def produce(self, index, img):
         composite_point_map = torch.zeros(self.width, self.height, device=self.device)
         out_arr = torch.zeros(self.width, self.height, device=self.device)
 
-        weights = self.weights.get()
+        weights = self.noso_weights.get().produce()
         weights = weights / torch.sum(weights)
 
-        for point_map, weight in zip(self.point_maps, weights):
-            composite_point_map += weight * point_map.composite(index, img)
+        for point_map, weight in zip(self.noso_point_maps.get().produce(), weights):
+            composite_point_map += weight * point_map.produce()
 
-        arr_map = (composite_point_map * self.frequency.get() + self.shift.get()) % 1
+        arr_map = (composite_point_map * self.noso_frequency.get().produce() + self.noso_shift.get().produce()) % 1
 
-        duty_cycle = self.duty_cycle.get()
+        duty_cycle = self.noso_duty_cycle.get().produce()
         duty_cycle = duty_cycle / torch.sum(duty_cycle)
         duty_cycle = torch.cumsum(duty_cycle, 0)
 
@@ -46,19 +48,3 @@ class PointMapping(Compositor):
 
         out_arr = torch.stack([out_arr, out_arr, out_arr]).transpose(0, 1).transpose(1, 2)
         return out_arr
-
-    def get_animated_properties(self, visitors):
-        animated_properties = {visitors + "_PointMapping:DutyCycle": self.duty_cycle,
-                               visitors + "_PointMapping:Weights": self.weights,
-                               visitors + "_PointMapping:Shift": self.shift,
-                               visitors + "_PointMapping:Frequency": self.frequency}
-        for k, point_map in enumerate(self.point_maps):
-            animated_properties.update(point_map.get_animated_properties(visitors + f"_PointMapping:PointMap-{k}"))
-
-        constraint_properties = {}
-        for k, animated_property in animated_properties.items():
-            constraint_properties.update(animated_property.get_animated_properties(k))
-
-        animated_properties.update(constraint_properties)
-        return animated_properties
-

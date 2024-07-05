@@ -32,6 +32,7 @@ class NodeEditor(QWidget):
         self.act_mean_buffer = self.menu.addAction("MeanBuffer")
         self.act_exciter = self.menu.addAction("Exciter")
         self.act_weight_buffer = self.menu.addAction("WeightBuffer")
+        self.act_point_mapping = self.menu.addAction("PointMapping")
         self.factory: NodeFactory = factory
         self.device = factory.device
         self.strip = strip
@@ -168,6 +169,10 @@ class NodeEditor(QWidget):
             elif action == self.act_weight_buffer:
                 self.menu.move(self.mapToGlobal(event.pos()))
                 node = self.factory.weightbuffer()
+                nodes.append(node)
+            elif action == self.act_point_mapping:
+                self.menu.move(self.mapToGlobal(event.pos()))
+                node = self.factory.pointMapping()
                 nodes.append(node)
 
             self.add_nodes(nodes)
