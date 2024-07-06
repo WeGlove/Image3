@@ -11,7 +11,7 @@ from strips.frame_counter import FrameCounter
 
 
 if __name__ == "__main__":
-    path = os.path.join(".", "inversions")
+    path = os.path.join(".", "eyes")
     out_path = os.path.join(os.path.join("C:", "Users", "tobia", "Desktop", "out_out"))
 
     print("cuda", torch.cuda.is_available())

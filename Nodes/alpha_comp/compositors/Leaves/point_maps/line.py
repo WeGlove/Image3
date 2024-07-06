@@ -17,7 +17,9 @@ class Line(PointMap):
         """
         self.line_noso = NodeSocket(False, "Line",
                                     ValueProperty(line, -1, device, frame_counter))
-        super().__init__(device, node_id, frame_counter, "Line", [self.line_noso])
+        self.shift_noso = NodeSocket(False, "Shift",
+                                     ValueProperty(line, -1, device, frame_counter))
+        super().__init__(device, node_id, frame_counter, "Line", [self.line_noso, self.shift_noso])
 
     def produce(self):
         position = self.line_noso.get().produce()
@@ -35,6 +37,8 @@ class Line(PointMap):
         vector_map = vector_map / math.sqrt((self.width/2)**2 + (self.height/2)**2)
 
         vector_map = torch.abs(vector_map)
+
+        vector_map += self.shift_noso.get().produce()
 
         return vector_map
 
