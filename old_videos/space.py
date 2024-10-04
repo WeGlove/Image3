@@ -1,9 +1,9 @@
 import os.path
-from Nodes.alpha_comp.compositors.Leaves import PolarDivision
+from Nodes.misc.alpha_comp import PolarDivision
 import numpy as np
 from PIL import Image
-from Nodes.alpha_comp import Renderer
-from Nodes.mass_composition import MassComposition
+from Nodes.misc.alpha_comp import Renderer
+from Nodes.misc.mass_composition import MassComposition
 import torch
 from From_old_projects.strips.constraints import identity, rotation
 from From_old_projects.strips.constraints import mat_split

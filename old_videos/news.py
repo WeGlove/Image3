@@ -1,9 +1,9 @@
 import os.path
 import numpy as np
 from PIL import Image
-from Nodes.alpha_comp import Renderer
-from Nodes.mass_composition import MassComposition
-from Nodes.alpha_comp.compositors.Leaves.Closeness import Closeness
+from Nodes.misc.alpha_comp import Renderer
+from Nodes.misc.mass_composition import MassComposition
+from Nodes.misc.alpha_comp.compositors.Leaves.Closeness import Closeness
 import torch
 
 if __name__ == "__main__":

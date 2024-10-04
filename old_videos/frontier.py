@@ -1,14 +1,14 @@
 import os.path
 import numpy as np
 from PIL import Image
-from Nodes.alpha_comp import Renderer
-from Nodes.mass_composition import MassComposition
+from Nodes.misc.alpha_comp import Renderer
+from Nodes.misc.mass_composition import MassComposition
 import torch
-from Nodes.alpha_comp.compositors.Leaves.point_mapping import PointMapping
-from Nodes.alpha_comp.compositors.Leaves.point_maps.circles import Circles
-from Nodes.alpha_comp.compositors.Leaves.point_maps.spirals import Spirals
-from Nodes.alpha_comp.compositors import Lines
-from Nodes.alpha_comp.compositors.Leaves.Closeness import Closeness
+from Nodes.misc.alpha_comp import PointMapping
+from Nodes.misc.alpha_comp.compositors.Leaves.point_maps.circles import Circles
+from Nodes.misc.alpha_comp import Spirals
+from Nodes.misc.alpha_comp import Lines
+from Nodes.misc.alpha_comp.compositors.Leaves.Closeness import Closeness
 
 
 if __name__ == "__main__":

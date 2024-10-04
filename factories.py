@@ -1,16 +1,16 @@
-from Nodes.out import Out
-from Nodes.alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
-from Nodes.value_property import ValueProperty
-from Nodes.animated_property import AnimatedProperty
-from Nodes.alpha_comp.compositors.Leaves.point_maps.line import Line
-from Nodes.pointMapComb import PointMapComb
+from Nodes.system.out import Out
+from Nodes.misc.alpha_comp.compositors.Leaves.point_mapping_min import PointMappingMin
+from Nodes.system.value_property import ValueProperty
+from Nodes.system.animated_property import AnimatedProperty
+from Nodes.misc.alpha_comp.compositors.Leaves.point_maps.line import Line
+from Nodes.misc.pointMapComb import PointMapComb
 from From_old_projects.strips.constraints.fromfile import FromFile
 from From_old_projects.strips.constraints.buffer import MeanBuffer, WeightBuffer
 from From_old_projects.strips.constraints.exciter import Exciter
-from Nodes.alpha_comp.compositors.Leaves.point_mapping import PointMapping
-from Nodes.alpha_comp.compositors.Leaves.point_maps.circles import Circles
-from Nodes.alpha_comp.compositors.Leaves.point_maps.spirals import Spirals
-from Nodes.mass_composition import MassComposition
+from Nodes.misc.alpha_comp import PointMapping
+from Nodes.misc.alpha_comp.compositors.Leaves.point_maps.circles import Circles
+from Nodes.misc.alpha_comp import Spirals
+from Nodes.misc.mass_composition import MassComposition
 from node_factory import NodeFactory
 
 

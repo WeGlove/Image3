@@ -1,7 +1,7 @@
 import math
 
 from Nodes.constraint import Constraint
-from Nodes.animated_property import AnimatedProperty
+from Nodes.system.animated_property import AnimatedProperty
 
 
 class Jitter(Constraint):

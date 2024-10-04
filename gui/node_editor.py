@@ -4,11 +4,11 @@ import traceback
 from typing import Dict, List
 from PyQt6.QtWidgets import QWidget, QLineEdit, QMenu
 from PyQt6.QtGui import QKeyEvent, QGuiApplication
-from Nodes.value_property import ValueProperty
-from Nodes.animated_property import AnimatedProperty
+from Nodes.system.value_property import ValueProperty
+from Nodes.system.animated_property import AnimatedProperty
 from node_factory import NodeFactory
 from gui.node_widgets import NodeWidget, AnimatedPropertyNodeWidget
-from Nodes.out import Out
+from Nodes.system.out import Out
 
 
 class NodeEditor(QWidget):
