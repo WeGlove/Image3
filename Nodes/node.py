@@ -18,6 +18,9 @@ class Node:
     def get_subnode_count(self):
         return len(self.subnode_sockets)
 
+    def get_description(self):
+        return self.description
+
     def get_edit_count(self):
         return len(self.nodes_edits)
 
