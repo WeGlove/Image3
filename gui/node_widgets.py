@@ -21,6 +21,7 @@ class NodeWidget(QLabel):
         self.node = node
         self.parent = parent
         self.socket_labels = [NodeSocketWidget(socket.get_socket_name(), self.parent, socket) for socket in node.subnode_sockets]
+        self.setToolTip(self.node.get_description())
 
         def get_on_edit(k):
             def on_edit(_):
