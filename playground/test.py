@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 from gui.render_gui import RenderGui
 from renderer import Renderer
-from strips.mass_composition import MassComposition
+from Nodes.out import Out
 import torch
 from node_factory import NodeFactory
 from PyQt6.QtWidgets import QApplication
@@ -19,7 +19,6 @@ if __name__ == "__main__":
     cuda = torch.device('cuda')
 
     with ((torch.cuda.device(0))):
-        strips = []
 
         images = []
         for i, file in enumerate(os.listdir(path)):
@@ -33,12 +32,9 @@ if __name__ == "__main__":
 
         out = factory.out()
 
-        strip = MassComposition(16271, images, out)
-        strips.append(strip)
-
         app = QApplication([])
         renderer = Renderer(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,
                             save_path="C:\\Users\\tobia\\Desktop\\out_out", save=False, frame_counter=frame_counter)
-        window = RenderGui(renderer, factory, strip)
+        window = RenderGui(renderer, factory, out)
 
-        window.run(app, strips, fps_wait=True)
+        window.run(app, out, fps_wait=True)

@@ -1,7 +1,6 @@
 import threading
 import time
 from typing import List
-from strips.strip import Strip
 import cv2
 import torch
 from PIL import Image
@@ -60,62 +59,58 @@ class Renderer:
             if delta > 0:
                 time.sleep(delta)
 
-    def _render_thread(self, strips: List[Strip], fps_wait=False):
-        last_image = torch.zeros((self.width, self.height), device=self.device)
-
+    def _render_thread(self, node, fps_wait=False):
         while True:
             self.frame_counter.set_frame(0)
-            for strip in strips:
-                strip.initialize(self.width, self.height, self.fps, self.start_frame, last_image, self.device)
-                self.current_strip = strip
+            node.initialize(self.width, self.height)
+            self.current_node = node
 
-                for i in range(strip.get_length()):
-                    while self.is_paused:
-                        time.sleep(1)  # TODO this is terrible
+            while self.is_paused:
+                time.sleep(1)  # TODO this is terrible
 
-                    if self.frame_counter.was_set:
-                        self.is_reset = False
-                        strip.initialize(self.width, self.height, self.fps, self.start_frame, last_image, self.device)
+            if self.frame_counter.was_set:
+                self.is_reset = False
+                node.initialize(self.width, self.height)
 
-                    current_frame = self.frame_counter.get()
+            current_frame = self.frame_counter.get()
 
-                    self.on_frame(current_frame)
+            self.on_frame(current_frame)
 
-                    before_time = time.time()
+            before_time = time.time()
 
-                    if self.is_forward:
-                        if current_frame < self.start_frame:
-                            self.frame_counter.next()
-                            continue
-                        if current_frame >= self.stop_frame and self.stop_frame >= 0:
-                            break
-                    else:
-                        ...  # TODO
+            if self.is_forward:
+                if current_frame < self.start_frame:
+                    self.frame_counter.next()
+                    continue
+                if current_frame >= self.stop_frame and self.stop_frame >= 0:
+                    break
+            else:
+                ...  # TODO
 
-                    stack_img = strip.produce(last_image)
+            stack_img = node.produce()
 
-                    if self.is_forward:
-                        self.frame_counter.next()
-                    else:
-                        self.frame_counter.previous()
+            if self.is_forward:
+                self.frame_counter.next()
+            else:
+                self.frame_counter.previous()
 
-                    if self.display:
-                        with self.image_lock:
-                            self.current_image = stack_img
-                            self.new_image = True
+            if self.display:
+                with self.image_lock:
+                    self.current_image = stack_img
+                    self.new_image = True
 
-                    if self.save:
-                        mask = Image.fromarray(np.uint8(stack_img.cpu()))
-                        mask.save(os.path.join(self.save_path, f"out_{current_frame}.png"))
+            if self.save:
+                mask = Image.fromarray(np.uint8(stack_img.cpu()))
+                mask.save(os.path.join(self.save_path, f"out_{current_frame}.png"))
 
-                    delta = time.time() - before_time
-                    if fps_wait:
-                        if 1/self.fps - delta > 0:
-                            time.sleep(1/self.fps - delta)
-                        else:
-                            print("Slow")
+            delta = time.time() - before_time
+            if fps_wait:
+                if 1/self.fps - delta > 0:
+                    time.sleep(1/self.fps - delta)
+                else:
+                    print("Slow")
 
-                strip.free()
+            node.free()
 
             if not self.repeat:
                 break
@@ -144,11 +139,11 @@ class Renderer:
     def repeat_unrepeat(self):
         self.repeat = not self.repeat
 
-    def run(self, strips: List[Strip], fps_wait=False):
+    def run(self, node, fps_wait=False):
         self.display_thread = threading.Thread(target=self._display_thread)
         self.display_thread.start()
 
-        self.render_thread = threading.Thread(target=self._render_thread, args=(strips, fps_wait))
+        self.render_thread = threading.Thread(target=self._render_thread, args=(node, fps_wait))
         self.render_thread.start()
 
     def join(self):

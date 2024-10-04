@@ -1,5 +1,4 @@
 from typing import List
-from strips.strip import Strip
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
 from renderer import Renderer
@@ -98,9 +97,9 @@ class RenderGui(QMainWindow):
 
         self.editor = NodeEditor(self.node_factory, strip)
 
-    def run(self, app, strips: List[Strip], fps_wait=False):
-        self.editor.add_nodes(strips[0].compositor.get_all_subnodes())
-        self.frame_renderer.run(strips, fps_wait)
+    def run(self, app, node, fps_wait=False):
+        self.editor.add_nodes(node.get_all_subnodes())
+        self.frame_renderer.run(node, fps_wait)
         self.show()
         self.editor.show()
         app.exec()
