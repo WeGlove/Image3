@@ -16,7 +16,8 @@ class Out(Compositor):
         mapping.connect_subnode(3, comb)
         self.noso_render_input = NodeSocket(False, "RenderInput", mapping)
 
-        super().__init__(device, node_id, frame_counter, "Ouuuuuuuuuuuuuut", [self.noso_render_input])
+        super().__init__(device, node_id, frame_counter, "Output", [self.noso_render_input],
+                         description="The Output of the Patch")
 
     def initialize(self, width, height, limit):
         super().initialize(width, height, limit)
