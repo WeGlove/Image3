@@ -7,7 +7,7 @@ class ValueProperty(Node):
 
     def __init__(self, initial_value, node_id, device, frame_counter):
         self.initial_value = NodeEdit(initial_value)
-        super().__init__(node_id, "Value Property", frame_counter, [], device, [self.initial_value])
+        super().__init__(node_id, "Value Property", "", frame_counter, [], device, [self.initial_value])
 
     def produce(self):
         return self.initial_value.get()

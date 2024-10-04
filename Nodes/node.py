@@ -5,10 +5,12 @@ from Nodes.node_edit import NodeEdit
 
 class Node:
 
-    def __init__(self, node_id, node_name, frame_counter, subnode_sockets: List[NodeSocket], device, node_edits: List[NodeEdit]):
+    def __init__(self, node_id, node_name, description, frame_counter, subnode_sockets: List[NodeSocket], device,
+                 node_edits: List[NodeEdit]):
         self.node_name = node_name
         self.subnode_sockets = subnode_sockets
         self.frame_counter = frame_counter
+        self.description = description
         self.nodes_edits = node_edits if node_edits is not None else []
         self.device = device
         self.node_id = node_id
