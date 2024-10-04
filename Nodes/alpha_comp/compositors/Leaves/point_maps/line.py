@@ -19,7 +19,7 @@ class Line(PointMap):
                                     ValueProperty(line, -1, device, frame_counter))
         self.shift_noso = NodeSocket(False, "Shift",
                                      ValueProperty(line, -1, device, frame_counter))
-        super().__init__(device, node_id, frame_counter, "Line", [self.line_noso, self.shift_noso])
+        super().__init__(device, node_id, frame_counter, [self.line_noso, self.shift_noso])
 
     def produce(self):
         position = self.line_noso.get().produce()
@@ -50,3 +50,7 @@ class Line(PointMap):
         c = x_0[1]
 
         return Line(torch.tensor([a, b, c], device=device), node_id, device=device, frame_counter=frame_counter)
+
+    @staticmethod
+    def get_node_name():
+        return "Line"

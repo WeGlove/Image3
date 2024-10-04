@@ -5,9 +5,8 @@ from Nodes.node_edit import NodeEdit
 
 class Node:
 
-    def __init__(self, node_id, node_name, description, frame_counter, subnode_sockets: List[NodeSocket], device,
+    def __init__(self, node_id, description, frame_counter, subnode_sockets: List[NodeSocket], device,
                  node_edits: List[NodeEdit]):
-        self.node_name = node_name
         self.subnode_sockets = subnode_sockets
         self.frame_counter = frame_counter
         self.description = description
@@ -37,7 +36,7 @@ class Node:
         self.subnode_sockets[subnode_id].connect(subnode)
 
     def to_dict(self):
-        return {"properties": {"node_id": self.node_id}, "name": self.node_name}
+        return {"properties": {"node_id": self.node_id}, "name": self.get_node_name()}
 
     def produce(self, *args):
         return None
@@ -53,3 +52,7 @@ class Node:
             out_subnodes.extend(subnodes_list)
         out_subnodes.append(self)
         return out_subnodes
+
+    @staticmethod
+    def get_node_name():
+        return "Node"

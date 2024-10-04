@@ -19,7 +19,7 @@ if __name__ == "__main__":
         frame_counter = FrameCounter()
         factory = NodeFactory(cuda, frame_counter)
 
-        out = factory.out()
+        out = factory.instantiate("Output")
 
         app = QApplication([])
         renderer = Renderer(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,

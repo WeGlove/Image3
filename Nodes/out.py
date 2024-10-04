@@ -16,7 +16,7 @@ class Out(Node):
         mapping.connect_subnode(3, comb)
         self.noso_render_input = NodeSocket(False, "RenderInput", mapping)
 
-        super().__init__(node_id, "Output", "The Output of the Patch",
+        super().__init__(node_id, "The Output of the Patch",
                          frame_counter, [self.noso_render_input], device, [])
 
     def produce(self, index, img):
@@ -25,3 +25,7 @@ class Out(Node):
     def initialize(self, width, height, *args):
         for socket in self.subnode_sockets:
             socket.get().initialize(width, height, 19)
+
+    @staticmethod
+    def get_node_name():
+        return "Output"

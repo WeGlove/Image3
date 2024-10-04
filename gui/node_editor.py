@@ -24,7 +24,7 @@ class NodeEditor(QWidget):
         self.selected = None
         self.menu = QMenu(self)
         self.act_point_mapping_min = self.menu.addAction("PointMappingMin")
-        self.act_animated_property = self.menu.addAction("AnimatedProperty")
+        self.act_animated_property = self.menu.addAction("Animated Property")
         self.act_value_property = self.menu.addAction("ValueProperty")
         self.act_line = self.menu.addAction("Line")
         self.act_pointMapComb = self.menu.addAction("PointMapComb")
@@ -136,54 +136,10 @@ class NodeEditor(QWidget):
         try:
             action = self.menu.exec()
             nodes = []
-            if action == self.act_point_mapping_min:
-                self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.pointMappingMin()
-                nodes.append(node)
-            elif action == self.act_animated_property:
-                self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.animated_property()
-                nodes.append(node)
-            elif action == self.act_value_property:
-                self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.value_property()
-                nodes.append(node)
-            elif action == self.act_line:
-                self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.line()
-                nodes.append(node)
-            elif action == self.act_pointMapComb:
-                self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.pointMapComb()
-                nodes.append(node)
-            elif action == self.act_fromfile:
-                self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.fromfile()
-                nodes.append(node)
-            elif action == self.act_mean_buffer:
-                self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.meanBuffer()
-                nodes.append(node)
-            elif action == self.act_exciter:
-                self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.exciter()
-                nodes.append(node)
-            elif action == self.act_weight_buffer:
-                self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.weightbuffer()
-                nodes.append(node)
-            elif action == self.act_point_mapping:
-                self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.pointMapping()
-                nodes.append(node)
-            elif action == self.act_circles:
-                self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.circles()
-                nodes.append(node)
-            elif action == self.act_spirals:
-                self.menu.move(self.mapToGlobal(event.pos()))
-                node = self.factory.spirals()
-                nodes.append(node)
+
+            self.menu.move(self.mapToGlobal(event.pos()))
+            node = self.factory.instantiate(action.text())
+            nodes.append(node)
 
             self.add_nodes(nodes)
         except Exception:

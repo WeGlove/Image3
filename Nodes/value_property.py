@@ -7,7 +7,7 @@ class ValueProperty(Node):
 
     def __init__(self, initial_value, node_id, device, frame_counter):
         self.initial_value = NodeEdit(initial_value)
-        super().__init__(node_id, "Value Property", "", frame_counter, [], device, [self.initial_value])
+        super().__init__(node_id, "", frame_counter, [], device, [self.initial_value])
 
     def produce(self):
         return self.initial_value.get()
@@ -21,3 +21,7 @@ class ValueProperty(Node):
 
         property_dict["properties"]["initial_value"] = value
         return property_dict
+
+    @staticmethod
+    def get_node_name():
+        return "Value Property"

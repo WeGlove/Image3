@@ -16,7 +16,7 @@ class PointMapComb(PointMap):
         self.h_el = NodeSocket(False, "Element H", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
         self.i_el = NodeSocket(False, "Element I", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
         self.j_el = NodeSocket(False, "Element J", ValueProperty(None, -1, device=device, frame_counter=frame_counter))
-        super().__init__(device, node_id, frame_counter, "Point Map Comb",
+        super().__init__(device, node_id, frame_counter,
                          [self.a_el, self.b_el, self.c_el, self.d_el, self.e_el, self.f_el, self.g_el,
                           self.h_el, self.i_el, self.j_el])
 
@@ -45,3 +45,7 @@ class PointMapComb(PointMap):
             maps.append(self.j_el.get())
 
         return maps
+
+    @staticmethod
+    def get_node_name():
+        return "Point Map Comb"

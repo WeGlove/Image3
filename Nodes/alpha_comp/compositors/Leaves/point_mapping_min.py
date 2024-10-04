@@ -12,11 +12,11 @@ class PointMappingMin(Compositor):
         self.noso_shift = NodeSocket(False, "Shift", AnimatedProperty(0., -1, frame_counter, device))
         self.noso_frequency = NodeSocket(False, "Frequency", AnimatedProperty(1., -1, frame_counter, device))
         self.noso_point_maps = NodeSocket(False, "Point Maps", ValueProperty([], -1, frame_counter, device))
-        super().__init__(device, node_id, frame_counter, "PointMappingMin",
+        super().__init__(device, node_id, frame_counter,
                          [self.noso_duty_cycle, self.noso_shift, self.noso_frequency, self.noso_point_maps])
 
     def initialize(self, width, height, limit):
-        self.noso_duty_cycle.default = AnimatedProperty(torch.tensor([1/limit] * limit, device=self.device),
+        self.noso_duty_cycle.default = AnimatedProperty(initial_value=torch.tensor([1/limit] * limit, device=self.device),
                                                         node_id=-1, device=self.device,
                                                         frame_counter=self.frame_counter)
         super().initialize(width, height, limit)
@@ -43,3 +43,7 @@ class PointMappingMin(Compositor):
 
         out_arr = torch.stack([out_arr, out_arr, out_arr]).transpose(0, 1).transpose(1, 2)
         return out_arr
+
+    @staticmethod
+    def get_node_name():
+        return "PointMappingMin"
