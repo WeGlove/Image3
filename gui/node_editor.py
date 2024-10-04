@@ -59,18 +59,19 @@ class NodeEditor(QWidget):
         canvas = self.line_label.pixmap()
         painter = QtGui.QPainter(canvas)
         pen = QtGui.QPen()
-        pen.setWidth(3)
+        pen.setWidth(1)
         pen.setColor(QtGui.QColor('black'))
         painter.setPen(pen)
         for key, node_widget in self.node_widgets.items():
             for node_socket_widget in node_widget.connected_sockets:
                 a = node_widget.pos()
+                a.setY(a.y() + node_widget.height()/2)
                 b = node_socket_widget.pos()
+                b.setY(b.y() + node_socket_widget.height() / 2)
                 painter.drawLine(a, b)
 
         painter.end()
         self.line_label.setPixmap(canvas)
-
 
     def select(self, selection):
         if self.selected is not None:
