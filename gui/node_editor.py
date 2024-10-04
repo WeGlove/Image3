@@ -23,18 +23,10 @@ class NodeEditor(QWidget):
         self.x = 0
         self.selected = None
         self.menu = QMenu(self)
-        self.act_point_mapping_min = self.menu.addAction("PointMappingMin")
-        self.act_animated_property = self.menu.addAction("Animated Property")
-        self.act_value_property = self.menu.addAction("ValueProperty")
-        self.act_line = self.menu.addAction("Line")
-        self.act_pointMapComb = self.menu.addAction("PointMapComb")
-        self.act_fromfile = self.menu.addAction("FromFile")
-        self.act_mean_buffer = self.menu.addAction("MeanBuffer")
-        self.act_exciter = self.menu.addAction("Exciter")
-        self.act_weight_buffer = self.menu.addAction("WeightBuffer")
-        self.act_point_mapping = self.menu.addAction("PointMapping")
-        self.act_circles = self.menu.addAction("Circles")
-        self.act_spirals = self.menu.addAction("Spirals")
+        self.acts = []
+        for key in factory.in_dict.keys():
+            act = self.menu.addAction(key)
+            self.acts.append(act)
         self.factory: NodeFactory = factory
         self.device = factory.device
         self.strip = strip
