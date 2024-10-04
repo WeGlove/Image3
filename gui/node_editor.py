@@ -65,9 +65,14 @@ class NodeEditor(QWidget):
         for key, node_widget in self.node_widgets.items():
             for node_socket_widget in node_widget.connected_sockets:
                 a = node_widget.pos()
-                a.setY(a.y() + node_widget.height()/2)
+                a.setY(a.y() + node_widget.height() / 2)
                 b = node_socket_widget.pos()
                 b.setY(b.y() + node_socket_widget.height() / 2)
+
+                if a.x() <= b.x():
+                    a.setX(a.x() + node_widget.width())
+                else:
+                    b.setX(b.x() + node_socket_widget.width())
                 painter.drawLine(a, b)
 
         painter.end()
