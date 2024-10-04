@@ -3,7 +3,7 @@ from Nodes.alpha_comp.compositors.Leaves import PointWeights
 import numpy as np
 from PIL import Image
 from Nodes.alpha_comp import Renderer
-from strips.mass_composition import MassComposition
+from Nodes.mass_composition import MassComposition
 import torch
 
 

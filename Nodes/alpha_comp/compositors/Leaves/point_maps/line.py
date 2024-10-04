@@ -8,7 +8,7 @@ import math
 
 class Line(PointMap):
 
-    def __init__(self, line, node_id, device, frame_counter):
+    def __init__(self, node_id, device, frame_counter, line=None):
         """
 
         :param line: as [ax + by + c]
@@ -49,7 +49,7 @@ class Line(PointMap):
         b = AB[1]
         c = x_0[1]
 
-        return Line(torch.tensor([a, b, c], device=device), node_id, device=device, frame_counter=frame_counter)
+        return Line(node_id, device=device, frame_counter=frame_counter, line=torch.tensor([a, b, c], device=device))
 
     @staticmethod
     def get_node_name():

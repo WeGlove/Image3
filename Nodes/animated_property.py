@@ -108,15 +108,6 @@ class AnimatedProperty(Node):
 
         return interp
 
-    def is_animated(self):
-        return len(self.keyframes) != 0 or self.is_constrained()
-
-    def set_constraint(self, constraint):
-        self.constraint = constraint
-
-    def is_constrained(self):
-        return self.constraint is not None
-
     def to_dict(self):
         property_dict = super().to_dict()
         key_frame_list = []

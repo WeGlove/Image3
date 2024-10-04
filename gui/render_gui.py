@@ -1,4 +1,3 @@
-from typing import List
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
 from renderer import Renderer

@@ -2,7 +2,7 @@ import os.path
 import numpy as np
 from PIL import Image
 from Nodes.alpha_comp import Renderer
-from strips.mass_composition import MassComposition
+from Nodes.mass_composition import MassComposition
 from Nodes.alpha_comp.compositors.Leaves.Closeness import Closeness
 import torch
 

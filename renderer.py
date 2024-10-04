@@ -1,12 +1,11 @@
 import threading
 import time
-from typing import List
 import cv2
-import torch
 from PIL import Image
 import numpy as np
 import os
 from threading import Lock
+import traceback
 
 
 class Renderer:
@@ -62,8 +61,6 @@ class Renderer:
     def _render_thread(self, node, fps_wait=False):
         while True:
             self.frame_counter.set_frame(0)
-            node.initialize(self.width, self.height)
-            self.current_node = node
 
             while self.is_paused:
                 time.sleep(1)  # TODO this is terrible
@@ -72,45 +69,50 @@ class Renderer:
                 self.is_reset = False
                 node.initialize(self.width, self.height)
 
-            current_frame = self.frame_counter.get()
+            for frame in range(self.start_frame, self.stop_frame):
+                current_frame = self.frame_counter.get()
 
-            self.on_frame(current_frame)
+                self.on_frame(current_frame)
 
-            before_time = time.time()
+                before_time = time.time()
 
-            if self.is_forward:
-                if current_frame < self.start_frame:
-                    self.frame_counter.next()
-                    continue
-                if current_frame >= self.stop_frame and self.stop_frame >= 0:
-                    break
-            else:
-                ...  # TODO
-
-            stack_img = node.produce()
-
-            if self.is_forward:
-                self.frame_counter.next()
-            else:
-                self.frame_counter.previous()
-
-            if self.display:
-                with self.image_lock:
-                    self.current_image = stack_img
-                    self.new_image = True
-
-            if self.save:
-                mask = Image.fromarray(np.uint8(stack_img.cpu()))
-                mask.save(os.path.join(self.save_path, f"out_{current_frame}.png"))
-
-            delta = time.time() - before_time
-            if fps_wait:
-                if 1/self.fps - delta > 0:
-                    time.sleep(1/self.fps - delta)
+                if self.is_forward:
+                    if current_frame < self.start_frame:
+                        self.frame_counter.next()
+                        continue
+                    if current_frame >= self.stop_frame and self.stop_frame >= 0:
+                        break
                 else:
-                    print("Slow")
+                    ...  # TODO
 
-            node.free()
+                try:
+                    stack_img = node.produce()
+                except Exception:
+                    print(traceback.format_exc())
+                    self.pause_unpause()
+                    self.reset()
+                    break
+
+                if self.is_forward:
+                    self.frame_counter.next()
+                else:
+                    self.frame_counter.previous()
+
+                if self.display:
+                    with self.image_lock:
+                        self.current_image = stack_img
+                        self.new_image = True
+
+                if self.save:
+                    mask = Image.fromarray(np.uint8(stack_img.cpu()))
+                    mask.save(os.path.join(self.save_path, f"out_{current_frame}.png"))
+
+                delta = time.time() - before_time
+                if fps_wait:
+                    if 1/self.fps - delta > 0:
+                        time.sleep(1/self.fps - delta)
+                    else:
+                        print("Slow")
 
             if not self.repeat:
                 break

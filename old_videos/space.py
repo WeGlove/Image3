@@ -3,9 +3,10 @@ from Nodes.alpha_comp.compositors.Leaves import PolarDivision
 import numpy as np
 from PIL import Image
 from Nodes.alpha_comp import Renderer
-from strips.mass_composition import MassComposition
+from Nodes.mass_composition import MassComposition
 import torch
-from strips.constraints import identity, mat_split, rotation
+from From_old_projects.strips.constraints import identity, rotation
+from From_old_projects.strips.constraints import mat_split
 
 if __name__ == "__main__":
     path = os.path.join("../playground", "stars")
@@ -37,9 +38,9 @@ if __name__ == "__main__":
         weights = strip.get_animated_properties()["_PolarDivision:Weights_rad"]
         scale = strip.get_animated_properties()["_PolarDivision:Scale"]
 
-        rotation_constraint_a = rotation.Rotation(torch.tensor([1920/2, 1080/2], device=cuda), cuda)
-        rotation_constraint_b = rotation.Rotation(torch.tensor([1920/2, 1080/2], device=cuda), cuda)
-        rotation_constraint_c = rotation.Rotation(torch.tensor([1920/2, 1080/2], device=cuda), cuda)
+        rotation_constraint_a = rotation.Rotation(torch.tensor([1920 / 2, 1080 / 2], device=cuda), cuda)
+        rotation_constraint_b = rotation.Rotation(torch.tensor([1920 / 2, 1080 / 2], device=cuda), cuda)
+        rotation_constraint_c = rotation.Rotation(torch.tensor([1920 / 2, 1080 / 2], device=cuda), cuda)
         points.set_constraint(mat_split.MatSplit([identity.Identity(), rotation_constraint_a, rotation_constraint_b,
                                                   rotation_constraint_c]))
         rotation_constraint_a.angle.set_anim_style("Sine")

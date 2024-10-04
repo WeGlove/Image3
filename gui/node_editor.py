@@ -1,7 +1,7 @@
 import json
 import os.path
 import traceback
-from typing import Dict
+from typing import Dict, List
 from PyQt6.QtWidgets import QWidget, QLineEdit, QMenu
 from PyQt6.QtGui import QKeyEvent, QGuiApplication
 from Nodes.value_property import ValueProperty
@@ -16,19 +16,29 @@ class NodeEditor(QWidget):
     SAVE_KEY = "s"
     LOAD_KEY = "l"
 
-    def __init__(self, factory: NodeFactory, strip, nodes=None):
+    def __init__(self, factories: List[NodeFactory], strip, nodes=None):
         super().__init__()
         self.sockets = []
         self.node_widgets: Dict[int, NodeWidget] = dict()
         self.x = 0
         self.selected = None
         self.menu = QMenu(self)
-        self.acts = []
-        for key in factory.in_dict.keys():
-            act = self.menu.addAction(key)
-            self.acts.append(act)
-        self.factory: NodeFactory = factory
-        self.device = factory.device
+        self.menu_acts = []
+        self.factory_acts = []
+
+        self.factory_menus = {}
+        for factory in factories:
+            factory_menu = QMenu(self.menu)
+            self.factory_menus[factory.get_factory_name()] = factory_menu
+
+            act = self.menu.addAction(factory.get_factory_name())
+            self.menu_acts.append(act)
+
+            for key in factory.in_dict.keys():
+                act = factory_menu.addAction(key)
+                self.factory_acts.append(act)
+        self.factories: Dict[str, NodeFactory] = {factory.get_factory_name(): factory for factory in factories}
+        self.device = factories[0].device
         self.strip = strip
 
         if nodes is not None:
@@ -127,10 +137,11 @@ class NodeEditor(QWidget):
     def contextMenuEvent(self, event):
         try:
             action = self.menu.exec()
+            out_action = self.factory_menus[action.text()].exec()
             nodes = []
 
             self.menu.move(self.mapToGlobal(event.pos()))
-            node = self.factory.instantiate(action.text())
+            node = self.factories[action.text()].instantiate(out_action.text())
             nodes.append(node)
 
             self.add_nodes(nodes)

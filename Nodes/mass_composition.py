@@ -5,13 +5,12 @@ from Nodes.node_socket import NodeSocket
 
 class MassComposition(Node):
 
-    def __init__(self, frame_counter, device):
+    def __init__(self, node_id, frame_counter, device):
         self.frame_counter = frame_counter
         self.device = device
         self.noso_images = NodeSocket(False, "Images", None)
         self.noso_compositor = NodeSocket(False, "Compositor", None)
-        super().__init__("MassCompositon", "MassCompositon", "Mass Composition",
-                         frame_counter, [self.noso_images, self.noso_compositor], device, [])
+        super().__init__(node_id, "", frame_counter, [self.noso_images, self.noso_compositor], device, [])
 
     def produce(self):
         stack_img = None
@@ -26,3 +25,6 @@ class MassComposition(Node):
 
         return stack_img
 
+    @staticmethod
+    def get_node_name():
+        return "Mass Composition"

@@ -1,6 +1,6 @@
 from Nodes.node import Node
 from Nodes.node_socket import NodeSocket
-from strips.frame_counter import FrameCounter
+from frame_counter import FrameCounter
 
 
 class FromFile(Node):
