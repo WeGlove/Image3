@@ -34,6 +34,7 @@ class NodeEditor(QWidget):
         self.act_weight_buffer = self.menu.addAction("WeightBuffer")
         self.act_point_mapping = self.menu.addAction("PointMapping")
         self.act_circles = self.menu.addAction("Circles")
+        self.act_spirals = self.menu.addAction("Spirals")
         self.factory: NodeFactory = factory
         self.device = factory.device
         self.strip = strip
@@ -178,6 +179,10 @@ class NodeEditor(QWidget):
             elif action == self.act_circles:
                 self.menu.move(self.mapToGlobal(event.pos()))
                 node = self.factory.circles()
+                nodes.append(node)
+            elif action == self.act_spirals:
+                self.menu.move(self.mapToGlobal(event.pos()))
+                node = self.factory.spirals()
                 nodes.append(node)
 
             self.add_nodes(nodes)

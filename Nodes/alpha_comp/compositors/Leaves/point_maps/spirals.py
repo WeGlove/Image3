@@ -1,33 +1,40 @@
 from Nodes.alpha_comp.Geos import get_polar
 import torch
-from Nodes.animated_property import AnimatedProperty
 from Nodes.alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
+from Nodes.node_socket import NodeSocket
+from Nodes.value_property import ValueProperty
 
 
 class Spirals(PointMap):
 
-    def __init__(self, points, scale_radius=1, scale=5, shift=0, ratio=0.5, rotation=0, frequency=1, weights_angles=None):
-        self.points = AnimatedProperty(initial_value=points)
-        self.rotation = AnimatedProperty(initial_value=rotation)
-        self.frequency = AnimatedProperty(initial_value=frequency)
-        self.weights_angle = AnimatedProperty(initial_value=weights_angles)
+    def __init__(self, node_id, device, frame_counter, points=None, rotation=0, frequency=1, weights_angles=None):
+        self.noso_points = NodeSocket(False, "Points", ValueProperty(points, -1, device=device, frame_counter=frame_counter))
+        self.noso_rotation = NodeSocket(False, "Rotation", ValueProperty(rotation, -1, device=device, frame_counter=frame_counter))
+        self.noso_frequency = NodeSocket(False, "Frequency", ValueProperty(frequency, -1, device=device, frame_counter=frame_counter))
+        self.noso_weights_angle = NodeSocket(False, "Weights", ValueProperty(weights_angles, -1, device=device, frame_counter=frame_counter))
+        self.noso_shift = NodeSocket(False, "Shift", ValueProperty(0, -1, device=device, frame_counter=frame_counter))
 
         self.angle_space = None
-        super().__init__("Spirals", [self.points, self.rotation, self.frequency, self.weights_angle])
+        super().__init__(device, node_id, frame_counter, "Spirals", [
+            self.noso_points,
+            self.noso_rotation,
+            self.noso_frequency,
+            self.noso_weights_angle,
+            self.noso_shift
+        ])
 
-
-    def initialize(self, width, height, limit, device=None):
-        super().initialize(width, height, limit, device)
-        if self.weights_angle.initial_value is None:
-            self.weights_angle.initial_value = torch.tensor([1/self.points.get().shape[0]]*self.points.get().shape[0], device=self.device)
+    def initialize(self, width, height, limit):
+        super().initialize(width, height, limit)
+        if self.noso_weights_angle.get().initial_value is None:
+            self.noso_weights_angle.initial_value = torch.tensor([1/self.noso_points.get().produce().shape[0]]*self.noso_points.get().produce().shape[0], device=self.device)
 
         self.angle_space = 2 * torch.pi / self.limit
 
-    def composite(self, index, img):
+    def produce(self):
         rad_out = None
         angles_out = None
-        points = self.points.get()
-        weights_angle = self.weights_angle.get()
+        points = self.noso_points.get().produce()
+        weights_angle = self.noso_weights_angle.get().produce()
         weights_angle = weights_angle / torch.sum(weights_angle)
         for i in range(points.shape[0]):
             rad, angle = get_polar(self.width, self.height, self.device, points[i])
@@ -39,21 +46,9 @@ class Spirals(PointMap):
                 rad_out += rad
                 angles_out += angle
 
-        angles = (((angles_out + torch.pi) * self.frequency.get() + self.rotation.get()) % (2 * torch.pi)) / (2 * torch.pi)
+        angles = (((angles_out + torch.pi) * self.noso_frequency.get().produce() + self.noso_rotation.get().produce()) % (2 * torch.pi)) / (2 * torch.pi)
 
         arr_map = angles
+        arr_map += self.noso_shift.get().produce()
 
         return arr_map
-
-    def get_animated_properties(self, visitors):
-        animated_properties = {visitors + "_" + "PolarDivision:Points": self.points,
-                               visitors + "_" + "PolarDivision:Rotation": self.rotation,
-                               visitors + "_" + "PolarDivision:Frequency": self.frequency,
-                               visitors + "_" + "PolarDivision:Weights_angle": self.weights_angle}
-
-        constraint_properties = {}
-        for k, animated_property in animated_properties.items():
-            constraint_properties.update(animated_property.get_animated_properties(k))
-
-        animated_properties.update(constraint_properties)
-        return animated_properties

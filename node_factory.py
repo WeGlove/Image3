@@ -10,6 +10,7 @@ from strips.constraints.buffer import MeanBuffer, WeightBuffer
 from strips.constraints.exciter import Exciter
 from Nodes.alpha_comp.compositors.Leaves.point_mapping import PointMapping
 from Nodes.alpha_comp.compositors.Leaves.point_maps.circles import Circles
+from Nodes.alpha_comp.compositors.Leaves.point_maps.spirals import Spirals
 
 
 class NodeFactory:
@@ -50,6 +51,8 @@ class NodeFactory:
             return self.pointMapping(**properties)
         elif name == "Circles":
             return self.circles(**properties)
+        elif name == "Spirals":
+            return self.spirals(**properties)
         else:
             raise ValueError(f"Unknown Node {name}")
 
@@ -129,6 +132,12 @@ class NodeFactory:
 
     def circles(self, node_id=None):
         node = Circles(device=self.device, node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
+        if node_id is None:
+            self.next_id += 1
+        return node
+
+    def spirals(self, node_id=None):
+        node = Spirals(device=self.device, node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
         if node_id is None:
             self.next_id += 1
         return node

@@ -33,7 +33,8 @@ class PointMapping(Compositor):
         weights = weights / torch.sum(weights)
 
         for point_map, weight in zip(self.noso_point_maps.get().produce(), weights):
-            composite_point_map += weight * point_map.produce()
+            if weight != 0.0:
+                composite_point_map += weight * point_map.produce()
 
         arr_map = (composite_point_map * self.noso_frequency.get().produce() + self.noso_shift.get().produce()) % 1
 

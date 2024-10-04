@@ -12,6 +12,7 @@ class WeightBuffer(Node):
 
     def produce(self, *args):
         self.acc = self.acc * self.reduce.get().produce() + self.acc_in.get().produce() * (1-self.reduce.get().produce())
+        print(self.acc)
         return self.acc
 
     def initialize(self, width, height, limit):
