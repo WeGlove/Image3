@@ -11,6 +11,7 @@ from strips.constraints.exciter import Exciter
 from Nodes.alpha_comp.compositors.Leaves.point_mapping import PointMapping
 from Nodes.alpha_comp.compositors.Leaves.point_maps.circles import Circles
 from Nodes.alpha_comp.compositors.Leaves.point_maps.spirals import Spirals
+from strips.mass_composition import MassComposition
 
 
 class NodeFactory:
@@ -20,6 +21,23 @@ class NodeFactory:
         self.device = device
         self.frame_counter = frame_counter
 
+        self.in_dict = {
+            "Value Property": self.value_property,
+            "Animated Property": self.animated_property,
+            "PointMappingMin": self.pointMappingMin,
+            "Ouuuuuuuuuuuuuut": self.out,
+            "Line": self.line,
+            "Point Map Comb": self.pointMapComb,
+            "FromFile": self.fromfile,
+            "MeanBuffer": self.meanBuffer,
+            "Exciter": self.exciter,
+            "WeightBuffer": self.weightbuffer,
+            "PointMapping": self.pointMapping,
+            "Circles": self.circles,
+            "Spirals": self.spirals,
+            "MassComposition": self.mass_composition
+        }
+
     def reset(self):
         self.next_id = 0
 
@@ -27,32 +45,9 @@ class NodeFactory:
         self.next_id = x
 
     def node_from_dict(self, properties, name):
-        if name == "Value Property":
+        if name in self.in_dict:
+            self.in_dict[name](**properties)
             return self.value_property(**properties)
-        elif name == "Animated Property":
-            return self.animated_property(**properties)
-        elif name == "PointMappingMin":
-            return self.pointMappingMin(**properties)
-        elif name == "Ouuuuuuuuuuuuuut":
-            return self.out(**properties)
-        elif name == "Line":
-            return self.line(**properties)
-        elif name == "Point Map Comb":
-            return self.pointMapComb(**properties)
-        elif name == "FromFile":
-            return self.fromfile(**properties)
-        elif name == "MeanBuffer":
-            return self.meanBuffer(**properties)
-        elif name == "Exciter":
-            return self.exciter(**properties)
-        elif name == "WeightBuffer":
-            return self.weightbuffer(**properties)
-        elif name == "PointMapping":
-            return self.pointMapping(**properties)
-        elif name == "Circles":
-            return self.circles(**properties)
-        elif name == "Spirals":
-            return self.spirals(**properties)
         else:
             raise ValueError(f"Unknown Node {name}")
 
@@ -141,3 +136,10 @@ class NodeFactory:
         if node_id is None:
             self.next_id += 1
         return node
+
+    def mass_composition(self, node_id=None):
+        node = MassComposition(device=self.device, node_id=self.next_id if node_id is None else node_id, frame_counter=self.frame_counter)
+        if node_id is None:
+            self.next_id += 1
+        return node
+
