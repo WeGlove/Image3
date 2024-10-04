@@ -1,9 +1,6 @@
 import os.path
-import numpy as np
-from PIL import Image
 from gui.render_gui import RenderGui
 from renderer import Renderer
-from Nodes.out import Out
 import torch
 from node_factory import NodeFactory
 from PyQt6.QtWidgets import QApplication
@@ -19,13 +16,6 @@ if __name__ == "__main__":
     cuda = torch.device('cuda')
 
     with ((torch.cuda.device(0))):
-
-        images = []
-        for i, file in enumerate(os.listdir(path)):
-            print(f"Loading Image: {i}")
-            img = np.array(Image.open(os.path.join(path, file)))
-            img = torch.tensor(img, device=cuda)
-            images.append(img)
 
         frame_counter = FrameCounter()
         factory = NodeFactory(cuda, frame_counter)
