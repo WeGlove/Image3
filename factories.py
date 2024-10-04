@@ -7,9 +7,9 @@ from Nodes.misc.pointMapComb import PointMapComb
 from From_old_projects.strips.constraints.fromfile import FromFile
 from From_old_projects.strips.constraints.buffer import MeanBuffer, WeightBuffer
 from From_old_projects.strips.constraints.exciter import Exciter
-from Nodes.misc.alpha_comp import PointMapping
+from Nodes.misc.alpha_comp.compositors.Leaves.point_mapping import PointMapping
 from Nodes.misc.alpha_comp.compositors.Leaves.point_maps.circles import Circles
-from Nodes.misc.alpha_comp import Spirals
+from Nodes.misc.alpha_comp.compositors.Leaves.point_maps.spirals import Spirals
 from Nodes.misc.mass_composition import MassComposition
 from node_factory import NodeFactory
 

@@ -9,6 +9,8 @@ from Nodes.system.animated_property import AnimatedProperty
 from node_factory import NodeFactory
 from gui.node_widgets import NodeWidget, AnimatedPropertyNodeWidget
 from Nodes.system.out import Out
+from PyQt6 import QtGui, QtCore, Qt6
+from PyQt6.QtWidgets import QLabel
 
 
 class NodeEditor(QWidget):
@@ -45,6 +47,30 @@ class NodeEditor(QWidget):
             self.add_nodes(nodes)
 
         self.setWindowTitle("Node Editor")
+
+        self.line_label = QLabel(parent=self)
+        self.canvas = QtGui.QPixmap(1920, 1080)
+        self.redraw_lines()
+
+    def redraw_lines(self):
+        self.canvas.fill(0xffffff)
+        self.line_label.setPixmap(self.canvas)
+
+        canvas = self.line_label.pixmap()
+        painter = QtGui.QPainter(canvas)
+        pen = QtGui.QPen()
+        pen.setWidth(3)
+        pen.setColor(QtGui.QColor('black'))
+        painter.setPen(pen)
+        for key, node_widget in self.node_widgets.items():
+            for node_socket_widget in node_widget.connected_sockets:
+                a = node_widget.pos()
+                b = node_socket_widget.pos()
+                painter.drawLine(a, b)
+
+        painter.end()
+        self.line_label.setPixmap(canvas)
+
 
     def select(self, selection):
         if self.selected is not None:
@@ -88,18 +114,21 @@ class NodeEditor(QWidget):
             with open(os.path.join(path), "r") as f:
                 data = json.load(f)
 
-            self.factory.reset()
+            for factory in self.factories.values():
+                factory.reset()
+
             for node in self.node_widgets.values():
                 node.cut()
 
             self.node_widgets = dict()
 
-            self.factory.set_next(1 + max([int(node_id) for node_id in data.keys()]))
+            for factory in self.factories.values():
+                factory.set_next(1 + max([int(node_id) for node_id in data.keys()])) # TODO this causes issues actually. So far we only had one factory, now we have many.
 
             for k, node_dict in data.items():
                 node = node_dict["Node"]["properties"]
                 name = node_dict["Node"]["name"]
-                add_node = self.factory.node_from_dict(node, name)
+                add_node = self.factories[...].node_from_dict(node, name) # TODO field for factory!
                 self.add_nodes([add_node])
 
             for k, node_dict in data.items():

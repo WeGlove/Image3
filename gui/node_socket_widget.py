@@ -11,7 +11,8 @@ class NodeSocketWidget(QLabel):
         self.socket: NodeSocket = socket
         self.connected_node_widget = None
 
-        self.connection_label = QLabel("===Wire===", parent=self.parent)
+        self.connection_label = QLabel("", parent=self.parent)
+
         self.move(parent.pos())
         self.connection_label.move(parent.pos())
         self.connection_label.hide()
@@ -43,7 +44,7 @@ class NodeSocketWidget(QLabel):
         self.socket.disconnect()
 
         self.socket.connect(node_widget.node)
-        self.connection_label.move((self.pos() + node_widget.pos()) / 2)
+        #self.connection_label.move((self.pos() + node_widget.pos()) / 2)
         self.connected_node_widget = node_widget
         self.connected_node_widget.connect_socket(self)
         self.connection_label.show()
@@ -57,8 +58,9 @@ class NodeSocketWidget(QLabel):
 
     def move(self, *a0):
         super().move(*a0)
-        if self.connected_node_widget is not None:
-            self.connection_label.move((self.pos() + self.connected_node_widget.pos()) / 2)
+        self.parent.redraw_lines()
+        #if self.connected_node_widget is not None:
+        #    self.connection_label.move((self.pos() + self.connected_node_widget.pos()) / 2)
 
     def to_dict(self):
         return {"Socket": self.socket.to_dict()}
