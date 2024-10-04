@@ -16,7 +16,15 @@ from node_factory import NodeFactory
 
 def get_misc_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
-               [Out, PointMappingMin, ValueProperty, AnimatedProperty, Line, PointMapComb, FromFile, MeanBuffer,
+               [PointMappingMin, Line, PointMapComb, FromFile, MeanBuffer,
                 WeightBuffer, Exciter, PointMapping, Circles, Spirals, MassComposition]}
     factory = NodeFactory(device, frame_counter, in_dict, "Misc")
     return factory
+
+
+def get_system_factory(device, frame_counter):
+    in_dict = {node.get_node_name(): node for node in
+               [Out, ValueProperty, AnimatedProperty]}
+    factory = NodeFactory(device, frame_counter, in_dict, "System")
+    return factory
+
