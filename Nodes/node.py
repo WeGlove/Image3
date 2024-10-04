@@ -42,9 +42,9 @@ class Node:
     def produce(self, *args):
         return None
 
-    def initialize(self, width, height, limit):
+    def initialize(self, width, height, *args):
         for socket in self.subnode_sockets:
-            socket.get().initialize(width, height, limit)
+            socket.get().initialize(width, height, *args)
 
     def get_all_subnodes(self):
         subnodes = [self.get_subnode(k).get_all_subnodes() for k in range(self.get_subnode_count()) if self.subnode_sockets[k].is_connected()]

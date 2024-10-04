@@ -1,25 +1,19 @@
-from strips.strip import Strip
 import torch
-import cv2
+from Nodes.node import Node
+from Nodes.node_socket import NodeSocket
 
 
-class MassComposition(Strip):
+class MassComposition(Node):
 
-    def __init__(self, length, images, compositor):
-        super().__init__(length)
-        self.images = images
-        self.compositor = compositor
-
-    def initialize(self, width, height, fps, initial_frame, initial_image, device):
-        self.fps = fps
-        self.initial_frame = initial_frame
-        self.initial_image = initial_image
+    def __init__(self, frame_counter, device):
+        self.frame_counter = frame_counter
         self.device = device
-        self.width = width
-        self.height = height
-        self.compositor.initialize(self.width, self.height, len(self.images))
+        self.noso_images = NodeSocket(False, "Images", None)
+        self.noso_compositor = NodeSocket(False, "Compositor", None)
+        super().__init__("MassCompositon", "MassCompositon", "Mass Composition",
+                         frame_counter, [self.noso_images, self.noso_compositor], device, [])
 
-    def produce(self, last_image):
+    def produce(self):
         stack_img = None
 
         for i, img in enumerate(self.images):
@@ -31,10 +25,4 @@ class MassComposition(Strip):
             stack_img = stack_img + torch.multiply(img, mask.transpose(0, 1))
 
         return stack_img
-
-    def free(self):
-        for img in self.images:
-            del img
-
-        self.compositor.free()
 
