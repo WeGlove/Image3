@@ -1,8 +1,10 @@
 import traceback
-from PyQt6.QtWidgets import QLabel, QLineEdit
+from PyQt6.QtWidgets import QLabel, QLineEdit, QPushButton
 from PyQt6.QtGui import QFont
 import torch
 from gui.node_socket_widget import NodeSocketWidget
+from Nodes.interactables.node_edit import NodeEdit
+from Nodes.interactables.node_button import NodeButton
 
 
 class NodeWidget(QLabel):
@@ -25,37 +27,53 @@ class NodeWidget(QLabel):
 
         def get_on_edit(k):
             def on_edit(_):
-                try:
-                    text = eval(self.edit_fields[k].text())
-                    if type(text) is list:
-                        self.node.set_node_edit(k, torch.tensor(text, device=self.node.device))
-                    else:
-                        self.node.set_node_edit(k, text)
-                except Exception:
-                    print(traceback.format_exc())
+                self.node.get_interactable(k).set(self.edit_fields[k].text())
 
             return on_edit
 
-        self.edit_fields = [QLineEdit(parent=self.parent) for _ in range(self.node.get_edit_count())]
-        for k, edit_field in enumerate(self.edit_fields):
-            edit_field.textEdited.connect(get_on_edit(k))
-            edit_field.show()
+        def get_on_button_press(k):
+            def on_press(_):
+                self.node.get_interactable(k).toggle()
+
+            return on_press
 
         self.connected_sockets = []
 
         for k, socket in enumerate(self.socket_labels):
             pos = self.pos()
             socket.move(pos.x(), pos.y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
-        for j, edit in enumerate(self.edit_fields):
-            try:
+
+        #self.edit_fields = [QLineEdit(parent=self.parent) for _ in range(self.node.get_interactable_count())]
+        #for k, edit_field in enumerate(self.edit_fields):
+        #    edit_field.textEdited.connect(get_on_edit(k))
+        #    edit_field.show()
+
+        self.edit_fields = []
+        for j in range(self.node.get_interactable_count()):
+            interactable = self.node.get_interactable(j)
+            if type(interactable) == NodeEdit:
+                edit_field = QLineEdit(parent=self.parent)
+                self.edit_fields.append(edit_field)
+                edit_field.textEdited.connect(get_on_edit(j))
+                edit_field.show()
+
+                try:
+                    pos = self.pos()
+                    edit_field.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
+                    value = self.node.get_node_edit(j)
+                    if type(value) == torch.Tensor:
+                        value = value.tolist()
+                    edit_field.setText(str(value))
+                except Exception:
+                    print(traceback.format_exc())
+            elif type(interactable) == NodeButton:
+                edit_field = QPushButton(parent=self.parent)
+                self.edit_fields.append(edit_field)
+                edit_field.clicked.connect(get_on_button_press(j))
+                edit_field.show()
+
                 pos = self.pos()
-                edit.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
-                value = self.node.get_node_edit(j)
-                if type(value) == torch.Tensor:
-                    value = value.tolist()
-                edit.setText(str(value))
-            except Exception:
-                print(traceback.format_exc())
+                edit_field.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
 
     def cut(self):
         for connected_socket in self.connected_sockets:
@@ -105,7 +123,7 @@ class NodeWidget(QLabel):
     def to_dict(self):
         return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels], "Position": [self.pos().x(), self.pos().y()]}
 
-
+"""
 class AnimatedPropertyNodeWidget(NodeWidget):
 
     def __init__(self, node, parent):
@@ -139,3 +157,4 @@ class AnimatedPropertyNodeWidget(NodeWidget):
     def move(self, *a0):
         super().move(*a0)
         self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
+"""

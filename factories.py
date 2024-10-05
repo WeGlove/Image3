@@ -10,6 +10,7 @@ from From_old_projects.strips.constraints.exciter import Exciter
 from Nodes.misc.alpha_comp.compositors.Leaves.point_mapping import PointMapping
 from Nodes.misc.alpha_comp.compositors.Leaves.point_maps.circles import Circles
 from Nodes.misc.alpha_comp.compositors.Leaves.point_maps.spirals import Spirals
+from Nodes.system.button import Button
 from Nodes.misc.mass_composition import MassComposition
 from node_factory import NodeFactory
 
@@ -24,7 +25,7 @@ def get_misc_factory(device, frame_counter):
 
 def get_system_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
-               [Out, ValueProperty, AnimatedProperty]}
+               [Out, ValueProperty, AnimatedProperty, Button]}
     factory = NodeFactory(device, frame_counter, in_dict, "System")
     return factory
 

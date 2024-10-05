@@ -15,8 +15,7 @@ class AnimatedProperty(Node):
         self.initial_value = NodeSocket(False, "Initial Value",
                                         ValueProperty(initial_value, node_id, device, frame_counter))
         self.animation_style = "Linear"
-        self.constraint = None
-        super().__init__(node_id, "", frame_counter, [self.initial_value], device, [])
+        super().__init__(node_id, "Used to animate a value", frame_counter, [self.initial_value], device, [])
 
     def set_anim_style(self, style):
         self.animation_style = style
@@ -102,9 +101,6 @@ class AnimatedProperty(Node):
             interp = self.nearest_neighbor()
         else:
             raise ValueError(f"Unknown animation style {self.animation_style}")
-
-        if self.constraint is not None:
-            interp = self.constraint.constrain(interp)
 
         return interp
 

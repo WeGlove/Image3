@@ -34,6 +34,9 @@ class NodeSocketWidget(QLabel):
                     self.connected_node_widget.disconnect_socket(self)
                 self.socket.disconnect()
                 self.connection_label.hide()
+
+            self.parent.redraw_lines()
+
         except Exception:
             print(traceback.format_exc())
 
@@ -59,8 +62,6 @@ class NodeSocketWidget(QLabel):
     def move(self, *a0):
         super().move(*a0)
         self.parent.redraw_lines()
-        #if self.connected_node_widget is not None:
-        #    self.connection_label.move((self.pos() + self.connected_node_widget.pos()) / 2)
 
     def to_dict(self):
         return {"Socket": self.socket.to_dict()}

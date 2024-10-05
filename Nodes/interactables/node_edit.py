@@ -1,6 +1,10 @@
-class NodeEdit:
+from Nodes.interactables.interactable import Interactable
+
+
+class NodeEdit(Interactable):
 
     def __init__(self, default=None):
+        super().__init__()
         self.default = default
 
     def set(self, value):

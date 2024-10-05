@@ -7,9 +7,9 @@ from PyQt6.QtGui import QKeyEvent, QGuiApplication
 from Nodes.system.value_property import ValueProperty
 from Nodes.system.animated_property import AnimatedProperty
 from node_factory import NodeFactory
-from gui.node_widgets import NodeWidget, AnimatedPropertyNodeWidget
+from gui.node_widgets import NodeWidget
 from Nodes.system.out import Out
-from PyQt6 import QtGui, QtCore, Qt6
+from PyQt6 import QtGui
 from PyQt6.QtWidgets import QLabel
 
 
@@ -99,13 +99,8 @@ class NodeEditor(QWidget):
 
     def add_nodes(self, nodes):
         for node in nodes:
-            if type(node) == ValueProperty:
-                label = NodeWidget(node, parent=self)
-            elif type(node) == AnimatedProperty:
-                label = AnimatedPropertyNodeWidget(node, parent=self)
-            else:
-                label = NodeWidget(node, parent=self)
-            self.node_widgets[node.node_id] = label
+            node_widget = NodeWidget(node, parent=self)
+            self.node_widgets[node.node_id] = node_widget
 
     def save(self, path):
         widgets = dict()

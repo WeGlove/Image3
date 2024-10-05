@@ -1,16 +1,16 @@
 from typing import List
 from Nodes.node_socket import NodeSocket
-from Nodes.node_edit import NodeEdit
+from Nodes.interactables.interactable import Interactable
 
 
 class Node:
 
     def __init__(self, node_id, description, frame_counter, subnode_sockets: List[NodeSocket], device,
-                 node_edits: List[NodeEdit]):
+                 interactables: List[Interactable]):
         self.subnode_sockets = subnode_sockets
         self.frame_counter = frame_counter
         self.description = description
-        self.nodes_edits = node_edits if node_edits is not None else []
+        self.interactables = interactables if interactables is not None else []
         self.device = device
         self.node_id = node_id
 
@@ -20,17 +20,14 @@ class Node:
     def get_description(self):
         return self.description
 
-    def get_edit_count(self):
-        return len(self.nodes_edits)
+    def get_interactable_count(self):
+        return len(self.interactables)
 
     def get_subnode(self, k):
         return self.subnode_sockets[k].get()
 
-    def get_node_edit(self, k):
-        return self.nodes_edits[k].get()
-
-    def set_node_edit(self, k, value):
-        return self.nodes_edits[k].set(value)
+    def get_interactable(self, k):
+        return self.interactables[k]
 
     def connect_subnode(self, subnode_id, subnode):
         self.subnode_sockets[subnode_id].connect(subnode)

@@ -1,6 +1,6 @@
 import torch
 from Nodes.node import Node
-from Nodes.node_edit import NodeEdit
+from Nodes.interactables.node_edit import NodeEdit
 import os
 import numpy as np
 from PIL import Image
