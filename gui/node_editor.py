@@ -4,8 +4,6 @@ import traceback
 from typing import Dict, List
 from PyQt6.QtWidgets import QWidget, QLineEdit, QMenu
 from PyQt6.QtGui import QKeyEvent, QGuiApplication
-from Nodes.system.value_property import ValueProperty
-from Nodes.system.animated_property import AnimatedProperty
 from node_factory import NodeFactory
 from gui.node_widgets import NodeWidget
 from Nodes.system.out import Out
@@ -166,11 +164,16 @@ class NodeEditor(QWidget):
 
     def contextMenuEvent(self, event):
         try:
+            self.menu.move(self.mapToGlobal(event.pos()))
             action = self.menu.exec()
+            if action is None:
+                return
+            self.factory_menus[action.text()].move(self.mapToGlobal(event.pos()))
             out_action = self.factory_menus[action.text()].exec()
+            if out_action is None:
+                return
             nodes = []
 
-            self.menu.move(self.mapToGlobal(event.pos()))
             node = self.factories[action.text()].instantiate(out_action.text())
             nodes.append(node)
 
