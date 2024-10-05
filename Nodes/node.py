@@ -5,7 +5,7 @@ from Nodes.interactables.interactable import Interactable
 
 class Node:
 
-    def __init__(self, node_id, description, frame_counter, subnode_sockets: List[NodeSocket], device,
+    def __init__(self, node_id, factory_id, description, frame_counter, subnode_sockets: List[NodeSocket], device,
                  interactables: List[Interactable]):
         self.subnode_sockets = subnode_sockets
         self.frame_counter = frame_counter
@@ -13,6 +13,7 @@ class Node:
         self.interactables = interactables if interactables is not None else []
         self.device = device
         self.node_id = node_id
+        self.factory_id = factory_id
 
     def get_subnode_count(self):
         return len(self.subnode_sockets)
@@ -33,7 +34,7 @@ class Node:
         self.subnode_sockets[subnode_id].connect(subnode)
 
     def to_dict(self):
-        return {"properties": {"node_id": self.node_id}, "name": self.get_node_name()}
+        return {"properties": {}, "system": {"node_id": self.node_id, "factory_id": self.factory_id, "name": self.get_node_name()}}
 
     def produce(self, *args):
         return None

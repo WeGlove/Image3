@@ -125,9 +125,8 @@ class NodeEditor(QWidget):
                 factory.set_next(1 + max([int(node_id) for node_id in data.keys()])) # TODO this causes issues actually. So far we only had one factory, now we have many.
 
             for k, node_dict in data.items():
-                node = node_dict["Node"]["properties"]
-                name = node_dict["Node"]["name"]
-                add_node = self.factories[...].node_from_dict(node, name) # TODO field for factory!
+                factory_id = node_dict["Node"]["system"]["factory_id"]
+                add_node = self.factories[factory_id].node_from_dict(node_dict["Node"]["properties"], node_dict["Node"]["system"])
                 self.add_nodes([add_node])
 
             for k, node_dict in data.items():

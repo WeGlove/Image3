@@ -6,11 +6,11 @@ from Nodes.misc.alpha_comp.compositors.Leaves.point_maps.LineConfigs import Line
 
 class Out(Node):
 
-    def __init__(self, device, node_id, frame_counter):
+    def __init__(self, device, node_id, frame_counter, factory_id):
         lines = LineConfigs.get_random(1, torch.tensor([0., 0.], device=device), 10., -1, device, frame_counter)
         self.noso_render_input = NodeSocket(False, "RenderInput", None)
 
-        super().__init__(node_id, "The Output of the Patch",
+        super().__init__(node_id, factory_id, "The Output of the Patch",
                          frame_counter, [self.noso_render_input], device, [])
 
     def produce(self):

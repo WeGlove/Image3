@@ -13,15 +13,16 @@ class NodeFactory:
     def set_next(self, x):
         self.next_id = x
 
-    def node_from_dict(self, properties, name):
+    def node_from_dict(self, properties, system):
+        name = system["name"]
         if name in self.in_dict:
-            return self.instantiate(name, node_id, properties)
+            return self.instantiate(node_id=system["node_id"], node_name=name, **properties)
         else:
             raise ValueError(f"Unknown Node {name}")
 
     def instantiate(self, node_name, node_id=None, **properties):
         node = self.in_dict[node_name](device=self.device, node_id=self.next_id if node_id is None else node_id,
-                                       frame_counter=self.frame_counter, **properties)
+                                       frame_counter=self.frame_counter, factory_id=self.factory_name, **properties)
         if node_id is None:
             self.next_id += 1
         return node
