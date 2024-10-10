@@ -1,11 +1,11 @@
 import os.path
 import numpy as np
 from PIL import Image
-from Nodes.misc.alpha_comp import Renderer
+from Nodes.maps.alpha_comp import Renderer
 from Nodes.misc.mass_composition import MassComposition
 import torch
-from Nodes.misc.alpha_comp import PointMapping
-from Nodes.misc.alpha_comp import Lines
+from Nodes.maps.alpha_comp import PointMapping
+from Nodes.maps.alpha_comp import Lines
 
 
 if __name__ == "__main__":

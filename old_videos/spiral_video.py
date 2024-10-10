@@ -1,8 +1,8 @@
 import os.path
-from Nodes.misc.alpha_comp import Spirals
+from Nodes.maps.alpha_comp import Spirals
 import numpy as np
 from PIL import Image
-from Nodes.misc.alpha_comp import Renderer
+from Nodes.maps.alpha_comp import Renderer
 from Nodes.misc.mass_composition import MassComposition
 import torch
 
