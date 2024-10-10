@@ -3,7 +3,7 @@ from Nodes.maps.alpha_comp import PolarDivision
 import numpy as np
 from PIL import Image
 from Nodes.maps.alpha_comp import Renderer
-from Nodes.misc.mass_composition import MassComposition
+from Nodes.maps.mass_composition import MassComposition
 import torch
 from From_old_projects.strips.constraints import identity, rotation
 from From_old_projects.strips.constraints import mat_split

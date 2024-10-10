@@ -1,21 +1,8 @@
 from Nodes.system.out import Out
 from Nodes.system.value_property import ValueProperty
 from Nodes.system.animated_property import AnimatedProperty
-from Nodes.maps.pointMapComb import PointMapComb
-from From_old_projects.strips.constraints.fromfile import FromFile
-from From_old_projects.strips.constraints.buffer import MeanBuffer, WeightBuffer
-from From_old_projects.strips.constraints.exciter import Exciter
 from Nodes.system.button import Button
-from Nodes.misc.mass_composition import MassComposition
 from node_factory import NodeFactory
-
-
-def get_misc_factory(device, frame_counter):
-    in_dict = {node.get_node_name(): node for node in
-               [ PointMapComb, FromFile, MeanBuffer,
-                WeightBuffer, Exciter, MassComposition]}
-    factory = NodeFactory(device, frame_counter, in_dict, "Misc")
-    return factory
 
 
 def get_system_factory(device, frame_counter):
@@ -52,3 +39,15 @@ def get_math_factory(device, frame_counter):
     factory = NodeFactory(device, frame_counter, in_dict, "Tensor Math")
     return factory
 
+
+from Nodes.maps.mass_composition import MassComposition
+from Nodes.maps.alpha_comp.compositors.Leaves.point_maps.line import Line
+from Nodes.maps.coloring import Coloring
+from Nodes.maps.mass_alpha import MassAlpha
+
+
+def get_map_factory(device, frame_counter):
+    in_dict = {node.get_node_name(): node for node in
+               [MassComposition, Line, Coloring, MassAlpha]}
+    factory = NodeFactory(device, frame_counter, in_dict, "Point Maps")
+    return factory

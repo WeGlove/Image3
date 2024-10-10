@@ -2,7 +2,7 @@ import os.path
 from gui.render_gui import RenderGui
 from renderer import Renderer
 import torch
-from factories import get_misc_factory, get_system_factory, get_io_factory, get_math_factory
+from factories import get_map_factory, get_system_factory, get_io_factory, get_math_factory
 from PyQt6.QtWidgets import QApplication
 from frame_counter import FrameCounter
 from patch import Patch
@@ -18,7 +18,7 @@ if __name__ == "__main__":
     with ((torch.cuda.device(0))):
 
         frame_counter = FrameCounter()
-        factories = [get_misc_factory(cuda, frame_counter), get_system_factory(cuda, frame_counter),
+        factories = [get_map_factory(cuda, frame_counter), get_system_factory(cuda, frame_counter),
                      get_io_factory(cuda, frame_counter), get_math_factory(cuda, frame_counter)]
 
         out = factories[1].instantiate("Output")
