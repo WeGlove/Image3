@@ -16,10 +16,10 @@ class NodeEditor(QWidget):
     SAVE_KEY = "s"
     LOAD_KEY = "l"
 
-    def __init__(self, factories: List[NodeFactory], strip, nodes=None):
+    def __init__(self, factories: List[NodeFactory], patch, nodes=None):
         super().__init__()
         self.sockets = []
-        self.node_widgets: Dict[int, NodeWidget] = dict()
+        self.node_widgets: Dict[str, NodeWidget] = dict()
         self.x = 0
         self.selected = None
         self.menu = QMenu(self)
@@ -39,7 +39,7 @@ class NodeEditor(QWidget):
                 self.factory_acts.append(act)
         self.factories: Dict[str, NodeFactory] = {factory.get_factory_name(): factory for factory in factories}
         self.device = factories[0].device
-        self.strip = strip
+        self.patch = patch
 
         if nodes is not None:
             self.add_nodes(nodes)
@@ -101,17 +101,28 @@ class NodeEditor(QWidget):
             self.node_widgets[node.node_id] = node_widget
 
     def save(self, path):
-        widgets = dict()
-        for k, node_widget in self.node_widgets.items():
-             widgets[k] = node_widget.to_dict()
+        try:
+            widgets = dict()
+            for k, node_widget in self.node_widgets.items():
+                 widgets[k] = node_widget.to_dict()
 
-        with open(os.path.join(path), "w+") as f:
-            json.dump(widgets, f, indent=1)
+            file_dump = {
+                "factories": {factory.get_factory_name(): factory.next_id for factory in self.factories.values()},
+                "node_widgets": widgets
+            }
+
+            with open(os.path.join(path), "w+") as f:
+                json.dump(file_dump, f, indent=1)
+        except Exception:
+            print(traceback.format_exc())
 
     def load(self, path):
         try:
             with open(os.path.join(path), "r") as f:
                 data = json.load(f)
+
+            factories = data["factories"]
+            data = data["node_widgets"]
 
             for factory in self.factories.values():
                 factory.reset()
@@ -121,8 +132,8 @@ class NodeEditor(QWidget):
 
             self.node_widgets = dict()
 
-            for factory in self.factories.values():
-                factory.set_next(1 + max([int(node_id) for node_id in data.keys()])) # TODO this causes issues actually. So far we only had one factory, now we have many.
+            for factory_name, next_id in factories.items():
+                self.factories[factory_name].set_next(next_id)
 
             for k, node_dict in data.items():
                 factory_id = node_dict["Node"]["system"]["factory_id"]
@@ -145,18 +156,21 @@ class NodeEditor(QWidget):
                             widget_to_connect = node_widget
                             break
                     else:
+                        print("AAAAAAAAAAAAAA")
                         ValueError()
 
-                    in_node_widget = self.node_widgets[int(k)]
+                    in_node_widget = self.node_widgets[node_dict["Node"]["system"]["node_id"]]
                     in_node_widget.socket_labels[j].connect(widget_to_connect)
 
             for k, node_dict in data.items():
                 position = node_dict["Position"]
-                self.node_widgets[int(k)].move(position[0], position[1])
+                self.node_widgets[k].move(position[0], position[1])
 
+            print(self.patch.get_root().node_id)
             for widget in self.node_widgets.values():
                 if type(widget.node) == Out:
-                    self.strip.compositor = widget.node
+                    self.patch.set_root(widget.node)
+                    print(self.patch.get_root().node_id)
 
         except Exception:
             print(traceback.format_exc())

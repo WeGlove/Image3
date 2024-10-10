@@ -18,10 +18,12 @@ class NodeSocket:
         return self.socket_name
 
     def connect(self, node):
+        print("Connect", self.socket_name, node.node_id)
         self.node = node
         self.connected = True
 
     def disconnect(self):
+        print("Disconnect", self.socket_name)
         self.node = None
         self.connected = False
 

@@ -58,16 +58,26 @@ class Renderer:
             if delta > 0:
                 time.sleep(delta)
 
-    def _render_thread(self, node, fps_wait=False):
+    def _pause(self):
+        while self.is_paused:
+            time.sleep(1)  # TODO this is terrible
+
+    def _render_thread(self, patch, fps_wait=False):
         while True:
             self.frame_counter.set_frame(0)
 
-            while self.is_paused:
-                time.sleep(1)  # TODO this is terrible
+            if self.is_paused:
+                self._pause()
 
             if self.frame_counter.was_set:
                 self.is_reset = False
-                node.initialize(self.width, self.height)
+                try:
+                    patch.get_root().initialize(self.width, self.height)
+                except Exception:
+                    print(traceback.format_exc())
+                    self.is_paused = True
+                    self._pause()
+
 
             for frame in range(self.start_frame, self.stop_frame):
                 current_frame = self.frame_counter.get()
@@ -86,7 +96,7 @@ class Renderer:
                     ...  # TODO
 
                 try:
-                    stack_img = node.produce()
+                    stack_img = patch.get_root().produce()
                 except Exception:
                     print(traceback.format_exc())
                     self.pause_unpause()
@@ -151,6 +161,3 @@ class Renderer:
     def join(self):
         self.display_thread.join()
         self.render_thread.join()
-
-
-

@@ -60,7 +60,7 @@ class NodeWidget(QLabel):
                 try:
                     pos = self.pos()
                     edit_field.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
-                    value = self.node.get_node_edit(j)
+                    value = self.node.get_interactable(j).get()
                     if type(value) == torch.Tensor:
                         value = value.tolist()
                     edit_field.setText(str(value))

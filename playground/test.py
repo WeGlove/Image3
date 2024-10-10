@@ -5,6 +5,7 @@ import torch
 from factories import get_misc_factory, get_system_factory
 from PyQt6.QtWidgets import QApplication
 from frame_counter import FrameCounter
+from patch import Patch
 
 
 if __name__ == "__main__":
@@ -20,10 +21,11 @@ if __name__ == "__main__":
         factories = [get_misc_factory(cuda, frame_counter), get_system_factory(cuda, frame_counter)]
 
         out = factories[1].instantiate("Output")
+        patch = Patch(out)
 
         app = QApplication([])
         renderer = Renderer(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,
                             save_path="C:\\Users\\tobia\\Desktop\\out_out", save=False, frame_counter=frame_counter)
-        window = RenderGui(renderer, factories, out)
+        window = RenderGui(renderer, factories, patch)
 
-        window.run(app, out, fps_wait=True)
+        window.run(app, patch, fps_wait=True)

@@ -6,12 +6,12 @@ from gui.node_editor import NodeEditor
 
 class RenderGui(QMainWindow):
 
-    def __init__(self, frame_renderer: Renderer, node_factory, strip):
+    def __init__(self, frame_renderer: Renderer, node_factory, patch):
         super().__init__()
         self.frame_renderer = frame_renderer
         self.node_factory = node_factory
 
-        self.strip = strip
+        self.patch = patch
 
         self.setWindowTitle("NightmareMachine")
 
@@ -94,11 +94,11 @@ class RenderGui(QMainWindow):
 
         self.setFixedSize(QSize(400, 300))
 
-        self.editor = NodeEditor(self.node_factory, strip)
+        self.editor = NodeEditor(self.node_factory, patch)
 
-    def run(self, app, node, fps_wait=False):
-        self.editor.add_nodes(node.get_all_subnodes())
-        self.frame_renderer.run(node, fps_wait)
+    def run(self, app, patch, fps_wait=False):
+        self.editor.add_nodes(patch.get_root().get_all_subnodes())
+        self.frame_renderer.run(patch, fps_wait)
         self.show()
         self.editor.show()
         app.exec()

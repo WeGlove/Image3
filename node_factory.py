@@ -21,7 +21,7 @@ class NodeFactory:
             raise ValueError(f"Unknown Node {name}")
 
     def instantiate(self, node_name, node_id=None, **properties):
-        node = self.in_dict[node_name](device=self.device, node_id=self.next_id if node_id is None else node_id,
+        node = self.in_dict[node_name](device=self.device, node_id=f"{self.factory_name}:{self.next_id}" if node_id is None else node_id,
                                        frame_counter=self.frame_counter, factory_id=self.factory_name, **properties)
         if node_id is None:
             self.next_id += 1
