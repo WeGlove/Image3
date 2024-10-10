@@ -71,11 +71,13 @@ def get_imaging_factory(device, frame_counter):
 
 
 from Nodes.conv_tensors.mean import Mean
+from Nodes.conv_tensors.edge_detection import EdgeDetection
+from Nodes.conv_tensors.sharpen import Sharpen
 
 
 def get_tensor_conv_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
-               [Mean]}
+               [Mean, EdgeDetection, Sharpen]}
     factory = NodeFactory(device, frame_counter, in_dict, "Convolution Tensors")
     return factory
 
