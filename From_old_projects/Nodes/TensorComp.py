@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.signal import fftconvolve
-from Nodes.maps.alpha_comp.compositor import Compositor
+from Nodes.maps.compositor import Compositor
 import torch
 
 

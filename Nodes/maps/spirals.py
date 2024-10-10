@@ -1,6 +1,6 @@
-from Nodes.maps.alpha_comp.Geos import get_polar
+from Nodes.maps.utils.Geos import get_polar
 import torch
-from Nodes.maps.alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
+from Nodes.maps.point_map import PointMap
 from Nodes.node_socket import NodeSocket
 from Nodes.system.value_property import ValueProperty
 
@@ -23,8 +23,8 @@ class Spirals(PointMap):
             self.noso_shift
         ])
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, *args):
+        super().initialize(width, height, *args)
         if self.noso_weights_angle.get().initial_value is None:
             self.noso_weights_angle.initial_value = torch.tensor([1/self.noso_points.get().produce().shape[0]]*self.noso_points.get().produce().shape[0], device=self.device)
 

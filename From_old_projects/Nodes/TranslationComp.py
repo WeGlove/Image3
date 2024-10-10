@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from Nodes.maps.alpha_comp.compositor import Compositor
+from Nodes.maps.compositor import Compositor
 
 
 class TranslationComp(Compositor):

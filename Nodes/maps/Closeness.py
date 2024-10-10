@@ -1,5 +1,5 @@
 import torch
-from Nodes.maps.alpha_comp.compositor import Compositor
+from Nodes.maps.compositor import Compositor
 from Nodes.system.animated_property import AnimatedProperty
 
 

@@ -3,7 +3,7 @@ from Nodes.maps.alpha_comp import RadialsWrap
 import numpy as np
 from PIL import Image
 from Nodes.maps.alpha_comp import Renderer
-from Nodes.maps.mass_composition import MassComposition
+from Nodes.imaging.mass_composition import MassComposition
 import torch
 
 

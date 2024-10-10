@@ -1,7 +1,7 @@
-from Nodes.maps.alpha_comp.Geos import get_homo_vector_map
+from Nodes.maps.utils.Geos import get_homo_vector_map
 import torch
 from Nodes.system.animated_property import AnimatedProperty
-from Nodes.maps.alpha_comp.compositor import Compositor
+from Nodes.maps.compositor import Compositor
 
 
 class TransformationHomoMatrix(Compositor):

@@ -1,7 +1,7 @@
-from Nodes.maps.alpha_comp.Geos import get_centered_vector_map
+from Nodes.maps.utils.Geos import get_centered_vector_map
 import torch
 from Nodes.system.value_property import ValueProperty
-from Nodes.maps.alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
+from Nodes.maps.point_map import PointMap
 from Nodes.node_socket import NodeSocket
 import math
 

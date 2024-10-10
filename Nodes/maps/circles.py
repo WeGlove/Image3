@@ -1,8 +1,8 @@
-from Nodes.maps.alpha_comp.Geos import get_polar
+from Nodes.maps.utils.Geos import get_polar
 import torch
 from Nodes.system.value_property import ValueProperty
 import math
-from Nodes.maps.alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
+from Nodes.maps.point_map import PointMap
 from Nodes.node_socket import NodeSocket
 
 
@@ -29,8 +29,8 @@ class Circles(PointMap):
             self.noso_ratio
         ])
 
-    def initialize(self, width, height, limit):
-        super().initialize(width, height, limit)
+    def initialize(self, width, height, *args):
+        super().initialize(width, height)
         if self.noso_weights_rad.get().initial_value is None:
             self.noso_weights_rad.get().initial_value = (
                 torch.tensor([1/self.noso_points.get().produce().shape[0]]*self.noso_points.get().produce().shape[0],

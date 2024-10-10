@@ -40,14 +40,23 @@ def get_math_factory(device, frame_counter):
     return factory
 
 
-from Nodes.maps.mass_composition import MassComposition
-from Nodes.maps.alpha_comp.compositors.Leaves.point_maps.line import Line
-from Nodes.maps.coloring import Coloring
-from Nodes.maps.mass_alpha import MassAlpha
+from Nodes.maps.line import Line
 
 
 def get_map_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
-               [MassComposition, Line, Coloring, MassAlpha]}
+               [Line]}
     factory = NodeFactory(device, frame_counter, in_dict, "Point Maps")
+    return factory
+
+
+from Nodes.imaging.mass_composition import MassComposition
+from Nodes.imaging.coloring import Coloring
+from Nodes.imaging.mass_alpha import MassAlpha
+
+
+def get_imaging_factory(device, frame_counter):
+    in_dict = {node.get_node_name(): node for node in
+               [MassComposition, Coloring, MassAlpha]}
+    factory = NodeFactory(device, frame_counter, in_dict, "Imaging")
     return factory

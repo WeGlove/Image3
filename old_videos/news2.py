@@ -2,7 +2,7 @@ import os.path
 import numpy as np
 from PIL import Image
 from Nodes.maps.alpha_comp import Renderer
-from Nodes.maps.mass_composition import MassComposition
+from Nodes.imaging.mass_composition import MassComposition
 from Nodes.maps.alpha_comp import Closeness
 import torch
 

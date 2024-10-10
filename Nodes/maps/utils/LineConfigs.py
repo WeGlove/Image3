@@ -1,7 +1,7 @@
 import torch
-from Nodes.maps.alpha_comp.compositors.Leaves.point_maps.point_map import PointMap
+from Nodes.maps.point_map import PointMap
 import math
-from Nodes.maps.alpha_comp.compositors.Leaves.point_maps.line import Line
+from Nodes.maps.line import Line
 import random
 
 
