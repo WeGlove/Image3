@@ -1,7 +1,6 @@
 import torch
 import math
 from Nodes.node import Node
-from Nodes.system.value_property import ValueProperty
 from Nodes.node import NodeSocket
 
 
@@ -12,8 +11,7 @@ class AnimatedProperty(Node):
         if keyframes is not None:
             for keyframe in keyframes:
                 self.set_key_frame(keyframe[0], keyframe[1])
-        self.initial_value = NodeSocket(False, "Initial Value",
-                                        ValueProperty(initial_value, node_id, device, frame_counter))
+        self.initial_value = NodeSocket(False, "Initial Value", None)
         self.animation_style = "Linear"
         super().__init__(node_id, factory_id, "Used to animate a value", frame_counter, [self.initial_value], device, [])
 

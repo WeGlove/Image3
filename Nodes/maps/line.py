@@ -1,6 +1,5 @@
 from Nodes.maps.utils.Geos import get_centered_vector_map
 import torch
-from Nodes.system.value_property import ValueProperty
 from Nodes.maps.point_map import PointMap
 from Nodes.node_socket import NodeSocket
 import math
@@ -15,10 +14,8 @@ class Line(PointMap):
         :param node_id:
         :param device:
         """
-        self.line_noso = NodeSocket(False, "Line",
-                                    ValueProperty(line, -1, device, frame_counter))
-        self.shift_noso = NodeSocket(False, "Shift",
-                                     ValueProperty(line, -1, device, frame_counter))
+        self.line_noso = NodeSocket(False, "Line", None)
+        self.shift_noso = NodeSocket(False, "Shift", None)
         super().__init__(device, node_id, frame_counter, factory_id, [self.line_noso, self.shift_noso])
 
     def produce(self):

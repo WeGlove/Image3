@@ -26,7 +26,7 @@ if __name__ == "__main__":
         patch = Patch(out)
 
         app = QApplication([])
-        renderer = Renderer(30, cuda, width=1920, height=1920, start_frame=0, stop_frame=16271, repeat=True,
+        renderer = Renderer(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,
                             save_path="C:\\Users\\tobia\\Desktop\\out_out", save=False, frame_counter=frame_counter)
         window = RenderGui(renderer, factories, patch)
 
