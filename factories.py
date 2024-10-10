@@ -37,3 +37,18 @@ def get_io_factory(device, frame_counter):
                [ImagesProperty, LoadImage, ByteReader, TextReader, KeyboardReader]}
     factory = NodeFactory(device, frame_counter, in_dict, "IO")
     return factory
+
+
+from Nodes.tensor_math.matmul import Matmul
+from Nodes.tensor_math.addition import Addition
+from Nodes.tensor_math.subtraction import Subtraction
+from Nodes.tensor_math.multiplication import Multiplication
+from Nodes.tensor_math.division import Division
+
+
+def get_math_factory(device, frame_counter):
+    in_dict = {node.get_node_name(): node for node in
+               [Matmul, Addition, Subtraction, Multiplication, Division]}
+    factory = NodeFactory(device, frame_counter, in_dict, "Tensor Math")
+    return factory
+
