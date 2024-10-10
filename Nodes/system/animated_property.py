@@ -7,7 +7,7 @@ from Nodes.node import NodeSocket
 
 class AnimatedProperty(Node):
 
-    def __init__(self, node_id, device, frame_counter, initial_value=None, keyframes=None):
+    def __init__(self, node_id, device, factory_id, frame_counter, initial_value=None, keyframes=None):
         self.keyframes = []
         if keyframes is not None:
             for keyframe in keyframes:
@@ -15,7 +15,7 @@ class AnimatedProperty(Node):
         self.initial_value = NodeSocket(False, "Initial Value",
                                         ValueProperty(initial_value, node_id, device, frame_counter))
         self.animation_style = "Linear"
-        super().__init__(node_id, "Used to animate a value", frame_counter, [self.initial_value], device, [])
+        super().__init__(node_id, factory_id, "Used to animate a value", frame_counter, [self.initial_value], device, [])
 
     def set_anim_style(self, style):
         self.animation_style = style
