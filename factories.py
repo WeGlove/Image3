@@ -25,10 +25,10 @@ def get_system_factory(device, frame_counter):
     return factory
 
 
-from Nodes.io.images_property import ImagesProperty
-from Nodes.io.load_image import LoadImage
-from Nodes.io.byte_reader import ByteReader
-from Nodes.io.text_reader import TextReader
+from Nodes.io.files.images_property import ImagesProperty
+from Nodes.io.files.load_image import LoadImage
+from Nodes.io.files.byte_reader import ByteReader
+from Nodes.io.files.text_reader import TextReader
 from Nodes.io.keyboard_reader import KeyboardReader
 
 
