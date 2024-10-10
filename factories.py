@@ -41,11 +41,12 @@ def get_math_factory(device, frame_counter):
 
 
 from Nodes.maps.line import Line
+from Nodes.maps.noise import Noise
 
 
 def get_map_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
-               [Line]}
+               [Line, Noise]}
     factory = NodeFactory(device, frame_counter, in_dict, "Point Maps")
     return factory
 

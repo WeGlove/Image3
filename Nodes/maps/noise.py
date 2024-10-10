@@ -1,32 +1,18 @@
 import torch
-from Nodes.maps.compositor import Compositor
-import numpy as np
+from Nodes.maps.point_map import PointMap
+from Nodes.node_socket import NodeSocket
 
 
-class Noise(Compositor):
-    def __init__(self, gray=True, bias=1):
-        super().__init__()
-        self.noise_map = None
-        self.gray = gray
-        self.bias = bias
+class Noise(PointMap):
+    def __init__(self, node_id, device, factory_id, frame_counter, bias=None):
+        self.bias = NodeSocket(False, "Bias", default=None, description="")
+        super().__init__(device, node_id, frame_counter, factory_id, [self.bias])
 
-    def initialize(self, width, height, limit, device=None):
-        super().initialize(width, height, limit, device)
+    def produce(self):
+        noise_map = torch.rand(self.width, self.height, device=self.device) ** self.bias.get().produce()
 
-    def composite(self, index, img):
-        if not self.gray:
-            self.noise_map = np.floor(np.random.rand(self.width, self.height, 3) ** self.bias * self.limit)
-        else:
-            self.noise_map = torch.floor(torch.rand(self.width, self.height, device=self.device) ** self.bias * self.limit)
-            self.noise_map = self.noise_map.repeat(3, 1, 1).transpose(0, 1).transpose(1, 2)
+        return noise_map
 
-        mask = torch.zeros((self.width, self.height, 3), device=self.device)
-        mask[self.noise_map == index] = 1
-
-        return mask
-
-    def free(self):
-        del self.noise_map
-
-    def to_dict(self):
-        return {"Noise": {}}
+    @staticmethod
+    def get_node_name():
+        return "Noise"
