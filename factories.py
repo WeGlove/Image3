@@ -66,3 +66,14 @@ def get_imaging_factory(device, frame_counter):
                [MassComposition, Coloring, MassAlpha]}
     factory = NodeFactory(device, frame_counter, in_dict, "Imaging")
     return factory
+
+
+from Nodes.conv_tensors.mean import Mean
+
+
+def get_tensor_conv_factory(device, frame_counter):
+    in_dict = {node.get_node_name(): node for node in
+               [Mean]}
+    factory = NodeFactory(device, frame_counter, in_dict, "Convolution Tensors")
+    return factory
+

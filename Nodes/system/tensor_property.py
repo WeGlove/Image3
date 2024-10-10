@@ -14,16 +14,6 @@ class TensorProperty(Node):
         text = json.loads(self.initial_value.get())
         return torch.tensor(text, device=self.device)
 
-    def to_dict(self):
-        property_dict = super().to_dict()
-        value = self.initial_value.get()
-
-        if type(value) == torch.Tensor:
-            value = value.tolist()
-
-        property_dict["properties"]["initial_value"] = value
-        return property_dict
-
     @staticmethod
     def get_node_name():
         return "Tensor Property"
