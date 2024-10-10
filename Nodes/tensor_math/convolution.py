@@ -14,14 +14,12 @@ class Convolution(Node):
         super().__init__(node_id, factory_id, "Convolution", frame_counter, [self.a, self.b], device, [])
 
     def produce(self):
-        #mask = fftconvolve(self.a.get().produce().cpu(), self.b.get().produce().cpu())
         a = self.a.get().produce()
         a = torch.reshape(a, (1, 1, *a.shape))
         b = self.b.get().produce()
         b = torch.reshape(b, (1, 1, *b.shape))
         mask = conv2d(a, b, padding="same")
         mask = mask[0][0]
-        print(mask.shape)
         return mask
 
     @staticmethod

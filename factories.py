@@ -1,15 +1,17 @@
+from node_factory import NodeFactory
+
 from Nodes.system.out import Out
 from Nodes.system.number_property import NumberProperty
 from Nodes.system.string_property import StringProperty
 from Nodes.system.tensor_property import TensorProperty
 from Nodes.system.animated_property import AnimatedProperty
 from Nodes.system.button import Button
-from node_factory import NodeFactory
+from Nodes.system.wait_manager import WaitManager
 
 
 def get_system_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
-               [Out, NumberProperty, StringProperty, TensorProperty, AnimatedProperty, Button]}
+               [Out, NumberProperty, StringProperty, TensorProperty, AnimatedProperty, Button, WaitManager]}
     factory = NodeFactory(device, frame_counter, in_dict, "System")
     return factory
 

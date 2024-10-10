@@ -21,4 +21,3 @@ class FrameCounter:
 
     def get(self):
         return self.frame
-        self.was_reversed = False
