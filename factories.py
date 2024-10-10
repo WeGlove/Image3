@@ -31,11 +31,13 @@ from Nodes.tensor_math.addition import Addition
 from Nodes.tensor_math.subtraction import Subtraction
 from Nodes.tensor_math.multiplication import Multiplication
 from Nodes.tensor_math.division import Division
+from Nodes.tensor_math.modulo import Modulo
+from Nodes.tensor_math.power import Power
 
 
 def get_math_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
-               [Matmul, Addition, Subtraction, Multiplication, Division]}
+               [Matmul, Addition, Subtraction, Multiplication, Division, Modulo, Power]}
     factory = NodeFactory(device, frame_counter, in_dict, "Tensor Math")
     return factory
 

@@ -10,10 +10,11 @@ class LoadImage(Node):
 
     def __init__(self, node_id, factory_id, device, frame_counter, initial_value="."):
         self.initial_value = NodeEdit(initial_value)
+        self.img = None
         super().__init__(node_id, factory_id, "Load Image", frame_counter, [], device, [self.initial_value])
 
     def produce(self):
-        return self.initial_value.get()
+        return self.img
 
     def to_dict(self):
         property_dict = super().to_dict()
@@ -29,7 +30,7 @@ class LoadImage(Node):
         path = self.initial_value.get()
 
         img = np.array(Image.open(os.path.join(path)))
-        img = torch.tensor(img, device=self.device, dtype=torch.float)
+        self.img = torch.tensor(img, device=self.device, dtype=torch.float)
 
         return img
 

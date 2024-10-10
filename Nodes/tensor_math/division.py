@@ -11,7 +11,7 @@ class Division(Node):
         super().__init__(node_id, factory_id, "Division", frame_counter, [self.a, self.b], device, [])
 
     def produce(self):
-        return self.a.get() / self.b.get()
+        return self.a.get().produce() / self.b.get().produce()
 
     @staticmethod
     def get_node_name():

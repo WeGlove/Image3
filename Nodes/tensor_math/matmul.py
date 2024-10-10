@@ -12,7 +12,7 @@ class Matmul(Node):
         super().__init__(node_id, factory_id, "Matmul", frame_counter, [self.a, self.b], device, [])
 
     def produce(self):
-        return torch.matmul(self.a.get(), self.b.get())
+        return torch.matmul(self.a.get().produce(), self.b.get().produce())
 
     @staticmethod
     def get_node_name():
