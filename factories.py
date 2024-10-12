@@ -43,12 +43,13 @@ from Nodes.tensor_math.convolution import Convolution
 from Nodes.tensor_math.transposition import Transposition
 from Nodes.tensor_math.selection import Selection
 from Nodes.tensor_math.shape import Shape
+from Nodes.tensor_math.mean import Mean
 
 
 def get_math_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
                [Matmul, Addition, Subtraction, Multiplication, Division, Modulo, Power, Convolution, Transposition,
-                Selection, Shape]}
+                Selection, Shape, Mean]}
     factory = NodeFactory(device, frame_counter, in_dict, "Tensor Math")
     return factory
 
