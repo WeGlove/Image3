@@ -2,7 +2,8 @@ import os.path
 from gui.render_gui import RenderGui
 from renderer import Renderer
 import torch
-from factories import get_map_factory, get_system_factory, get_io_factory, get_math_factory, get_imaging_factory, get_tensor_conv_factory
+from factories import (get_map_factory, get_system_factory, get_io_factory, get_math_factory, get_imaging_factory,
+                       get_tensor_conv_factory, get_maps_2vec_factory)
 from PyQt6.QtWidgets import QApplication
 from frame_counter import FrameCounter
 from patch import Patch
@@ -20,7 +21,8 @@ if __name__ == "__main__":
         frame_counter = FrameCounter()
         factories = [get_map_factory(cuda, frame_counter), get_system_factory(cuda, frame_counter),
                      get_io_factory(cuda, frame_counter), get_math_factory(cuda, frame_counter),
-                     get_imaging_factory(cuda, frame_counter), get_tensor_conv_factory(cuda, frame_counter)]
+                     get_imaging_factory(cuda, frame_counter), get_tensor_conv_factory(cuda, frame_counter),
+                     get_maps_2vec_factory(cuda, frame_counter)]
 
         out = factories[1].instantiate("Output")
         patch = Patch(out)
