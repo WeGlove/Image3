@@ -13,10 +13,6 @@ class Out(Node):
     def produce(self):
         return self.noso_render_input.get().produce()
 
-    def initialize(self, width, height, *args):
-        for socket in self.subnode_sockets:
-            socket.get().initialize(width, height)
-
     @staticmethod
     def get_node_name():
         return "Output"

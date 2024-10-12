@@ -5,6 +5,7 @@ import torch
 from gui.node_socket_widget import NodeSocketWidget
 from Nodes.interactables.node_edit import NodeEdit
 from Nodes.interactables.node_button import NodeButton
+from Nodes.interactables.node_display import NodeDisplay
 
 
 class NodeWidget(QLabel):
@@ -74,6 +75,23 @@ class NodeWidget(QLabel):
 
                 pos = self.pos()
                 edit_field.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
+            elif type(interactable) == NodeDisplay:
+                edit_field = QLineEdit(parent=self.parent)
+                self.edit_fields.append(edit_field)
+                edit_field.textEdited.connect(get_on_edit(j))
+                edit_field.show()
+
+                try:
+                    pos = self.pos()
+                    edit_field.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j * self.LINE_SIZE + len(
+                        self.socket_labels) * self.LINE_SIZE)
+                    value = self.node.get_interactable(j).get()
+                    if type(value) == torch.Tensor:
+                        value = value.tolist()
+                    edit_field.setText(str(value))
+                except Exception:
+                    print(traceback.format_exc())
+
 
     def cut(self):
         for connected_socket in self.connected_sockets:
@@ -121,7 +139,8 @@ class NodeWidget(QLabel):
             label.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
 
     def to_dict(self):
-        return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels], "Position": [self.pos().x(), self.pos().y()]}
+        return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels],
+                "Position": [self.pos().x(), self.pos().y()]}
 
 """
 class AnimatedPropertyNodeWidget(NodeWidget):

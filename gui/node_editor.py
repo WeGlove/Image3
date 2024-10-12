@@ -156,7 +156,6 @@ class NodeEditor(QWidget):
                             widget_to_connect = node_widget
                             break
                     else:
-                        print("AAAAAAAAAAAAAA")
                         ValueError()
 
                     in_node_widget = self.node_widgets[node_dict["Node"]["system"]["node_id"]]
@@ -166,7 +165,6 @@ class NodeEditor(QWidget):
                 position = node_dict["Position"]
                 self.node_widgets[k].move(position[0], position[1])
 
-            print(self.patch.get_root().node_id)
             for widget in self.node_widgets.values():
                 if type(widget.node) == Out:
                     self.patch.set_root(widget.node)

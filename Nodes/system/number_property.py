@@ -1,4 +1,3 @@
-import torch
 from Nodes.node import Node
 from Nodes.interactables.node_edit import NodeEdit
 

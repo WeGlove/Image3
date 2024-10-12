@@ -10,5 +10,4 @@ class Interactable:
         return self.default
 
     def to_dict(self):
-        return {"ConnectedID": self.node.node_id if self.connected else None, # TODO
-                "Connected": self.connected}
+        return {"value": self.default}

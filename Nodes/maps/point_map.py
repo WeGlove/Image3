@@ -8,7 +8,7 @@ class PointMap(Node):
         self.width = None
         self.height = None
 
-    def initialize(self, width, height, *args):
-        super().initialize(width, height, *args)
+    def initialize(self, width, height, excluded_nodes, *args):
+        super().initialize(width, height, excluded_nodes, *args)
         self.width = width
         self.height = height

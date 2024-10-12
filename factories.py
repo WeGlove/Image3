@@ -1,5 +1,4 @@
 from node_factory import NodeFactory
-
 from Nodes.system.out import Out
 from Nodes.system.number_property import NumberProperty
 from Nodes.system.string_property import StringProperty
@@ -7,11 +6,14 @@ from Nodes.system.tensor_property import TensorProperty
 from Nodes.system.animated_property import AnimatedProperty
 from Nodes.system.button import Button
 from Nodes.system.wait_manager import WaitManager
+from Nodes.system.hold import Hold
+from Nodes.system.display import Display
 
 
 def get_system_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
-               [Out, NumberProperty, StringProperty, TensorProperty, AnimatedProperty, Button, WaitManager]}
+               [Out, NumberProperty, StringProperty, TensorProperty, AnimatedProperty, Button, WaitManager, Hold,
+                Display]}
     factory = NodeFactory(device, frame_counter, in_dict, "System")
     return factory
 
@@ -38,11 +40,15 @@ from Nodes.tensor_math.division import Division
 from Nodes.tensor_math.modulo import Modulo
 from Nodes.tensor_math.power import Power
 from Nodes.tensor_math.convolution import Convolution
+from Nodes.tensor_math.transposition import Transposition
+from Nodes.tensor_math.selection import Selection
+from Nodes.tensor_math.shape import Shape
 
 
 def get_math_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
-               [Matmul, Addition, Subtraction, Multiplication, Division, Modulo, Power, Convolution]}
+               [Matmul, Addition, Subtraction, Multiplication, Division, Modulo, Power, Convolution, Transposition,
+                Selection, Shape]}
     factory = NodeFactory(device, frame_counter, in_dict, "Tensor Math")
     return factory
 

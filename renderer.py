@@ -72,7 +72,7 @@ class Renderer:
             if self.frame_counter.was_set:
                 self.is_reset = False
                 try:
-                    patch.get_root().initialize(self.width, self.height)
+                    patch.get_root().initialize(self.width, self.height, [])
                 except Exception:
                     print(traceback.format_exc())
                     self.is_paused = True

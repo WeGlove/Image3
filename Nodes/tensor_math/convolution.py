@@ -1,7 +1,6 @@
 from Nodes.node import Node
 from Nodes.node_socket import NodeSocket
 import torch
-from scipy.signal import fftconvolve
 from torch.nn.functional import conv2d
 
 

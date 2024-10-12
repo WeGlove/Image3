@@ -25,7 +25,8 @@ class ImagesProperty(Node):
         property_dict["properties"]["initial_value"] = value
         return property_dict
 
-    def initialize(self, width, height, *args):
+    def initialize(self, width, height, excluded_nodes, *args):
+        super().initialize(width, height, excluded_nodes, *args)
         path = self.initial_value.get()
 
         images = []
