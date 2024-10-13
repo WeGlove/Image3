@@ -61,11 +61,12 @@ from Nodes.maps.noise import Noise
 from Nodes.maps.fill import Fill
 from Nodes.maps.spirals import Spirals
 from Nodes.maps.circles import Circles
+from Nodes.maps.swap import Swap
 
 
 def get_map_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
-               [Line, Noise, Fill, Spirals, Circles]}
+               [Line, Noise, Fill, Spirals, Circles, Swap]}
     factory = NodeFactory(device, frame_counter, in_dict, "Point Maps")
     return factory
 
