@@ -100,3 +100,12 @@ def get_maps_2vec_factory(device, frame_counter):
     factory = NodeFactory(device, frame_counter, in_dict, "2Vec Maps")
     return factory
 
+
+from Nodes.maps_nvec.HSV import HSV
+
+
+def get_maps_nvec_factory(device, frame_counter):
+    in_dict = {node.get_node_name(): node for node in
+               [HSV]}
+    factory = NodeFactory(device, frame_counter, in_dict, "NVec Maps")
+    return factory
