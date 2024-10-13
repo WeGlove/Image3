@@ -8,12 +8,13 @@ from Nodes.system.button import Button
 from Nodes.system.wait_manager import WaitManager
 from Nodes.system.hold import Hold
 from Nodes.system.display import Display
+from Nodes.system.once import Once
 
 
 def get_system_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
                [Out, NumberProperty, StringProperty, TensorProperty, AnimatedProperty, Button, WaitManager, Hold,
-                Display]}
+                Display, Once]}
     factory = NodeFactory(device, frame_counter, in_dict, "System")
     return factory
 
