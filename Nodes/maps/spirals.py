@@ -2,17 +2,16 @@ from Nodes.maps.utils.Geos import get_polar
 import torch
 from Nodes.maps.point_map import PointMap
 from Nodes.node_socket import NodeSocket
-from Nodes.system.value_property import ValueProperty
 
 
 class Spirals(PointMap):
 
     def __init__(self, node_id, device, frame_counter, points=None, rotation=0, frequency=1, weights_angles=None):
-        self.noso_points = NodeSocket(False, "Points", ValueProperty(points, -1, device=device, frame_counter=frame_counter))
-        self.noso_rotation = NodeSocket(False, "Rotation", ValueProperty(rotation, -1, device=device, frame_counter=frame_counter))
-        self.noso_frequency = NodeSocket(False, "Frequency", ValueProperty(frequency, -1, device=device, frame_counter=frame_counter))
-        self.noso_weights_angle = NodeSocket(False, "Weights", ValueProperty(weights_angles, -1, device=device, frame_counter=frame_counter))
-        self.noso_shift = NodeSocket(False, "Shift", ValueProperty(0, -1, device=device, frame_counter=frame_counter))
+        self.noso_points = NodeSocket(False, "Points", None)
+        self.noso_rotation = NodeSocket(False, "Rotation", None)
+        self.noso_frequency = NodeSocket(False, "Frequency", None)
+        self.noso_weights_angle = NodeSocket(False, "Weights", None)
+        self.noso_shift = NodeSocket(False, "Shift", None)
 
         self.angle_space = None
         super().__init__(device, node_id, frame_counter, "Spirals", [
@@ -22,13 +21,6 @@ class Spirals(PointMap):
             self.noso_weights_angle,
             self.noso_shift
         ])
-
-    def initialize(self, width, height, *args):
-        super().initialize(width, height, *args)
-        if self.noso_weights_angle.get().initial_value is None:
-            self.noso_weights_angle.initial_value = torch.tensor([1/self.noso_points.get().produce().shape[0]]*self.noso_points.get().produce().shape[0], device=self.device)
-
-        self.angle_space = 2 * torch.pi / self.limit
 
     def produce(self):
         rad_out = None
