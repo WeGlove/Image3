@@ -78,8 +78,10 @@ class Renderer:
                     self.is_paused = True
                     self._pause()
 
-
             for frame in range(self.start_frame, self.stop_frame):
+                if self.is_paused:
+                    self._pause()
+
                 current_frame = self.frame_counter.get()
 
                 self.on_frame(current_frame)
