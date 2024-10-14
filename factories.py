@@ -10,12 +10,13 @@ from Nodes.system.hold import Hold
 from Nodes.system.display import Display
 from Nodes.system.once import Once
 from Nodes.system.random import Random
+from Nodes.system.list_get import ListGet
 
 
 def get_system_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
                [Out, NumberProperty, StringProperty, TensorProperty, AnimatedProperty, Button, WaitManager, Hold,
-                Display, Once, Random]}
+                Display, Once, Random, ListGet]}
     factory = NodeFactory(device, frame_counter, in_dict, "System")
     return factory
 
@@ -47,12 +48,13 @@ from Nodes.tensor_math.selection import Selection
 from Nodes.tensor_math.shape import Shape
 from Nodes.tensor_math.mean import Mean
 from Nodes.tensor_math.round import Round
+from Nodes.tensor_math.svd import SVD
 
 
 def get_math_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
                [Matmul, Addition, Subtraction, Multiplication, Division, Modulo, Power, Convolution, Transposition,
-                Selection, Shape, Mean, Round]}
+                Selection, Shape, Mean, Round, SVD]}
     factory = NodeFactory(device, frame_counter, in_dict, "Tensor Math")
     return factory
 
