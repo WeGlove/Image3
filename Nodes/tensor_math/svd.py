@@ -14,10 +14,6 @@ class SVD(Node):
         U, S, Vh = torch.linalg.svd(a)
         S = torch.diag(S, diagonal=U.shape[0] - Vh.shape[0])
         S = S[:, -Vh.shape[0]:]
-        a = S.cpu().numpy()
-        print(float(S[0, 0]), float(S[1,1]))
-
-        print(U.shape, S.shape, Vh.shape)
 
         return U, S, Vh
 
