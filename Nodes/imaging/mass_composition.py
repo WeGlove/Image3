@@ -17,10 +17,11 @@ class MassComposition(Node):
                          [self.noso_images, self.noso_compositor_a, self.noso_compositor_b, self.noso_compositor_c], device, [])
 
     def produce(self):
-        masks = [torch.round(self.noso_compositor_a.get().produce() % 1 * len(self.images)),
-                 torch.round(self.noso_compositor_b.get().produce() % 1 * len(self.images)),
-                 torch.round(self.noso_compositor_c.get().produce() % 1 * len(self.images))]
+        masks = [torch.round(self.noso_compositor_a.get().produce() % 1 * (len(self.images)-1)),
+                 torch.round(self.noso_compositor_b.get().produce() % 1 * (len(self.images)-1)),
+                 torch.round(self.noso_compositor_c.get().produce() % 1 * (len(self.images)-1))]
         mask = torch.stack(masks).transpose(0, 2)
+        print(torch.min(mask), torch.max(mask))
 
         stack_img = torch.zeros(mask.shape, device=self.device)
         for i, img in enumerate(self.images):

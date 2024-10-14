@@ -46,12 +46,13 @@ from Nodes.tensor_math.transposition import Transposition
 from Nodes.tensor_math.selection import Selection
 from Nodes.tensor_math.shape import Shape
 from Nodes.tensor_math.mean import Mean
+from Nodes.tensor_math.round import Round
 
 
 def get_math_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
                [Matmul, Addition, Subtraction, Multiplication, Division, Modulo, Power, Convolution, Transposition,
-                Selection, Shape, Mean]}
+                Selection, Shape, Mean, Round]}
     factory = NodeFactory(device, frame_counter, in_dict, "Tensor Math")
     return factory
 
@@ -62,11 +63,13 @@ from Nodes.maps.fill import Fill
 from Nodes.maps.spirals import Spirals
 from Nodes.maps.circles import Circles
 from Nodes.maps.swap import Swap
+from Nodes.maps.iRFFT import iRFFT
+from Nodes.maps.RFFT import RFFT
 
 
 def get_map_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
-               [Line, Noise, Fill, Spirals, Circles, Swap]}
+               [Line, Noise, Fill, Spirals, Circles, Swap, iRFFT, RFFT]}
     factory = NodeFactory(device, frame_counter, in_dict, "Point Maps")
     return factory
 
