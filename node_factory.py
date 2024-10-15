@@ -20,7 +20,7 @@ class NodeFactory:
         if name in self.in_dict:
             return self.instantiate(node_id=system["node_id"], node_name=name, interactables=interactables, **properties)
         else:
-            raise ValueError(f"Unknown Node {name}")
+            print("WARNING: UNKNOWN NODE")
 
     def instantiate(self, node_name, node_id=None, interactables=None, **properties):
         node = self.in_dict[node_name](device=self.device, node_id=f"{self.factory_name}:{self.next_id}" if node_id is None else node_id,

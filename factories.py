@@ -49,12 +49,13 @@ from Nodes.tensor_math.shape import Shape
 from Nodes.tensor_math.mean import Mean
 from Nodes.tensor_math.round import Round
 from Nodes.tensor_math.svd import SVD
+from Nodes.tensor_math.qr import QR
 
 
 def get_math_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
                [Matmul, Addition, Subtraction, Multiplication, Division, Modulo, Power, Convolution, Transposition,
-                Selection, Shape, Mean, Round, SVD]}
+                Selection, Shape, Mean, Round, SVD, QR]}
     factory = NodeFactory(device, frame_counter, in_dict, "Tensor Math")
     return factory
 
