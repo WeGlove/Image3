@@ -47,7 +47,6 @@ class NodeSocketWidget(QLabel):
         self.socket.disconnect()
 
         self.socket.connect(node_widget.node)
-        #self.connection_label.move((self.pos() + node_widget.pos()) / 2)
         self.connected_node_widget = node_widget
         self.connected_node_widget.connect_socket(self)
         self.connection_label.show()

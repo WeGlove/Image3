@@ -6,6 +6,9 @@ from gui.node_socket_widget import NodeSocketWidget
 from Nodes.interactables.node_edit import NodeEdit
 from Nodes.interactables.node_button import NodeButton
 from Nodes.interactables.node_display import NodeDisplay
+from Nodes.interactables.node_table import NodeTable
+from gui.interactable_widgets.ButtonWidget import ButtonWidget
+from gui.interactable_widgets.EditWidget import EditWidget
 
 
 class NodeWidget(QLabel):
@@ -26,72 +29,27 @@ class NodeWidget(QLabel):
         self.socket_labels = [NodeSocketWidget(socket.get_socket_name(), self.parent, socket) for socket in node.subnode_sockets]
         self.setToolTip(self.node.get_description())
 
-        def get_on_edit(k):
-            def on_edit(_):
-                self.node.get_interactable(k).set(self.edit_fields[k].text())
-
-            return on_edit
-
-        def get_on_button_press(k):
-            def on_press(_):
-                self.node.get_interactable(k).toggle()
-
-            return on_press
-
         self.connected_sockets = []
 
         for k, socket in enumerate(self.socket_labels):
             pos = self.pos()
             socket.move(pos.x(), pos.y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
 
-        #self.edit_fields = [QLineEdit(parent=self.parent) for _ in range(self.node.get_interactable_count())]
-        #for k, edit_field in enumerate(self.edit_fields):
-        #    edit_field.textEdited.connect(get_on_edit(k))
-        #    edit_field.show()
-
         self.edit_fields = []
         for j in range(self.node.get_interactable_count()):
             interactable = self.node.get_interactable(j)
             if type(interactable) == NodeEdit:
-                edit_field = QLineEdit(parent=self.parent)
-                self.edit_fields.append(edit_field)
-                edit_field.textEdited.connect(get_on_edit(j))
+                edit_field = EditWidget(self.parent, node, j)
                 edit_field.show()
-
-                try:
-                    pos = self.pos()
-                    edit_field.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
-                    value = self.node.get_interactable(j).get()
-                    if type(value) == torch.Tensor:
-                        value = value.tolist()
-                    edit_field.setText(str(value))
-                except Exception:
-                    print(traceback.format_exc())
+                self.edit_fields.append(edit_field)
             elif type(interactable) == NodeButton:
-                edit_field = QPushButton(parent=self.parent)
-                self.edit_fields.append(edit_field)
-                edit_field.clicked.connect(get_on_button_press(j))
+                edit_field = ButtonWidget(self.parent, node, j)
                 edit_field.show()
-
-                pos = self.pos()
-                edit_field.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
+                self.edit_fields.append(edit_field)
             elif type(interactable) == NodeDisplay:
-                edit_field = QLineEdit(parent=self.parent)
-                self.edit_fields.append(edit_field)
-                edit_field.textEdited.connect(get_on_edit(j))
+                edit_field = EditWidget(self.parent, node, j)
                 edit_field.show()
-
-                try:
-                    pos = self.pos()
-                    edit_field.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j * self.LINE_SIZE + len(
-                        self.socket_labels) * self.LINE_SIZE)
-                    value = self.node.get_interactable(j).get()
-                    if type(value) == torch.Tensor:
-                        value = value.tolist()
-                    edit_field.setText(str(value))
-                except Exception:
-                    print(traceback.format_exc())
-
+                self.edit_fields.append(edit_field)
 
     def cut(self):
         for connected_socket in self.connected_sockets:

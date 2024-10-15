@@ -5,6 +5,3 @@ class NodeEdit(Interactable):
 
     def __init__(self, value=None):
         super().__init__(value)
-
-    def get(self):
-        return self.default
