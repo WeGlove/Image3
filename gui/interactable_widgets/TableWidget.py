@@ -13,6 +13,7 @@ class TableWidget(InteractableWidget):
         super().__init__(parent, node, k, line_offset)
         self.add_button = QPushButton("Add", parent=parent)
         self.remove_button = QPushButton("Remove", parent=parent)
+        self.cycle_button = QPushButton("Cycle", parent=parent)
         self.edit_fields = []
         self.line_strs = []
 
@@ -52,6 +53,22 @@ class TableWidget(InteractableWidget):
         self.remove_button.clicked.connect(on_remove_button_press)
         self.remove_button.show()
 
+        def on_cycle_button_press(_):
+            if len(self.edit_fields) < 2:
+                return
+
+            text_0 = self.edit_fields[0].text()
+            for k, edit_field in enumerate(self.edit_fields[:-1]):
+                edit_field.setText(self.edit_fields[k+1].text())
+                self.line_strs[k] = edit_field.text()
+
+            self.edit_fields[-1].setText(text_0)
+            self.line_strs[-1] = text_0
+
+        self.cycle_button.move(self.BUTTON_SPACE*2, self.SOCKET_OFFSET + self.line_offset * self.LINE_SIZE)
+        self.cycle_button.clicked.connect(on_cycle_button_press)
+        self.cycle_button.show()
+
         def update():
             for edit_field in self.edit_fields:
                 edit_field.setParent(None)
@@ -79,6 +96,7 @@ class TableWidget(InteractableWidget):
     def move(self, x, y):
         self.add_button.move(x, y)
         self.remove_button.move(x + self.BUTTON_SPACE, y)
+        self.cycle_button.move(x + self.BUTTON_SPACE*2, y)
         for k, edit_field in enumerate(self.edit_fields):
            edit_field.move(x, y + (k+1) * self.LINE_SIZE)
 
@@ -86,3 +104,5 @@ class TableWidget(InteractableWidget):
         for edit_field in self.edit_fields:
             edit_field.setParent(None)
         self.add_button.setParent(None)
+        self.remove_button.setParent(None)
+        self.cycle_button.setParent(None)
