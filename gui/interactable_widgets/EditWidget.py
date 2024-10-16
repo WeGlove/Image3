@@ -1,11 +1,11 @@
-from PyQt6.QtWidgets import QWidget
 from PyQt6.QtWidgets import QLineEdit
+from gui.interactable_widgets.interactableWidget import InteractableWidget
 
 
-class EditWidget(QWidget):
+class EditWidget(InteractableWidget):
 
-    def __init__(self, parent, node, k):
-        super().__init__(parent=parent)
+    def __init__(self, parent, node, k, line_offset):
+        super().__init__(line_offset)
         self.edit_field = QLineEdit(parent=parent)
         self.k = k
 
@@ -16,4 +16,9 @@ class EditWidget(QWidget):
             return on_edit
 
         self.node = node
-        self.edit_field.clicked.connect(get_on_edit())
+        self.edit_field.textEdited.connect(get_on_edit())
+        self.edit_field.show()
+        self.edit_field.move(0, self.SOCKET_OFFSET + self.line_offset * self.LINE_SIZE)
+
+    def move(self, x, y):
+        self.edit_field.move(x, y)

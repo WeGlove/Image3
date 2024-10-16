@@ -2,28 +2,21 @@ import torch
 import math
 from Nodes.node import Node
 from Nodes.node import NodeSocket
+from Nodes.interactables.node_table import NodeTable
 
 
 class AnimatedProperty(Node):
 
-    def __init__(self, node_id, device, factory_id, frame_counter, initial_value=None, keyframes=None):
+    def __init__(self, node_id, device, factory_id, frame_counter):
+        self.keyframes_interactable = NodeTable()
         self.keyframes = []
-        if keyframes is not None:
-            for keyframe in keyframes:
-                self.set_key_frame(keyframe[0], keyframe[1])
         self.initial_value = NodeSocket(False, "Initial Value", None)
         self.animation_style = "Linear"
-        super().__init__(node_id, factory_id, "Used to animate a value", frame_counter, [self.initial_value], device, [])
+        super().__init__(node_id, factory_id, "Used to animate a value", frame_counter, [self.initial_value], device, [self.keyframes_interactable])
 
-    def set_anim_style(self, style):
-        self.animation_style = style
-
-    def set_key_frame(self, frame, value):
-        self.keyframes.append((frame, value))
-        self.keyframes = sorted(self.keyframes, key=lambda k: k[0])
-
-    def clear_key_frames(self):
-        self.keyframes = []
+    def initialize(self, width, height, excluded_nodes, *args):
+        super().initialize(width, height, excluded_nodes, *args)
+        self.keyframes = self.keyframes_interactable.get_values()
 
     def linear_interp(self):
         if len(self.keyframes) == 0:
@@ -101,16 +94,6 @@ class AnimatedProperty(Node):
             raise ValueError(f"Unknown animation style {self.animation_style}")
 
         return interp
-
-    def to_dict(self):
-        property_dict = super().to_dict()
-        key_frame_list = []
-        for (frame, value) in self.keyframes:
-            if type(value) == torch.Tensor:
-                value = value.tolist()
-            key_frame_list.append([frame, value])
-        property_dict["properties"]["keyframes"] = key_frame_list
-        return property_dict
 
     @staticmethod
     def get_node_name():

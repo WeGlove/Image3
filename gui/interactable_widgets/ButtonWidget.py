@@ -1,11 +1,12 @@
 from PyQt6.QtWidgets import QPushButton, QWidget
+from gui.interactable_widgets.interactableWidget import InteractableWidget
 
 
-class ButtonWidget(QWidget):
+class ButtonWidget(InteractableWidget):
 
-    def __init__(self, parent, node, k):
-        super().__init__(parent=parent)
-        self.button = QPushButton(parent=self)
+    def __init__(self, parent, node, k, line_offset):
+        super().__init__(line_offset)
+        self.button = QPushButton(parent=parent)
         self.k = k
 
         def get_on_button_press():
@@ -18,5 +19,7 @@ class ButtonWidget(QWidget):
         self.button.clicked.connect(get_on_button_press())
         self.button.show()
 
-        #pos = self.pos()
-        #edit_field.move(pos.x(), pos.y() + self.SOCKET_OFFSET + j * self.LINE_SIZE + len(self.socket_labels) * self.LINE_SIZE)
+        self.button.move(0, self.SOCKET_OFFSET + self.line_offset * self.LINE_SIZE)
+
+    def move(self, x, y):
+        self.button.move(x, y)

@@ -1,7 +1,5 @@
-import traceback
-from PyQt6.QtWidgets import QLabel, QLineEdit, QPushButton
+from PyQt6.QtWidgets import QLabel
 from PyQt6.QtGui import QFont
-import torch
 from gui.node_socket_widget import NodeSocketWidget
 from Nodes.interactables.node_edit import NodeEdit
 from Nodes.interactables.node_button import NodeButton
@@ -9,6 +7,7 @@ from Nodes.interactables.node_display import NodeDisplay
 from Nodes.interactables.node_table import NodeTable
 from gui.interactable_widgets.ButtonWidget import ButtonWidget
 from gui.interactable_widgets.EditWidget import EditWidget
+from gui.interactable_widgets.TableWidget import TableWidget
 
 
 class NodeWidget(QLabel):
@@ -39,16 +38,16 @@ class NodeWidget(QLabel):
         for j in range(self.node.get_interactable_count()):
             interactable = self.node.get_interactable(j)
             if type(interactable) == NodeEdit:
-                edit_field = EditWidget(self.parent, node, j)
-                edit_field.show()
+                edit_field = EditWidget(self.parent, node, j, j)
                 self.edit_fields.append(edit_field)
             elif type(interactable) == NodeButton:
-                edit_field = ButtonWidget(self.parent, node, j)
-                edit_field.show()
+                edit_field = ButtonWidget(self.parent, node, j, j)
                 self.edit_fields.append(edit_field)
             elif type(interactable) == NodeDisplay:
-                edit_field = EditWidget(self.parent, node, j)
-                edit_field.show()
+                edit_field = EditWidget(self.parent, node, j, j)
+                self.edit_fields.append(edit_field)
+            elif type(interactable) == NodeTable:
+                edit_field = TableWidget(self.parent, node, j, j)
                 self.edit_fields.append(edit_field)
 
     def cut(self):
@@ -74,6 +73,7 @@ class NodeWidget(QLabel):
                 break
 
     def mouseReleaseEvent(self, event):
+        print(event)
         if self.geometry().contains(self.pos()+event.pos()):
             self.parent.select(self)
         else:
