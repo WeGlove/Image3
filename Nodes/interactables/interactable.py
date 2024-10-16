@@ -5,7 +5,6 @@ class Interactable:
         self.set_callback = lambda x : ...
 
     def set(self, value):
-        print("Setting", value)
         self.default = value
         self.set_callback(value)
 
