@@ -43,13 +43,10 @@ class TableWidget(InteractableWidget):
         def on_remove_button_press(_):
             if len(self.edit_fields) == 0:
                 return
-            print(self.edit_fields, self.line_strs)
             edit_field = self.edit_fields[-1]
             edit_field.setParent(None)
             self.edit_fields = self.edit_fields[:-1]
             self.line_strs = self.line_strs[:-1]
-            print(self.edit_fields, self.line_strs)
-            print("++++++++++++++++++++++++")
 
         self.remove_button.move(self.BUTTON_SPACE, self.SOCKET_OFFSET + self.line_offset * self.LINE_SIZE)
         self.remove_button.clicked.connect(on_remove_button_press)
@@ -70,14 +67,14 @@ class TableWidget(InteractableWidget):
                     on_add_button_press(...)
                     self.edit_fields[k].setText(y)
                     self.line_strs[k] = y
+                self.node.interactables[self.k].set(to_json())
             except Exception:
-                print(traceback.format_exc())
+                print(traceback.format_exc(), "++++", x, "####")
 
         self._update = update
 
     def update(self):
         self._update()
-        print(self.line_strs, self.edit_fields)
 
     def move(self, x, y):
         self.add_button.move(x, y)

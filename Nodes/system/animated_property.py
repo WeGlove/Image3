@@ -16,7 +16,7 @@ class AnimatedProperty(Node):
 
     def initialize(self, width, height, excluded_nodes, *args):
         super().initialize(width, height, excluded_nodes, *args)
-        self.keyframes = self.keyframes_interactable.get_values()
+        self.keyframes = [eval(x) for x in self.keyframes_interactable.get_values()]
 
     def linear_interp(self):
         if len(self.keyframes) == 0:
