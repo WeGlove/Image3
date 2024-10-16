@@ -50,13 +50,15 @@ class NodeWidget(QLabel):
                 edit_field = TableWidget(self.parent, node, j, j)
                 self.edit_fields.append(edit_field)
 
+            edit_field.update()
+
     def cut(self):
         for connected_socket in self.connected_sockets:
             connected_socket.cut()
         for socket_label in self.socket_labels:
             socket_label.setParent(None)
         for edit in self.edit_fields:
-            edit.setParent(None)
+            edit.cut()
         self.setParent(None)
 
     def mousePressEvent(self, event):
@@ -99,39 +101,3 @@ class NodeWidget(QLabel):
     def to_dict(self):
         return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels],
                 "Position": [self.pos().x(), self.pos().y()]}
-
-"""
-class AnimatedPropertyNodeWidget(NodeWidget):
-
-    def __init__(self, node, parent):
-        super().__init__(node, parent)
-        self.edit = QLineEdit(parent=parent)
-        self.edit.show()
-        self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
-
-        def on_edit(_):
-            text = self.edit.text()
-
-            try:
-                value = eval(text)
-                self.node.clear_key_frames()
-                for item in value:
-                    frame = item[0]
-                    object = item[1]
-                    if type(object) == list:
-                        object = torch.tensor(object, device=self.node.device)
-                    self.node.set_key_frame(frame, object)
-            except Exception:
-                print(traceback.format_exc())
-
-        self.edit.textEdited.connect(on_edit)
-        self.edit.setText(str([(frame, value.tolist() if type(value) == torch.Tensor else value) for (frame, value) in self.node.keyframes]))
-
-    def cut(self):
-        super().cut()
-        self.edit.setParent(None)
-
-    def move(self, *a0):
-        super().move(*a0)
-        self.edit.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + len(self.socket_labels) * self.LINE_SIZE)
-"""

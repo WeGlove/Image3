@@ -1,3 +1,5 @@
+import traceback
+
 from PyQt6.QtWidgets import QLineEdit
 from PyQt6.QtWidgets import QPushButton
 from gui.interactable_widgets.interactableWidget import InteractableWidget
@@ -6,14 +8,13 @@ from gui.interactable_widgets.interactableWidget import InteractableWidget
 class TableWidget(InteractableWidget):
 
     def __init__(self, parent, node, k, line_offset):
-        super().__init__(line_offset)
-        self.add_button = QPushButton(parent=parent)
+        super().__init__(parent, node, k, line_offset)
+        self.add_button = QPushButton("Add", parent=parent)
         self.edit_fields = []
-        self.k = k
         self.line_strs = []
 
         def to_json():
-            return str([f"\"{l_str}\"," for l_str in self.line_strs])
+            return str([str(l_str) for l_str in self.line_strs])
 
         def get_on_edit(k):
             def on_edit(_):
@@ -32,12 +33,40 @@ class TableWidget(InteractableWidget):
             self.edit_fields.append(edit_field)
             self.line_strs.append("")
 
-        self.node = node
         self.add_button.move(0, self.SOCKET_OFFSET + self.line_offset * self.LINE_SIZE)
         self.add_button.clicked.connect(on_add_button_press)
         self.add_button.show()
+
+        def update():
+            for edit_field in self.edit_fields:
+                edit_field.setParent(None)
+            self.edit_fields = []
+            self.line_strs = []
+
+            x = self.node.interactables[self.k].get()
+
+            try:
+                out_list = eval(x)
+                for k, y in enumerate(out_list):
+                    print(k, y)
+                    on_add_button_press(...)
+                    self.edit_fields[k].setText(y)
+                    self.line_strs[k] = y
+            except Exception:
+                print(traceback.format_exc())
+
+        self._update = update
+
+    def update(self):
+        self._update()
+        print(self.line_strs, self.edit_fields)
 
     def move(self, x, y):
         self.add_button.move(x, y)
         for k, edit_field in enumerate(self.edit_fields):
            edit_field.move(x, y + (k+1) * self.LINE_SIZE)
+
+    def cut(self):
+        for edit_field in self.edit_fields:
+            edit_field.setParent(None)
+        self.add_button.setParent(None)
