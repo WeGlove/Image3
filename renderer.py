@@ -34,6 +34,7 @@ class Renderer:
         self.is_paused = True
         self.is_forward = True
         self.is_reset = False
+        self.should_reset = False
 
         def on_frame(frame):
             return frame
@@ -69,18 +70,16 @@ class Renderer:
             if self.is_paused:
                 self._pause()
 
-            if self.frame_counter.was_set:
-                self.is_reset = False
-                try:
-                    patch.get_root().initialize(self.width, self.height, [])
-                except Exception:
-                    print(traceback.format_exc())
-                    self.is_paused = True
-                    self._pause()
+            self.is_reset = True
+            self.should_reset = True
 
             for frame in range(self.start_frame, self.stop_frame):
                 if self.is_paused:
                     self._pause()
+
+                if self.should_reset:
+                    self.should_reset = False
+                    patch.get_root().initialize(self.width, self.height, [])
 
                 current_frame = self.frame_counter.get()
 
@@ -143,6 +142,7 @@ class Renderer:
 
     def reset(self):
         self.frame_counter.set_frame(0)
+        self.should_reset = True
 
     def render(self):
         self.save = not self.save

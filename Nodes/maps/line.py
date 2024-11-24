@@ -20,6 +20,7 @@ class Line(PointMap):
 
     def produce(self):
         position = self.line_noso.get().produce()
+        print(position)
 
         vector_map = get_centered_vector_map(self.width, self.height, self.device)
 

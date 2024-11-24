@@ -31,12 +31,21 @@ class AnimatedProperty(Node):
                     frame_b, val_b = self.keyframes[k - 1]
                     frame_a, val_a = self.keyframes[k]
 
+                    if type(val_a) is list:
+                        val_a = torch.tensor(val_a, device=self.device)
+
+                    if type(val_b) is list:
+                        val_b = torch.tensor(val_b, device=self.device)
+
                     length = frame_a - frame_b
                     point_on_line = position / length
 
                     return val_b * point_on_line + val_a * (1-point_on_line)
         else:
-            return self.keyframes[-1][1]
+            out = self.keyframes[-1][1]
+            if type(out) is list:
+                out = torch.tensor(out, device=self.device)
+            return out
 
     def sin_interp(self):
         if len(self.keyframes) == 0:
@@ -93,6 +102,7 @@ class AnimatedProperty(Node):
         else:
             raise ValueError(f"Unknown animation style {self.animation_style}")
 
+        print("AP", interp)
         return interp
 
     @staticmethod

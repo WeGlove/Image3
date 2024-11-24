@@ -26,11 +26,12 @@ from Nodes.io.files.load_image import LoadImage
 from Nodes.io.files.byte_reader import ByteReader
 from Nodes.io.files.text_reader import TextReader
 from Nodes.io.keyboard_reader import KeyboardReader
+from Nodes.io.files.live_player import LivePlayer
 
 
 def get_io_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
-               [ImagesProperty, LoadImage, ByteReader, TextReader, KeyboardReader]}
+               [ImagesProperty, LoadImage, ByteReader, TextReader, KeyboardReader, LivePlayer]}
     factory = NodeFactory(device, frame_counter, in_dict, "IO")
     return factory
 
@@ -50,12 +51,13 @@ from Nodes.tensor_math.mean import Mean
 from Nodes.tensor_math.round import Round
 from Nodes.tensor_math.svd import SVD
 from Nodes.tensor_math.qr import QR
+from Nodes.tensor_math.interpolate import Interpolate
 
 
 def get_math_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
                [Matmul, Addition, Subtraction, Multiplication, Division, Modulo, Power, Convolution, Transposition,
-                Selection, Shape, Mean, Round, SVD, QR]}
+                Selection, Shape, Mean, Round, SVD, QR, Interpolate]}
     factory = NodeFactory(device, frame_counter, in_dict, "Tensor Math")
     return factory
 
