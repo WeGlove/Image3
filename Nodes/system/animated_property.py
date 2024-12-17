@@ -102,7 +102,6 @@ class AnimatedProperty(Node):
         else:
             raise ValueError(f"Unknown animation style {self.animation_style}")
 
-        print("AP", interp)
         return interp
 
     @staticmethod
