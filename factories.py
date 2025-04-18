@@ -11,12 +11,13 @@ from Nodes.system.display import Display
 from Nodes.system.once import Once
 from Nodes.system.random import Random
 from Nodes.system.list_get import ListGet
+from Nodes.system.none_property import NoneProperty
 
 
 def get_system_factory(device, frame_counter):
     in_dict = {node.get_node_name(): node for node in
                [Out, NumberProperty, StringProperty, TensorProperty, AnimatedProperty, Button, WaitManager, Hold,
-                Display, Once, Random, ListGet]}
+                Display, Once, Random, ListGet, NoneProperty]}
     factory = NodeFactory(device, frame_counter, in_dict, "System")
     return factory
 

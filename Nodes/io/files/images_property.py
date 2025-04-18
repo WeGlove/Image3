@@ -34,6 +34,7 @@ class ImagesProperty(Node):
             print(f"Loading Image: {i}")
             img = np.array(Image.open(os.path.join(path, file)))
             img = torch.tensor(img, device=self.device, dtype=torch.float)
+            img = img[:, :, :3]
             images.append(img)
 
         return images
