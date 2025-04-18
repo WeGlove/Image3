@@ -26,7 +26,7 @@ class RenderGui(QMainWindow):
 
         def on_reset():
             self.frame_renderer.reset()
-            self.text_widget.setText(f"frame: 0 / {self.frame_renderer.stop_frame}")
+            self.text_widget.setText(self._get_frame_text(0))
         self.reset_button.clicked.connect(on_reset)
 
         self.render_button = QPushButton("Render", self)
@@ -60,7 +60,7 @@ class RenderGui(QMainWindow):
             text = self.line_edit.text()
             if text.isnumeric():
                 self.frame_renderer.set_frame(int(float(text)))
-                self.text_widget.setText(f"frame: {int(float(text))} / {self.frame_renderer.stop_frame}")
+                self.text_widget.setText(self._get_frame_text(int(float(text))))
         self.set_frame_button.clicked.connect(on_set_frame)
 
         self.stopframe_edit = QLineEdit("", parent=self)
@@ -74,7 +74,7 @@ class RenderGui(QMainWindow):
         self.stopframe_button.clicked.connect(on_set_stop_frame)
 
         self.text_widget = QLabel("0")
-        self.frame_renderer.on_frame = lambda frame:  self.text_widget.setText(f"frame: {frame} / {self.frame_renderer.stop_frame}")
+        self.frame_renderer.on_frame = lambda frame: self.text_widget.setText(self._get_frame_text(frame))
 
         layout = QVBoxLayout()
         layout.addWidget(self.reset_button)
@@ -102,3 +102,6 @@ class RenderGui(QMainWindow):
         self.show()
         self.editor.show()
         app.exec()
+
+    def _get_frame_text(self, frame):
+        return f"frame: {frame} / {self.frame_renderer.stop_frame}, {frame/self.frame_renderer.fps:.2f}"
