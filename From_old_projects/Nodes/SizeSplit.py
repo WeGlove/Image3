@@ -1,5 +1,5 @@
 import torch
-from Nodes.maps.compositor import Compositor
+from src.Nodes import Compositor
 
 
 class SizeSplit(Compositor):

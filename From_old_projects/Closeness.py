@@ -1,6 +1,6 @@
 import torch
-from Nodes.maps.compositor import Compositor
-from Nodes.system.animated_property import AnimatedProperty
+from src.Nodes import Compositor
+from src.Nodes import AnimatedProperty
 
 
 class Closeness(Compositor):

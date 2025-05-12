@@ -1,5 +1,5 @@
-from Nodes.node import Node
-from Nodes.node_socket import NodeSocket
+from src.Nodes.node import Node
+from src.Nodes import NodeSocket
 
 
 class WeightBuffer(Node):

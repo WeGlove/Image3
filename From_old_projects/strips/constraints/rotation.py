@@ -1,7 +1,7 @@
 import torch
-from Nodes.constraint import Constraint
-from Nodes.system.animated_property import AnimatedProperty
-from mat_math.homo_kernels import rotation_2D
+from src.Nodes import Constraint
+from src.Nodes import AnimatedProperty
+from src.mat_math.homo_kernels import rotation_2D
 
 
 class Rotation(Constraint):

@@ -1,5 +1,5 @@
 import numpy as np
-from Nodes.maps.compositor import Compositor
+from src.Nodes import Compositor
 import torch
 
 
