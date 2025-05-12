@@ -12,7 +12,7 @@ from src.Nodes import Closeness
 
 
 if __name__ == "__main__":
-    path = os.path.join("../../playground", "stars")
+    path = os.path.join("../playground", "stars")
     out_path = os.path.join(os.path.join("C:", "Users", "tobia", "Desktop", "out_out"))
 
     print("cuda", torch.cuda.is_available())
@@ -29,7 +29,7 @@ if __name__ == "__main__":
             img = torch.tensor(img, device=cuda)
             images.append(img)
 
-        sun = np.array(Image.open(os.path.join("../../playground", "sun.png")))
+        sun = np.array(Image.open(os.path.join("../playground", "sun.png")))
         sun = torch.tensor(sun, device=cuda)
 
         comp = PointMapping([Lines(), Lines(rotation=90), Circles(torch.tensor([[1920/2, 1080/2]], device=cuda)),

@@ -1,3 +1,5 @@
+import logging
+
 import torch
 from src.Nodes.node import Node
 from src.Nodes.interactables.node_edit import NodeEdit
@@ -9,6 +11,7 @@ from PIL import Image
 class ImagesProperty(Node):
 
     def __init__(self, node_id, factory_id, device, frame_counter, initial_value="."):
+        self.logger = logging.getLogger(__name__)
         self.initial_value = NodeEdit(initial_value)
         super().__init__(node_id, factory_id, "Images Property", frame_counter, [], device, [self.initial_value])
 
@@ -31,7 +34,7 @@ class ImagesProperty(Node):
 
         images = []
         for i, file in enumerate(os.listdir(path)):
-            print(f"Loading Image: {i}")
+            self.logger.debug(f"Loading Image: {i}")
             img = np.array(Image.open(os.path.join(path, file)))
             img = torch.tensor(img, device=self.device, dtype=torch.float)
             img = img[:, :, :3]

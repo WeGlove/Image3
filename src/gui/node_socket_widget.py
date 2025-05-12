@@ -1,3 +1,4 @@
+import logging
 import traceback
 from PyQt6.QtWidgets import QLabel
 from src.Nodes.node import NodeSocket
@@ -7,6 +8,9 @@ class NodeSocketWidget(QLabel):
 
     def __init__(self, name, parent, socket):
         super().__init__(name, parent=parent)
+
+        self.logger = logging.getLogger(__name__)
+
         self.parent = parent
         self.socket: NodeSocket = socket
         self.connected_node_widget = None
@@ -38,7 +42,7 @@ class NodeSocketWidget(QLabel):
             self.parent.redraw_lines()
 
         except Exception:
-            print(traceback.format_exc())
+            self.logger.error(traceback.format_exc())
 
     def connect(self, node_widget):
         connected = self.socket.is_connected()

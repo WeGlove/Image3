@@ -9,7 +9,6 @@ class Interactable:
         self.set_callback(value)
 
     def set_set_callback(self, callback):
-        print("Setting callback")
         self.set_callback = callback
 
     def get(self):

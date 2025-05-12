@@ -7,7 +7,7 @@ from src.Nodes import Closeness
 import torch
 
 if __name__ == "__main__":
-    path = os.path.join("../../playground", "news2")
+    path = os.path.join("../playground", "news2")
     out_path = os.path.join(os.path.join("C:", "Users", "tobia", "Desktop", "out_out"))
 
     print("cuda", torch.cuda.is_available())

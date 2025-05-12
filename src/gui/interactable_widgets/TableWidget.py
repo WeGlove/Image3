@@ -1,3 +1,4 @@
+import logging
 import traceback
 
 from PyQt6.QtWidgets import QLineEdit
@@ -11,6 +12,7 @@ class TableWidget(InteractableWidget):
 
     def __init__(self, parent, node, k, line_offset):
         super().__init__(parent, node, k, line_offset)
+        self.logger = logging.getLogger(__name__)
         self.add_button = QPushButton("Add", parent=parent)
         self.remove_button = QPushButton("Remove", parent=parent)
         self.cycle_button = QPushButton("Cycle", parent=parent)
@@ -80,13 +82,12 @@ class TableWidget(InteractableWidget):
             try:
                 out_list = eval(x)
                 for k, y in enumerate(out_list):
-                    print(k, y)
                     on_add_button_press(...)
                     self.edit_fields[k].setText(y)
                     self.line_strs[k] = y
                 self.node.interactables[self.k].set(to_json())
             except Exception:
-                print(traceback.format_exc(), "++++", x, "####")
+                self.logger.error(traceback.format_exc())
 
         self._update = update
 

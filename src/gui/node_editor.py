@@ -1,4 +1,5 @@
 import json
+import logging
 import os.path
 import traceback
 from typing import Dict, List
@@ -18,6 +19,9 @@ class NodeEditor(QWidget):
 
     def __init__(self, factories: List[NodeFactory], patch, nodes=None):
         super().__init__()
+
+        self.logger = logging.getLogger(__name__)
+
         self.sockets = []
         self.node_widgets: Dict[str, NodeWidget] = dict()
         self.x = 0
@@ -114,7 +118,7 @@ class NodeEditor(QWidget):
             with open(os.path.join(path), "w+") as f:
                 json.dump(file_dump, f, indent=1)
         except Exception:
-            print(traceback.format_exc())
+            self.logger.error(traceback.format_exc())
 
     def load(self, path):
         try:
@@ -173,10 +177,10 @@ class NodeEditor(QWidget):
             for widget in self.node_widgets.values():
                 if type(widget.node) == Out:
                     self.patch.set_root(widget.node)
-                    print(self.patch.get_root().node_id)
+                    self.logger.info(self.patch.get_root().node_id)
 
         except Exception:
-            print(traceback.format_exc())
+            self.logger.error(traceback.format_exc())
 
     def contextMenuEvent(self, event):
         try:
@@ -195,7 +199,7 @@ class NodeEditor(QWidget):
 
             self.add_nodes(nodes)
         except Exception:
-            print(traceback.format_exc())
+            self.logger.error(traceback.format_exc())
 
     def mousePressEvent(self, event):
         focused_widget = QGuiApplication.focusObject()

@@ -9,7 +9,7 @@ from src.Nodes import Lines
 
 
 if __name__ == "__main__":
-    path = os.path.join("../../playground", "wood")
+    path = os.path.join("../playground", "wood")
     out_path = os.path.join(os.path.join("C:", "Users", "tobia", "Desktop", "out_out"))
 
     print("cuda", torch.cuda.is_available())

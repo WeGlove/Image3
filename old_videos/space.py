@@ -9,7 +9,7 @@ from From_old_projects.strips.constraints import identity, rotation
 from From_old_projects.strips.constraints import mat_split
 
 if __name__ == "__main__":
-    path = os.path.join("../../playground", "stars")
+    path = os.path.join("../playground", "stars")
     out_path = os.path.join(os.path.join("C:", "Users", "tobia", "Desktop", "out_out"))
 
     print("cuda", torch.cuda.is_available())

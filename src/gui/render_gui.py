@@ -1,3 +1,5 @@
+import logging
+
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
 from src.renderer import Renderer
@@ -8,6 +10,8 @@ class RenderGui(QMainWindow):
 
     def __init__(self, frame_renderer: Renderer, node_factory, patch):
         super().__init__()
+        self.logger = logging.getLogger(__name__)
+
         self.frame_renderer = frame_renderer
         self.node_factory = node_factory
 
@@ -18,6 +22,7 @@ class RenderGui(QMainWindow):
         self.pause_button = QPushButton("Pause", self)
 
         def on_pause():
+            self.logger.info("Pause")
             self.frame_renderer.pause_unpause()
         self.pause_button.clicked.connect(on_pause)
         self.pause_button.setCheckable(True)
@@ -25,6 +30,7 @@ class RenderGui(QMainWindow):
         self.reset_button = QPushButton("Reset", self)
 
         def on_reset():
+            self.logger.info("Reset")
             self.frame_renderer.reset()
             self.text_widget.setText(self._get_frame_text(0))
         self.reset_button.clicked.connect(on_reset)
@@ -32,6 +38,7 @@ class RenderGui(QMainWindow):
         self.render_button = QPushButton("Render", self)
 
         def on_render():
+            self.logger.info("Render")
             self.frame_renderer.render()
         self.render_button.clicked.connect(on_render)
         self.render_button.setCheckable(True)
@@ -42,11 +49,13 @@ class RenderGui(QMainWindow):
         self.repeat_button.setCheckable(True)
 
         def on_repeat():
+            self.logger.info("Repeat")
             self.frame_renderer.repeat_unrepeat()
 
         self.repeat_button.clicked.connect(on_repeat)
 
         def on_forward():
+            self.logger.info("Forward")
             self.frame_renderer.forwads_backwards()
 
         self.forward_button.clicked.connect(on_forward)
@@ -57,6 +66,7 @@ class RenderGui(QMainWindow):
         self.set_frame_button = QPushButton("Set Frame", self)
 
         def on_set_frame():
+            self.logger.info("Set Frame")
             text = self.line_edit.text()
             if text.isnumeric():
                 self.frame_renderer.set_frame(int(float(text)))
@@ -68,6 +78,7 @@ class RenderGui(QMainWindow):
         self.stopframe_button = QPushButton("Set Stop Frame", self)
 
         def on_set_stop_frame():
+            self.logger.info("Set Stop Frame")
             text = self.stopframe_edit.text()
             if text.isnumeric():
                 self.frame_renderer.set_stopframe(int(float(text)))

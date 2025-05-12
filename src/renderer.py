@@ -1,3 +1,4 @@
+import logging
 import threading
 import time
 import cv2
@@ -12,7 +13,8 @@ class Renderer:
 
     def __init__(self, fps, device, frame_counter, start_frame=0, stop_frame=-1, width=None, height=None, repeat=False, display=True,
                  save=False, save_path="."):
-        super().__init__()
+        self.logger = logging.getLogger(__name__)
+
         self.start_frame = start_frame
         self.stop_frame = stop_frame
         self.frame_counter = frame_counter
@@ -101,7 +103,7 @@ class Renderer:
                 try:
                     stack_img = patch.get_root().produce()
                 except Exception:
-                    print(traceback.format_exc())
+                    self.logger.error(traceback.format_exc())
                     self.pause_unpause()
                     self.reset()
                     break
@@ -125,7 +127,7 @@ class Renderer:
                     if 1/self.fps - delta > 0:
                         time.sleep(1/self.fps - delta)
                     else:
-                        print("Slow")
+                        self.logger.warning("Slow")
 
             if not self.repeat:
                 break

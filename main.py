@@ -7,24 +7,29 @@ from src.factories import (get_map_factory, get_system_factory, get_io_factory, 
 from PyQt6.QtWidgets import QApplication
 from src.frame_counter import FrameCounter
 from src.patch import Patch
+import logging
 
 
 if __name__ == "__main__":
+    logger = logging.getLogger(__name__)
+    logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
+
     save_path = os.path.join(os.path.join(".", "out"))
 
-    print("cuda", torch.cuda.is_available())
-
+    logger.info(f"Is Cuda available {torch.cuda.is_available()}")
     cuda = torch.device('cuda')
 
     with ((torch.cuda.device(0))):
-
         frame_counter = FrameCounter()
-        factories = [get_map_factory(cuda, frame_counter), get_system_factory(cuda, frame_counter),
+
+        system_factory = get_system_factory(cuda, frame_counter)
+        factories = [system_factory, get_map_factory(cuda, frame_counter),
                      get_io_factory(cuda, frame_counter), get_math_factory(cuda, frame_counter),
                      get_imaging_factory(cuda, frame_counter), get_tensor_conv_factory(cuda, frame_counter),
                      get_maps_2vec_factory(cuda, frame_counter), get_maps_nvec_factory(cuda, frame_counter)]
+        logger.info(f"Created {len(factories)} factories")
 
-        out = factories[1].instantiate("Output")
+        out = system_factory.instantiate("Output")
         patch = Patch(out)
 
         app = QApplication([])
@@ -32,4 +37,5 @@ if __name__ == "__main__":
                             save_path=save_path, save=False, frame_counter=frame_counter)
         window = RenderGui(renderer, factories, patch)
 
+        logger.info("Running GUI")
         window.run(app, patch, fps_wait=True)

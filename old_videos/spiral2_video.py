@@ -8,7 +8,7 @@ import torch
 
 
 if __name__ == "__main__":
-    path = os.path.join("../../playground", "mountains")
+    path = os.path.join("../playground", "mountains")
     out_path = os.path.join(os.path.join("C:", "Users", "tobia", "Desktop", "out_out"))
 
     print("cuda", torch.cuda.is_available())

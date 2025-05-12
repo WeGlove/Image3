@@ -75,7 +75,6 @@ class NodeWidget(QLabel):
                 break
 
     def mouseReleaseEvent(self, event):
-        print(event)
         if self.geometry().contains(self.pos()+event.pos()):
             self.parent.select(self)
         else:

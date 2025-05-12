@@ -1,6 +1,10 @@
+import logging
+
+
 class NodeSocket:
 
     def __init__(self, is_necesseary, socket_name, default=None, description=""):
+        self.logger = logging.getLogger(__name__)
         self.is_necessary = is_necesseary
         self.connected = False
         self.node = None
@@ -18,12 +22,12 @@ class NodeSocket:
         return self.socket_name
 
     def connect(self, node):
-        print("Connect", self.socket_name, node.node_id)
+        self.logger.info(f"Connect {self.socket_name} {node.node_id}")
         self.node = node
         self.connected = True
 
     def disconnect(self):
-        print("Disconnect", self.socket_name)
+        self.logger.info(f"Disconnect {self.socket_name}")
         self.node = None
         self.connected = False
 
