@@ -10,7 +10,7 @@ from src.patch import Patch
 
 
 if __name__ == "__main__":
-    out_path = os.path.join(os.path.join("C:", "Users", "tobia", "Desktop", "out_out"))
+    save_path = os.path.join(os.path.join(".", "out"))
 
     print("cuda", torch.cuda.is_available())
 
@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
         app = QApplication([])
         renderer = Renderer(30, cuda, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,
-                            save_path="C:\\Users\\tobia\\Desktop\\out_out", save=False, frame_counter=frame_counter)
+                            save_path=save_path, save=False, frame_counter=frame_counter)
         window = RenderGui(renderer, factories, patch)
 
         window.run(app, patch, fps_wait=True)
