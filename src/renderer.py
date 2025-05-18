@@ -7,17 +7,18 @@ import numpy as np
 import os
 from threading import Lock
 import traceback
+from src.frame_counter import FrameCounter
 
 
 class Renderer:
 
-    def __init__(self, fps, device, frame_counter, start_frame=0, stop_frame=-1, width=None, height=None, repeat=False, display=True,
+    def __init__(self, fps, device, start_frame=0, stop_frame=-1, width=None, height=None, repeat=False, display=True,
                  save=False, save_path="."):
         self.logger = logging.getLogger(__name__)
 
         self.start_frame = start_frame
         self.stop_frame = stop_frame
-        self.frame_counter = frame_counter
+        self.frame_counter = FrameCounter()
         self.fps = fps
         self.repeat = repeat
         self.display = display

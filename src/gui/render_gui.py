@@ -1,21 +1,25 @@
 import logging
-
 from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
+from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QApplication
 from src.renderer import Renderer
 from src.gui.node_editor import NodeEditor
+from src.factories import get_system_factory
+from src.patch import Patch
 
 
 class RenderGui(QMainWindow):
 
-    def __init__(self, frame_renderer: Renderer, node_factory, patch):
+    def __init__(self, frame_renderer: Renderer, node_factories):
+        self.app = QApplication([])
         super().__init__()
         self.logger = logging.getLogger(__name__)
 
         self.frame_renderer = frame_renderer
-        self.node_factory = node_factory
+        system_factory = get_system_factory(frame_renderer.device, frame_renderer.frame_counter)
+        self.node_factories = [system_factory] + node_factories
 
-        self.patch = patch
+        out = system_factory.instantiate("Output")
+        self.patch = Patch(out)
 
         self.setWindowTitle("NightmareMachine")
 
@@ -105,14 +109,14 @@ class RenderGui(QMainWindow):
 
         self.setFixedSize(QSize(400, 300))
 
-        self.editor = NodeEditor(self.node_factory, patch)
+        self.editor = NodeEditor(self.node_factories, self.patch)
 
-    def run(self, app, patch, fps_wait=False):
-        self.editor.add_nodes(patch.get_root().get_all_subnodes())
-        self.frame_renderer.run(patch, fps_wait)
+    def run(self, fps_wait=False):
+        self.editor.add_nodes(self.patch.get_root().get_all_subnodes())
+        self.frame_renderer.run(self.patch, fps_wait)
         self.show()
         self.editor.show()
-        app.exec()
+        self.app.exec()
 
     def _get_frame_text(self, frame):
         return f"frame: {frame} / {self.frame_renderer.stop_frame}, {frame/self.frame_renderer.fps:.2f}"
