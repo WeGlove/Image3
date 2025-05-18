@@ -170,7 +170,7 @@ class NodeEditor(QWidget):
                     in_node_widget.socket_labels[j].connect(widget_to_connect)
 
             for k, node_dict in data.items():
-                position = node_dict["Position"]
+                position = node_dict["Node"]["system"]["position"]
                 if k in self.node_widgets:
                     self.node_widgets[k].move(position[0], position[1])
 

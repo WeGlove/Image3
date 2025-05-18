@@ -1,4 +1,7 @@
 from typing import List
+
+import numpy as np
+
 from src.Nodes.node_socket import NodeSocket
 from src.Nodes.interactables.interactable import Interactable
 
@@ -6,7 +9,7 @@ from src.Nodes.interactables.interactable import Interactable
 class Node:
 
     def __init__(self, node_id, factory_id, description, frame_counter, subnode_sockets: List[NodeSocket], device,
-                 interactables: List[Interactable]):
+                 interactables: List[Interactable], position=None):
         self.subnode_sockets = subnode_sockets
         self.frame_counter = frame_counter
         self.description = description
@@ -14,6 +17,10 @@ class Node:
         self.device = device
         self.node_id = node_id
         self.factory_id = factory_id
+        self.position = np.zeros((2, 1)) if position is None else position
+
+    def set_position(self, position):
+        self.position = np.array(position)
 
     def get_subnode_count(self):
         return len(self.subnode_sockets)
@@ -35,7 +42,8 @@ class Node:
 
     def to_dict(self):
         return {"properties": {}, "system": {"node_id": self.node_id, "factory_id": self.factory_id, "name": self.get_node_name(),
-                                             "interactables": [interactable.to_dict() for interactable in self.interactables]}}
+                                             "interactables": [interactable.to_dict() for interactable in self.interactables],
+                                             "position": self.position.tolist()}}
 
     def produce(self, *args):
         return None

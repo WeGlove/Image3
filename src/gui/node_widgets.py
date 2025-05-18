@@ -8,6 +8,7 @@ from src.Nodes.interactables.node_table import NodeTable
 from src.gui.interactable_widgets.ButtonWidget import ButtonWidget
 from src.gui.interactable_widgets.EditWidget import EditWidget
 from src.gui.interactable_widgets.TableWidget import TableWidget
+import numpy as np
 
 
 class NodeWidget(QLabel):
@@ -90,6 +91,8 @@ class NodeWidget(QLabel):
 
     def move(self, *a0):
         super().move(*a0)
+        self.node.set_position(a0)
+
         for connected_socket in self.connected_sockets:
             connected_socket.move(connected_socket.pos())
         for k, edit_field in enumerate(self.edit_fields):
@@ -98,5 +101,4 @@ class NodeWidget(QLabel):
             label.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
 
     def to_dict(self):
-        return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels],
-                "Position": [self.pos().x(), self.pos().y()]}
+        return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels]}

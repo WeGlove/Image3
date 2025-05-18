@@ -20,9 +20,12 @@ class NodeFactory:
     def node_from_dict(self, properties, system):
         name = system["name"]
         interactables = system["interactables"]
+        position = system["position"]
 
         if name in self.in_dict:
-            return self.instantiate(node_id=system["node_id"], node_name=name, interactables=interactables, **properties)
+            node = self.instantiate(node_id=system["node_id"], node_name=name, interactables=interactables, **properties)
+            node.set_position(position)
+            return node
         else:
             self.logger.warning("WARNING: UNKNOWN NODE")
 
