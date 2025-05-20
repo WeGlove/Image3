@@ -16,59 +16,149 @@ class Renderer:
                  save=False, save_path="."):
         self.logger = logging.getLogger(__name__)
 
+        self._display_thread = None
+        self._render_thread = None
+
+        # Image properties
+        self.width = 1920 if width is None else width
+        self.height = 1080 if height is None else height
+        self.display = display
+        self.device = device
+        self.save = save
+        self.save_path = save_path
+        self.new_image = True
+        self.current_image = None
+        self.image_lock = Lock()
+        self.run_display_thread = True
+
+        # Frame Info
         self.start_frame = start_frame
         self.stop_frame = stop_frame
         self.frame_counter = FrameCounter()
         self.fps = fps
-        self.repeat = repeat
-        self.display = display
-        self.device = device
-        self.width = 1920 if width is None else width
-        self.height = 1080 if height is None else height
-        self.save = save
-        self.save_path = save_path
-
-        self.time_error = 0
-
-        self.current_image = None
-        self.image_lock = Lock()
-        self.run_display_thread = True
-        self.new_image = True
-        self.current_strip = None
-
         self.is_paused = True
         self.is_forward = True
         self.is_reset = False
         self.should_reset = False
+        self.repeat = repeat
 
+        # The GUI needs to be updated. This does it
         def on_frame(frame):
             return frame
-
         self.on_frame = on_frame
 
-    def _display_thread(self):
+    def _wait(self, before_time):
+        """
+        Wait until 1/fps - (now - before_time) has expired
+        :param before_time:
+        :return:
+        """
+        delta = time.time() - before_time
+        delta = 1 / self.fps - delta > 0
+        if delta > 0:
+            time.sleep(delta)
+        return delta > 0
+
+    def _display(self):
+        """
+        The loop that displays new rendered images
+        :return:
+        """
         while self.run_display_thread:
-            a = time.time()
+            before_time = time.time()
+
             with self.image_lock:
                 render = self.current_image
                 is_new = self.new_image
                 self.new_image = False
+
             if render is not None and is_new:
                 img = render.cpu().numpy() / 255
                 cv2.imshow('Render', img)
+
+                # This is currently necessary to quit because the gui doesn't send signals on quitting
                 if cv2.waitKey(1) == ord('q'):
                     break
 
-            b = time.time()
-            delta = 1 / self.fps - (b - a)
-            if delta > 0:
-                time.sleep(delta)
+            self._wait(before_time)
 
     def _pause(self):
+        """
+        Wait until unpaused
+        :return:
+        """
         while self.is_paused:
-            time.sleep(1)  # TODO this is terrible
+            time.sleep(1)
 
-    def _render_thread(self, patch, fps_wait=False):
+    def _render_sequence(self, patch, fps_wait):
+        """
+        Render a sequence from a patch
+        :param patch:
+        :param fps_wait:
+        :return:
+        """
+        for frame in range(self.start_frame, self.stop_frame):
+            if self.is_paused:
+                self._pause()
+
+            if self.should_reset:
+                self.should_reset = False
+                patch.get_root().initialize(self.width, self.height, [])
+
+            current_frame = self.frame_counter.get()
+
+            self.on_frame(current_frame)  # GUI update
+
+            before_time = time.time()
+
+            if self.is_forward:
+                if current_frame < self.start_frame:
+                    self.frame_counter.next()
+                    continue
+                if current_frame >= self.stop_frame and self.stop_frame >= 0:
+                    break
+            else:
+                if current_frame < self.start_frame:
+                    break
+                if current_frame >= self.stop_frame and self.stop_frame >= 0:
+                    self.frame_counter.next()
+                    continue
+
+            try:
+                rendered_img = patch.get_root().produce()
+            except Exception:
+                self.logger.error(traceback.format_exc())
+                self.pause_unpause()
+                self.reset()
+                break
+
+            if self.is_forward:
+                self.frame_counter.next()
+            else:
+                self.frame_counter.previous()
+
+            if self.display:
+                with self.image_lock:
+                    self.current_image = rendered_img
+                    self.new_image = True
+
+            if self.save:
+                mask = Image.fromarray(np.uint8(rendered_img.cpu()))
+                mask.save(os.path.join(self.save_path, f"render_{current_frame}.png"))
+                self.logger.info(f"Saved frame {current_frame}")
+
+            if fps_wait:
+                is_slow = self._wait(before_time)
+                if is_slow:
+                    self.logger.warning(f"Frame {current_frame} was not rendered in time")
+
+    def _render(self, patch, fps_wait=False):
+        """
+        The loop rendering new images from a patch
+        :param patch:
+        :param fps_wait:
+        :return:
+        """
         while True:
             self.frame_counter.set_frame(0)
 
@@ -78,57 +168,7 @@ class Renderer:
             self.is_reset = True
             self.should_reset = True
 
-            for frame in range(self.start_frame, self.stop_frame):
-                if self.is_paused:
-                    self._pause()
-
-                if self.should_reset:
-                    self.should_reset = False
-                    patch.get_root().initialize(self.width, self.height, [])
-
-                current_frame = self.frame_counter.get()
-
-                self.on_frame(current_frame)
-
-                before_time = time.time()
-
-                if self.is_forward:
-                    if current_frame < self.start_frame:
-                        self.frame_counter.next()
-                        continue
-                    if current_frame >= self.stop_frame and self.stop_frame >= 0:
-                        break
-                else:
-                    ...  # TODO
-
-                try:
-                    stack_img = patch.get_root().produce()
-                except Exception:
-                    self.logger.error(traceback.format_exc())
-                    self.pause_unpause()
-                    self.reset()
-                    break
-
-                if self.is_forward:
-                    self.frame_counter.next()
-                else:
-                    self.frame_counter.previous()
-
-                if self.display:
-                    with self.image_lock:
-                        self.current_image = stack_img
-                        self.new_image = True
-
-                if self.save:
-                    mask = Image.fromarray(np.uint8(stack_img.cpu()))
-                    mask.save(os.path.join(self.save_path, f"out_{current_frame}.png"))
-
-                delta = time.time() - before_time
-                if fps_wait:
-                    if 1/self.fps - delta > 0:
-                        time.sleep(1/self.fps - delta)
-                    else:
-                        self.logger.warning("Slow")
+            self._render_sequence(patch, fps_wait)
 
             if not self.repeat:
                 break
@@ -137,34 +177,77 @@ class Renderer:
             self.run_display_thread = False
 
     def pause_unpause(self):
+        """
+        Pauses the rendering
+        :return:
+        """
         self.is_paused = not self.is_paused
+        self.logger.info(f"Pause: {self.is_paused}")
 
-    def forwads_backwards(self):
+    def forwards_backwards(self):
+        """
+        Switches between rendering forwards and backwards
+        :return:
+        """
         self.is_forward = not self.is_forward
-
-    def set_frame(self, frame):
-        self.frame_counter.set_frame(frame)
+        self.logger.info(f"Forward: {self.is_forward}")
 
     def reset(self):
-        self.frame_counter.set_frame(0)
+        """
+        Reset the patch
+        :return:
+        """
+        self.set_frame(0)
         self.should_reset = True
+        self.logger.info("Reset Patch")
 
-    def render(self):
+    def save_not_save(self):
+        """
+        Switch between saving and not saving images
+        :return:
+        """
         self.save = not self.save
+        self.logger.info(f"Save: {self.save}")
+
+    def set_frame(self, frame):
+        """
+        Set the current frame
+        :param frame:
+        :return:
+        """
+        self.frame_counter.set_frame(frame)
+        self.logger.info(f"Set frame to {frame}")
 
     def set_stopframe(self, frame):
+        """
+        Set the last frame
+        :param frame:
+        :return:
+        """
         self.stop_frame = frame
+        self.logger.info(f"Set stop frame to {frame}")
 
     def repeat_unrepeat(self):
+        """
+        Switch between repeating and not repeating
+        """
         self.repeat = not self.repeat
+        self.logger.info(f"Repeat {self.repeat}")
 
-    def run(self, node, fps_wait=False):
-        self.display_thread = threading.Thread(target=self._display_thread)
-        self.display_thread.start()
+    def run(self, patch, fps_wait=False):
+        """
+        Run the renderer
+        """
+        self._display_thread = threading.Thread(target=self._display)
+        self._display_thread.start()
 
-        self.render_thread = threading.Thread(target=self._render_thread, args=(node, fps_wait))
-        self.render_thread.start()
+        self._render_thread = threading.Thread(target=self._render, args=(patch, fps_wait))
+        self._render_thread.start()
 
     def join(self):
-        self.display_thread.join()
-        self.render_thread.join()
+        """
+        Wait until the renderer rejoins.
+        :return:
+        """
+        self._display_thread.join()
+        self._render_thread.join()
