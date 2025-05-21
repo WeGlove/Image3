@@ -5,9 +5,9 @@ from src.Nodes.maps.point_map import PointMap
 
 class BitPlanes(PointMap):
 
-    def __init__(self, node_id, factory_id, device, frame_counter):
+    def __init__(self, node_id, factory_id, device):
         self.input = NodeSocket(False, "Input", default=None, description="")
-        super().__init__(device, node_id, frame_counter, factory_id, [self.input])
+        super().__init__(device, node_id, factory_id, [self.input])
 
     def produce(self):
         mask = self.input.get().produce()

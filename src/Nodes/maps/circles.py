@@ -7,7 +7,7 @@ from src.Nodes.node_socket import NodeSocket
 
 class Circles(PointMap):
 
-    def __init__(self, node_id, device, frame_counter):
+    def __init__(self, node_id, device):
         self.noso_points = NodeSocket(False, "Points", None)
         self.noso_rotation = NodeSocket(False, "Rotation", None)
         self.noso_frequency = NodeSocket(False, "Frequency", None)
@@ -18,7 +18,7 @@ class Circles(PointMap):
 
         self.angle_space = None
 
-        super().__init__(device, node_id, frame_counter, "Circles", [
+        super().__init__(device, node_id, "Circles", [
             self.noso_points,
             self.noso_rotation,
             self.noso_frequency,

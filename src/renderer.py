@@ -103,7 +103,7 @@ class Renderer:
 
             if self.should_reset:
                 self.should_reset = False
-                patch.get_root().initialize(self.width, self.height, [])
+                patch.get_root().initialize(self.width, self.height, [], self.frame_counter)
 
             current_frame = self.frame_counter.get()
 

@@ -5,9 +5,9 @@ from src.Nodes.node_socket import NodeSocket
 
 class Fill(PointMap):
 
-    def __init__(self, node_id, device, factory_id, frame_counter):
+    def __init__(self, node_id, device, factory_id):
         self.input_noso = NodeSocket(False, "Input", None)
-        super().__init__(device, node_id, frame_counter, factory_id, [self.input_noso])
+        super().__init__(device, node_id, factory_id, [self.input_noso])
 
     def produce(self):
         return torch.ones((self.width, self.height), device=self.device) * self.input_noso.get().produce()

@@ -6,10 +6,10 @@ from src.Nodes.node_socket import NodeSocket
 
 class Polar(PointMap):
 
-    def __init__(self, node_id, device, factory_id, frame_counter):
+    def __init__(self, node_id, device, factory_id):
         self.center = NodeSocket(False, "Center", None)
         self.angle_shift = NodeSocket(False, "Angle Shit", None)
-        super().__init__(device, node_id, frame_counter, factory_id, [self.center, self.angle_shift])
+        super().__init__(device, node_id, factory_id, [self.center, self.angle_shift])
 
     def produce(self):
         radius, angle = get_polar(self.width, self.height, self.device, self.center.get().produce())

@@ -6,7 +6,7 @@ from src.Nodes.node_socket import NodeSocket
 
 class Spirals(PointMap):
 
-    def __init__(self, node_id, device, frame_counter, points=None, rotation=0, frequency=1, weights_angles=None):
+    def __init__(self, node_id, device, points=None, rotation=0, frequency=1, weights_angles=None):
         self.noso_points = NodeSocket(False, "Points", None)
         self.noso_rotation = NodeSocket(False, "Rotation", None)
         self.noso_frequency = NodeSocket(False, "Frequency", None)
@@ -14,7 +14,7 @@ class Spirals(PointMap):
         self.noso_shift = NodeSocket(False, "Shift", None)
 
         self.angle_space = None
-        super().__init__(device, node_id, frame_counter, "Spirals", [
+        super().__init__(device, node_id,"Spirals", [
             self.noso_points,
             self.noso_rotation,
             self.noso_frequency,

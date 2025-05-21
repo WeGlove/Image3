@@ -6,11 +6,11 @@ from src.Nodes.maps.point_map import PointMap
 
 class HSV(PointMap):
 
-    def __init__(self, node_id, factory_id, device, frame_counter):
+    def __init__(self, node_id, factory_id, device):
         self.r = NodeSocket(False, "R", default=None, description="")
         self.g = NodeSocket(False, "G", default=None, description="")
         self.b = NodeSocket(False, "B", default=None, description="")
-        super().__init__(device, node_id, frame_counter, factory_id, [self.r, self.g, self.b])
+        super().__init__(device, node_id, factory_id, [self.r, self.g, self.b])
 
     @staticmethod
     def _to_hsv(mask, width, height):

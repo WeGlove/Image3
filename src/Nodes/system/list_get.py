@@ -5,10 +5,10 @@ from src.Nodes.node_socket import NodeSocket
 
 class ListGet(Node):
 
-    def __init__(self, node_id, factory_id, device, frame_counter, initial_value=""):
+    def __init__(self, node_id, factory_id, device, initial_value=""):
         self.initial_value = NodeEdit(initial_value)
         self.compositor = NodeSocket(False, "Compositor", None)
-        super().__init__(node_id, factory_id, "Returns the given value.", frame_counter, [self.compositor], device, [self.initial_value])
+        super().__init__(node_id, factory_id, "Returns the given value.", [self.compositor], device, [self.initial_value])
 
     def produce(self):
         text = self.initial_value.get()

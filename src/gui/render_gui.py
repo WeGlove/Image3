@@ -15,7 +15,7 @@ class RenderGui(QMainWindow):
         self.logger = logging.getLogger(__name__)
 
         self.frame_renderer = frame_renderer
-        system_factory = get_system_factory(frame_renderer.device, frame_renderer.frame_counter)
+        system_factory = get_system_factory(frame_renderer.device)
         self.node_factories = [system_factory] + node_factories
 
         out = system_factory.instantiate("Output")

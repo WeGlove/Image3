@@ -4,13 +4,12 @@ from src.Nodes.node_socket import NodeSocket
 
 
 class Noise(PointMap):
-    def __init__(self, node_id, device, factory_id, frame_counter, bias=None):
+    def __init__(self, node_id, device, factory_id, bias=None):
         self.bias = NodeSocket(False, "Bias", default=None, description="")
-        super().__init__(device, node_id, frame_counter, factory_id, [self.bias])
+        super().__init__(device, node_id, factory_id, [self.bias])
 
     def produce(self):
         noise_map = torch.rand(self.width, self.height, device=self.device) ** self.bias.get().produce()
-
         return noise_map
 
     @staticmethod

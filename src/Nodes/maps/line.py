@@ -7,7 +7,7 @@ import math
 
 class Line(PointMap):
 
-    def __init__(self, node_id, device, factory_id, frame_counter, line=None):
+    def __init__(self, node_id, device, factory_id, line=None):
         """
 
         :param line: as [ax + by + c]
@@ -16,7 +16,7 @@ class Line(PointMap):
         """
         self.line_noso = NodeSocket(False, "Line", None)
         self.shift_noso = NodeSocket(False, "Shift", None)
-        super().__init__(device, node_id, frame_counter, factory_id, [self.line_noso, self.shift_noso])
+        super().__init__(device, node_id, factory_id, [self.line_noso, self.shift_noso])
 
     def produce(self):
         position = self.line_noso.get().produce()

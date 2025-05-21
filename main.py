@@ -19,12 +19,11 @@ if __name__ == "__main__":
     with torch.cuda.device(0):
         renderer = Renderer(30, device, width=1920, height=1080, start_frame=0, stop_frame=16271, repeat=True,
                             save_path=save_path, save=False)
-        frame_counter = renderer.frame_counter
 
-        factories = [get_map_factory(device, frame_counter),
-                     get_io_factory(device, frame_counter), get_math_factory(device, frame_counter),
-                     get_imaging_factory(device, frame_counter), get_tensor_conv_factory(device, frame_counter),
-                     get_maps_2vec_factory(device, frame_counter), get_maps_nvec_factory(device, frame_counter)]
+        factories = [get_map_factory(device),
+                     get_io_factory(device), get_math_factory(device),
+                     get_imaging_factory(device), get_tensor_conv_factory(device),
+                     get_maps_2vec_factory(device), get_maps_nvec_factory(device)]
         logger.info(f"Created {len(factories)} factories")
 
         logger.info("Running GUI")

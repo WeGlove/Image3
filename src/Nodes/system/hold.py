@@ -4,12 +4,12 @@ from src.Nodes.node_socket import NodeSocket
 
 class Hold(Node):
 
-    def __init__(self, node_id, factory_id, device, frame_counter, initial_value=""):
+    def __init__(self, node_id, factory_id, device, initial_value=""):
         self.input = NodeSocket(False, "Input", default=None, description="")
         self.start = NodeSocket(False, "Start", default=None, description="")
         self.last = None
         self.last_frame = -1
-        super().__init__(node_id, factory_id, "Returns the given value.", frame_counter,
+        super().__init__(node_id, factory_id, "Returns the given value.",
                          [self.input, self.start], device, [])
 
     def produce(self):

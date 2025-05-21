@@ -5,9 +5,9 @@ from src.Nodes.node_socket import NodeSocket
 
 class RFFT(PointMap):
 
-    def __init__(self, node_id, device, factory_id, frame_counter):
+    def __init__(self, node_id, device, factory_id):
         self.input = NodeSocket(False, "Map", None)
-        super().__init__(device, node_id, frame_counter, factory_id, [self.input])
+        super().__init__(device, node_id, factory_id, [self.input])
 
     def produce(self):
         mask = self.input.get().produce()

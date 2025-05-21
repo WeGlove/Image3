@@ -8,14 +8,15 @@ from src.Nodes.interactables.interactable import Interactable
 
 class Node:
 
-    def __init__(self, node_id, factory_id, description, frame_counter, subnode_sockets: List[NodeSocket], device,
+    def __init__(self, node_id, factory_id, description, subnode_sockets: List[NodeSocket], device,
                  interactables: List[Interactable], position=None):
         self.subnode_sockets = subnode_sockets
-        self.frame_counter = frame_counter
+        self.frame_counter = None
         self.description = description
         self.interactables = interactables if interactables is not None else []
         self.device = device
         self.node_id = node_id
+        self.is_initialized = False
         self.factory_id = factory_id
         self.position = np.zeros((2, 1)) if position is None else position
 
@@ -48,13 +49,16 @@ class Node:
     def produce(self, *args):
         return None
 
-    def initialize(self, width, height, excluded_nodes, *args):
+    def initialize(self, width, height, excluded_nodes, frame_counter, *args):
         for socket in self.subnode_sockets:
             node = socket.get()
             if node in excluded_nodes:
                 continue
             else:
-                node.initialize(width, height, excluded_nodes + [self], *args)
+                node.initialize(width, height, excluded_nodes + [self], frame_counter, *args)
+
+        self.frame_counter = frame_counter
+        self.is_initialized = True
 
     def get_all_subnodes(self):
         subnodes = [self.get_subnode(k).get_all_subnodes() for k in range(self.get_subnode_count()) if self.subnode_sockets[k].is_connected()]
