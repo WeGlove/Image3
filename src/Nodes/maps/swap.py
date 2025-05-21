@@ -5,10 +5,10 @@ from src.Nodes.node_socket import NodeSocket
 
 class Swap(PointMap):
 
-    def __init__(self, node_id, device, factory_id):
+    def __init__(self, node_id, factory_id):
         self.sample = NodeSocket(False, "Sample", None)
         self.map = NodeSocket(False, "Map", None)
-        super().__init__(device, node_id, factory_id, [self.map, self.sample])
+        super().__init__(node_id, factory_id, [self.map, self.sample])
 
     def produce(self):
         positions = self.map.get().produce()

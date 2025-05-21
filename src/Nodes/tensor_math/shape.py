@@ -4,10 +4,10 @@ from src.Nodes.node_socket import NodeSocket
 
 class Shape(Node):
 
-    def __init__(self, node_id, factory_id, device, initial_value="."):
+    def __init__(self, node_id, factory_id):
         self.a = NodeSocket(False, "A", default=None, description="")
         self.reader = None
-        super().__init__(node_id, factory_id, "Division",[self.a], device, [])
+        super().__init__(node_id, factory_id, "Division",[self.a], [])
 
     def produce(self):
         a = self.a.get().produce()

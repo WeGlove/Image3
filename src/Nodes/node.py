@@ -8,13 +8,13 @@ from src.Nodes.interactables.interactable import Interactable
 
 class Node:
 
-    def __init__(self, node_id, factory_id, description, subnode_sockets: List[NodeSocket], device,
+    def __init__(self, node_id, factory_id, description, subnode_sockets: List[NodeSocket],
                  interactables: List[Interactable], position=None):
         self.subnode_sockets = subnode_sockets
         self.frame_counter = None
         self.description = description
         self.interactables = interactables if interactables is not None else []
-        self.device = device
+        self.device = None
         self.node_id = node_id
         self.is_initialized = False
         self.factory_id = factory_id
@@ -49,15 +49,16 @@ class Node:
     def produce(self, *args):
         return None
 
-    def initialize(self, width, height, excluded_nodes, frame_counter, *args):
+    def initialize(self, width, height, excluded_nodes, frame_counter, device):
         for socket in self.subnode_sockets:
             node = socket.get()
             if node in excluded_nodes:
                 continue
             else:
-                node.initialize(width, height, excluded_nodes + [self], frame_counter, *args)
+                node.initialize(width, height, excluded_nodes + [self], frame_counter, device)
 
         self.frame_counter = frame_counter
+        self.device = device
         self.is_initialized = True
 
     def get_all_subnodes(self):

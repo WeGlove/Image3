@@ -5,10 +5,10 @@ from src.Nodes.node_socket import NodeSocket
 
 class Mean(Node):
 
-    def __init__(self, node_id, factory_id, device, initial_value="."):
+    def __init__(self, node_id, factory_id):
         self.size = NodeSocket(False, "Size", default=None, description="")
         self.reader = None
-        super().__init__(node_id, factory_id, "Mean Tensor", [self.size], device, [])
+        super().__init__(node_id, factory_id, "Mean Tensor", [self.size], [])
 
     def produce(self):
         size = self.size.get().produce()

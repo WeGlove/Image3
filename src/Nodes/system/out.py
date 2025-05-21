@@ -4,11 +4,11 @@ from src.Nodes.node import NodeSocket
 
 class Out(Node):
 
-    def __init__(self, device, node_id, factory_id):
+    def __init__(self, node_id, factory_id):
         self.noso_render_input = NodeSocket(False, "RenderInput", None)
 
         super().__init__(node_id, factory_id, "The Output of the Patch",
-                         [self.noso_render_input], device, [])
+                         [self.noso_render_input], [])
 
     def produce(self):
         return self.noso_render_input.get().produce()

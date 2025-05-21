@@ -4,9 +4,9 @@ from src.Nodes.node import Node
 
 class Sharpen(Node):
 
-    def __init__(self, node_id, factory_id, device, initial_value="."):
+    def __init__(self, node_id, factory_id):
         self.reader = None
-        super().__init__(node_id, factory_id, "Mean Tensor", [], device, [])
+        super().__init__(node_id, factory_id, "Mean Tensor", [], [])
 
     def produce(self):
         mask = torch.tensor([

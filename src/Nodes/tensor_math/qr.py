@@ -5,9 +5,9 @@ import torch
 
 class QR(Node):
 
-    def __init__(self, node_id, factory_id, device, initial_value="."):
+    def __init__(self, node_id, factory_id):
         self.a = NodeSocket(False, "A", default=None, description="")
-        super().__init__(node_id, factory_id, "Round", [self.a], device, [])
+        super().__init__(node_id, factory_id, "Round", [self.a], [])
 
     def produce(self):
         a = self.a.get().produce()

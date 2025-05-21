@@ -3,10 +3,9 @@ import logging
 
 class NodeFactory:
 
-    def __init__(self, device, in_dict, factory_name):
+    def __init__(self, in_dict, factory_name):
         self.logger = logging.getLogger(__name__)
         self.next_id = 0
-        self.device = device
         self.in_dict = in_dict
         self.factory_name = factory_name
 
@@ -29,8 +28,7 @@ class NodeFactory:
             self.logger.warning("WARNING: UNKNOWN NODE")
 
     def instantiate(self, node_name, node_id=None, interactables=None, **properties):
-        node = self.in_dict[node_name](device=self.device,
-                                       node_id=f"{self.factory_name}:{self.next_id}" if node_id is None else node_id,
+        node = self.in_dict[node_name](node_id=f"{self.factory_name}:{self.next_id}" if node_id is None else node_id,
                                        factory_id=self.factory_name, **properties)
         if interactables is not None:
             logging.debug(interactables)

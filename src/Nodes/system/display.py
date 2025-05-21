@@ -5,10 +5,10 @@ from src.Nodes.node_socket import NodeSocket
 
 class Display(Node):
 
-    def __init__(self, node_id, factory_id, device, initial_value=""):
+    def __init__(self, node_id, factory_id):
         self.a = NodeSocket(False, "A", default=None, description="")
-        self.initial_value = NodeEdit(initial_value)
-        super().__init__(node_id, factory_id, "Returns the given value.",  [self.a], device, [self.initial_value])
+        self.initial_value = NodeEdit("")
+        super().__init__(node_id, factory_id, "Returns the given value.",  [self.a], [self.initial_value])
 
     def produce(self):
         a = self.a.get().produce()
