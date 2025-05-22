@@ -19,6 +19,8 @@ class Node:
         self.is_initialized = False
         self.factory_id = factory_id
         self.position = np.zeros((2, 1)) if position is None else position
+        self.width = None
+        self.height = None
 
     def set_position(self, position):
         self.position = np.array(position)
@@ -60,6 +62,8 @@ class Node:
         self.frame_counter = frame_counter
         self.device = device
         self.is_initialized = True
+        self.width = width
+        self.height = height
 
     def get_all_subnodes(self):
         subnodes = [self.get_subnode(k).get_all_subnodes() for k in range(self.get_subnode_count()) if self.subnode_sockets[k].is_connected()]

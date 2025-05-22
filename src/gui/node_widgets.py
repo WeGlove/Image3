@@ -8,7 +8,6 @@ from src.Nodes.interactables.node_table import NodeTable
 from src.gui.interactable_widgets.ButtonWidget import ButtonWidget
 from src.gui.interactable_widgets.EditWidget import EditWidget
 from src.gui.interactable_widgets.TableWidget import TableWidget
-import numpy as np
 
 
 class NodeWidget(QLabel):
@@ -50,6 +49,8 @@ class NodeWidget(QLabel):
             elif type(interactable) == NodeTable:
                 edit_field = TableWidget(self.parent, node, j, j)
                 self.edit_fields.append(edit_field)
+            else:
+                raise ValueError(f"Unknown edit field {type(interactable)}")
 
             edit_field.update()
 

@@ -18,7 +18,6 @@ class EditWidget(InteractableWidget):
         self.edit_field.show()
         self.edit_field.move(0, self.SOCKET_OFFSET + self.line_offset * self.LINE_SIZE)
 
-
     def move(self, x, y):
         self.edit_field.move(x, y)
 
@@ -27,4 +26,4 @@ class EditWidget(InteractableWidget):
 
     def update(self):
         x = self.node.interactables[self.k].get()
-        self.edit_field.setText(x)
+        self.edit_field.setText(str(x))

@@ -42,7 +42,6 @@ class NodeEditor(QWidget):
                 act = factory_menu.addAction(key)
                 self.factory_acts.append(act)
         self.factories: Dict[str, NodeFactory] = {factory.get_factory_name(): factory for factory in factories}
-        self.device = factories[0].device
         self.patch = patch
 
         if nodes is not None:
