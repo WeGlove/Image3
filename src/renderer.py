@@ -13,7 +13,7 @@ from src.frame_counter import FrameCounter
 class Renderer:
 
     def __init__(self, fps, device, start_frame=0, stop_frame=-1, width=None, height=None, repeat=False, display=True,
-                 save=False, save_path="."):
+                 save=False, save_path=".", image_format="png"):
         self.logger = logging.getLogger(__name__)
 
         self._display_thread = None
@@ -30,6 +30,7 @@ class Renderer:
         self.current_image = None
         self.image_lock = Lock()
         self.run_display_thread = True
+        self.image_format = image_format
 
         # Frame Info
         self.start_frame = start_frame
@@ -144,7 +145,7 @@ class Renderer:
 
             if self.save:
                 mask = Image.fromarray(np.uint8(rendered_img.cpu()))
-                mask.save(os.path.join(self.save_path, f"render_{current_frame}.png"))
+                mask.save(os.path.join(self.save_path, f"render_{current_frame}.{self.image_format}"))
                 self.logger.info(f"Saved frame {current_frame}")
 
             if fps_wait:
