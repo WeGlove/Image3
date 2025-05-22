@@ -12,7 +12,7 @@ from src.frame_counter import FrameCounter
 
 class Renderer:
 
-    def __init__(self, fps, device, start_frame=0, stop_frame=-1, width=None, height=None, repeat=False, display=True,
+    def __init__(self, device=None, fps=30, start_frame=0, stop_frame=100000, width=1920, height=1080, repeat=False, display=True,
                  save=False, save_path=".", image_format="png"):
         self.logger = logging.getLogger(__name__)
 
@@ -23,7 +23,6 @@ class Renderer:
         self.width = 1920 if width is None else width
         self.height = 1080 if height is None else height
         self.display = display
-        self.device = device
         self.save = save
         self.save_path = save_path
         self.new_image = True
@@ -31,6 +30,7 @@ class Renderer:
         self.image_lock = Lock()
         self.run_display_thread = True
         self.image_format = image_format
+        self.device = device
 
         # Frame Info
         self.start_frame = start_frame
