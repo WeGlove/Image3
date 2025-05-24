@@ -1,4 +1,3 @@
-import os.path
 from src.gui.render_gui import RenderGui
 from src.renderer import Renderer
 import torch
@@ -17,12 +16,10 @@ if __name__ == "__main__":
     with torch.cuda.device(0):
         renderer = Renderer(device)
 
-        factories = [get_map_factory(),
-                     get_io_factory(), get_math_factory(),
-                     get_imaging_factory(), get_tensor_conv_factory(),
-                     get_maps_2vec_factory(), get_maps_nvec_factory()]
+        factories = [get_map_factory(), get_io_factory(), get_math_factory(), get_imaging_factory(),
+                     get_tensor_conv_factory(), get_maps_2vec_factory(), get_maps_nvec_factory()]
         logger.info(f"Created {len(factories)} factories")
 
         logger.info("Running GUI")
         window = RenderGui(renderer, factories)
-        window.run(fps_wait=True)
+        window.run()

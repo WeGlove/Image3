@@ -43,31 +43,29 @@ class Renderer:
         self.should_reset = False
         self.repeat = repeat
 
-        # The GUI needs to be updated. This does it
-        def on_frame(frame):
-            return frame
+        def on_frame(frame, frame_time):
+            return frame, frame_time
         self.on_frame = on_frame
 
-    def _wait(self, before_time):
+    def _wait(self, last_frame_time):
         """
         Wait until 1/fps - (now - before_time) has expired
-        :param before_time:
         :return:
         """
-        delta = time.time() - before_time
-        delta = 1 / self.fps - delta > 0
-        if delta > 0:
-            time.sleep(delta)
-        return delta > 0
+        if time.time() > last_frame_time + 1/self.fps:
+            return True
+        while True:
+            if time.time() > last_frame_time + 1/self.fps:
+                break
+        return False
 
     def _display(self):
         """
         The loop that displays new rendered images
         :return:
         """
+        last_frame = time.time()
         while self.run_display_thread:
-            before_time = time.time()
-
             with self.image_lock:
                 render = self.current_image
                 is_new = self.new_image
@@ -81,7 +79,8 @@ class Renderer:
                 if cv2.waitKey(1) == ord('q'):
                     break
 
-            self._wait(before_time)
+            self._wait(last_frame)
+            last_frame = time.time()
 
     def _pause(self):
         """
@@ -98,6 +97,7 @@ class Renderer:
         :param fps_wait:
         :return:
         """
+        last_frame_time = time.time()
         for frame in range(self.start_frame, self.stop_frame):
             if self.is_paused:
                 self._pause()
@@ -107,10 +107,7 @@ class Renderer:
                 patch.get_root().initialize(self.width, self.height, [], self.frame_counter, self.device)
 
             current_frame = self.frame_counter.get()
-
-            self.on_frame(current_frame)  # GUI update
-
-            before_time = time.time()
+            self.on_frame(current_frame, time.time())  # GUI update
 
             if self.is_forward:
                 if current_frame < self.start_frame:
@@ -129,7 +126,7 @@ class Renderer:
                 rendered_img = patch.get_root().produce()
             except Exception:
                 self.logger.error(traceback.format_exc())
-                self.pause_unpause()
+                self.pause()
                 self.reset()
                 break
 
@@ -149,7 +146,8 @@ class Renderer:
                 self.logger.info(f"Saved frame {current_frame}")
 
             if fps_wait:
-                is_slow = self._wait(before_time)
+                is_slow = self._wait(last_frame_time)
+                last_frame_time = time.time()
                 if is_slow:
                     self.logger.warning(f"Frame {current_frame} was not rendered in time")
 
@@ -177,20 +175,36 @@ class Renderer:
         with self.image_lock:
             self.run_display_thread = False
 
-    def pause_unpause(self):
+    def pause(self):
         """
         Pauses the rendering
         :return:
         """
-        self.is_paused = not self.is_paused
+        self.is_paused = True
         self.logger.info(f"Pause: {self.is_paused}")
 
-    def forwards_backwards(self):
+    def unpause(self):
         """
-        Switches between rendering forwards and backwards
+        Unpauses the rendering
         :return:
         """
-        self.is_forward = not self.is_forward
+        self.is_paused = False
+        self.logger.info(f"Pause: {self.is_paused}")
+
+    def forwards(self):
+        """
+        Switches to running forwards, unpauses
+        :return:
+        """
+        self.is_forward = True
+        self.logger.info(f"Forward: {self.is_forward}")
+
+    def backwards(self):
+        """
+        Switches to running backwards, unpauses
+        :return:
+        """
+        self.is_forward = False
         self.logger.info(f"Forward: {self.is_forward}")
 
     def reset(self):
@@ -228,12 +242,33 @@ class Renderer:
         self.stop_frame = frame
         self.logger.info(f"Set stop frame to {frame}")
 
+    def set_startframe(self, frame):
+        """
+        Set the last frame
+        :param frame:
+        :return:
+        """
+        self.start_frame = frame
+        self.logger.info(f"Set start frame to {frame}")
+
+    def set_img_format(self, format: str):
+        """
+        Set the image format
+        :param format:
+        :return:
+        """
+        self.image_format = format
+
     def repeat_unrepeat(self):
         """
         Switch between repeating and not repeating
         """
         self.repeat = not self.repeat
         self.logger.info(f"Repeat {self.repeat}")
+
+    def set_save_path(self, save_path):
+        self.save_path = save_path
+        self.logger.info(f"Set save path to {save_path}")
 
     def run(self, patch, fps_wait=False):
         """

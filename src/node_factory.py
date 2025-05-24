@@ -1,7 +1,7 @@
 import logging
 
 
-class NodeFactory:
+class NodeFactory: # TODO I don't like the way these work, should go over it again
 
     def __init__(self, in_dict, factory_name):
         self.logger = logging.getLogger(__name__)
