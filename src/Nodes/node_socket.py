@@ -3,7 +3,7 @@ import logging
 
 class NodeSocket:
 
-    def __init__(self, is_necesseary, socket_name, default=None, description=""):
+    def __init__(self, is_necesseary, socket_name, default=None, description=""): # TODO is_necessary is unecessary considering that the default can be none
         self.logger = logging.getLogger(__name__)
         self.is_necessary = is_necesseary
         self.connected = False

@@ -37,6 +37,7 @@ class Renderer:
         self.stop_frame = stop_frame
         self.frame_counter = FrameCounter()
         self.fps = fps
+        self.fps_wait = True
         self.is_paused = True
         self.is_forward = True
         self.is_reset = False
@@ -73,7 +74,7 @@ class Renderer:
 
             if render is not None and is_new:
                 img = render.cpu().numpy() / 255
-                cv2.imshow('Render', img)
+                cv2.imshow('Render', img) # TODO flipped images
 
                 # This is currently necessary to quit because the gui doesn't send signals on quitting
                 if cv2.waitKey(1) == ord('q'):
@@ -90,11 +91,10 @@ class Renderer:
         while self.is_paused:
             time.sleep(1)
 
-    def _render_sequence(self, patch, fps_wait):
+    def _render_sequence(self, patch):
         """
         Render a sequence from a patch
         :param patch:
-        :param fps_wait:
         :return:
         """
         last_frame_time = time.time()
@@ -145,17 +145,16 @@ class Renderer:
                 mask.save(os.path.join(self.save_path, f"render_{current_frame}.{self.image_format}"))
                 self.logger.info(f"Saved frame {current_frame}")
 
-            if fps_wait:
+            if self.fps_wait: # TODO this crashes
                 is_slow = self._wait(last_frame_time)
                 last_frame_time = time.time()
                 if is_slow:
                     self.logger.warning(f"Frame {current_frame} was not rendered in time")
 
-    def _render(self, patch, fps_wait=False):
+    def _render(self, patch):
         """
         The loop rendering new images from a patch
         :param patch:
-        :param fps_wait:
         :return:
         """
         while True:
@@ -167,7 +166,7 @@ class Renderer:
             self.is_reset = True
             self.should_reset = True
 
-            self._render_sequence(patch, fps_wait)
+            self._render_sequence(patch)
 
             if not self.repeat:
                 break
@@ -259,6 +258,14 @@ class Renderer:
         """
         self.image_format = format
 
+    def set_fps_wait(self, val):
+        """
+        Set the image format
+        :param format:
+        :return:
+        """
+        self.fps_wait = val
+
     def repeat_unrepeat(self):
         """
         Switch between repeating and not repeating
@@ -270,14 +277,14 @@ class Renderer:
         self.save_path = save_path
         self.logger.info(f"Set save path to {save_path}")
 
-    def run(self, patch, fps_wait=False):
+    def run(self, patch):
         """
         Run the renderer
         """
         self._display_thread = threading.Thread(target=self._display)
         self._display_thread.start()
 
-        self._render_thread = threading.Thread(target=self._render, args=(patch, fps_wait))
+        self._render_thread = threading.Thread(target=self._render, args=(patch,))
         self._render_thread.start()
 
     def join(self):

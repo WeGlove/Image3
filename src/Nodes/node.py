@@ -74,5 +74,5 @@ class Node:
         return out_subnodes
 
     @staticmethod
-    def get_node_name():
+    def get_node_name(): # TODO this is kind of shit
         return "Node"
