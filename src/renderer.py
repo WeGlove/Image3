@@ -74,7 +74,7 @@ class Renderer:
 
             if render is not None and is_new:
                 img = render.cpu().numpy() / 255
-                cv2.imshow('Render', img) # TODO flipped images
+                cv2.imshow('Render', img)
 
                 # This is currently necessary to quit because the gui doesn't send signals on quitting
                 if cv2.waitKey(1) == ord('q'):
