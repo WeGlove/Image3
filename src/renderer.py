@@ -37,7 +37,6 @@ class Renderer:
         self.stop_frame = stop_frame
         self.frame_counter = FrameCounter()
         self.fps = fps
-        self.fps_wait = True
         self.is_paused = True
         self.is_forward = True
         self.is_reset = False
@@ -145,11 +144,10 @@ class Renderer:
                 mask.save(os.path.join(self.save_path, f"render_{current_frame}.{self.image_format}"))
                 self.logger.info(f"Saved frame {current_frame}")
 
-            if self.fps_wait: # TODO this crashes
-                is_slow = self._wait(last_frame_time)
-                last_frame_time = time.time()
-                if is_slow:
-                    self.logger.warning(f"Frame {current_frame} was not rendered in time")
+            is_slow = self._wait(last_frame_time)
+            last_frame_time = time.time()
+            if is_slow:
+                self.logger.warning(f"Frame {current_frame} was not rendered in time")
 
     def _render(self, patch):
         """

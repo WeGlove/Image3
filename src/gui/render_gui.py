@@ -10,7 +10,7 @@ from typing import List
 from src.node_factory import NodeFactory
 
 
-class RenderGui(QMainWindow):
+class RenderGui(QMainWindow):  # Future TODO, set FPS Button
 
     def __init__(self, frame_renderer: Renderer, node_factories: List[NodeFactory]):
         self.app = QApplication([])
@@ -114,14 +114,6 @@ class RenderGui(QMainWindow):
         self.repeat_button.setCheckable(True)
         self.repeat_button.clicked.connect(on_repeat)
 
-        self.fps_wait_button = QPushButton("FPS Wait", self)
-        self.fps_wait_button.setCheckable(True)
-
-        def on_fps_wait():
-            self.logger.info("Repeat")
-            self.frame_renderer.set_fps_wait(self.fps_wait_button.isChecked())
-        self.fps_wait_button.clicked.connect(on_fps_wait)
-
         # Row 4
 
         self.startframe_button = QPushButton("Set Start Frame", self)
@@ -132,7 +124,6 @@ class RenderGui(QMainWindow):
             if text.isnumeric():
                 self.frame_renderer.set_startframe(int(float(text)))
                 self.update_fps_labels()
-
         self.startframe_button.clicked.connect(on_set_startframe)
 
         self.set_frame_button = QPushButton("Set Current Frame", self)
@@ -152,6 +143,7 @@ class RenderGui(QMainWindow):
             text = self.stopframe_edit.text()
             if text.isnumeric():
                 self.frame_renderer.set_stopframe(int(float(text)))
+                self.update_fps_labels()
         self.stopframe_button.clicked.connect(on_set_stop_frame)
 
         # Row 5
@@ -207,7 +199,6 @@ class RenderGui(QMainWindow):
         render_settings_layout = QHBoxLayout()
         render_settings_layout.addWidget(self.render_button)
         render_settings_layout.addWidget(self.repeat_button)
-        render_settings_layout.addWidget(self.fps_wait_button)
 
         layout = QVBoxLayout()
         layout.addWidget(self.reset_button)
