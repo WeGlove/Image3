@@ -15,21 +15,24 @@ class NodeFactory: # TODO I don't like the way these work, should go over it aga
     def set_next(self, x):
         self.next_id = x
 
-    def node_from_dict(self, properties, system):
+    def node_from_dict(self, system):
         name = system["name"]
         interactables = system["interactables"]
         position = system["position"]
 
         if name in self.in_dict:
-            node = self.instantiate(node_id=system["node_id"], node_name=name, interactables=interactables, **properties)
+            node = self.instantiate(node_id=system["node_id"], node_name=name, interactables=interactables)
             node.set_position(position)
             return node
         else:
             self.logger.warning("WARNING: UNKNOWN NODE")
 
-    def instantiate(self, node_name, node_id=None, interactables=None, **properties):
-        node = self.in_dict[node_name](node_id=f"{self.factory_name}:{self.next_id}" if node_id is None else node_id,
-                                       factory_id=self.factory_name, **properties)
+    def instantiate(self, node_name, node_id=None, interactables=None):
+        node = self.in_dict[node_name]()
+        node.set_node_id(f"{self.factory_name}:{self.next_id}" if node_id is None else node_id)
+        node.set_factory_id(self.factory_name)
+        node.set_node_name(node_name)
+
         if interactables is not None:
             logging.debug(interactables)
             for interactble_properties, interactable in zip(interactables, node.interactables):

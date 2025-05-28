@@ -1,15 +1,15 @@
 from src.Nodes.maps.utils.Geos import get_polar
 import torch
-from src.Nodes.maps.point_map import PointMap
+from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
 
 
-class Polar(PointMap):
+class Polar(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         self.center = NodeSocket(False, "Center", None)
         self.angle_shift = NodeSocket(False, "Angle Shit", None)
-        super().__init__(node_id, factory_id, [self.center, self.angle_shift])
+        super().__init__([self.center, self.angle_shift])
 
     def produce(self):
         radius, angle = get_polar(self.width, self.height, self.device, self.center.get().produce())
@@ -18,7 +18,3 @@ class Polar(PointMap):
         angle %= 1
 
         return torch.stack([radius, angle])
-
-    @staticmethod
-    def get_node_name():
-        return "Polar"

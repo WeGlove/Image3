@@ -7,14 +7,14 @@ from threading import RLock
 
 class WaitManager(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         self.wait_for = NodeSocket(False, "Wait For", default=None, description="")
         self.last = None
         self.last_frame = -1
         self.production_thread = None
         self.is_running = False
         self.production_lock = RLock()
-        super().__init__(node_id, factory_id, "Returns the given value.", [self.wait_for], [])
+        super().__init__([self.wait_for], [], "Returns the given value.")
 
     def _waiting_production(self):
         while self.is_running:
@@ -45,7 +45,3 @@ class WaitManager(Node):
 
         self.is_running = True
         self.production_thread.start()
-
-    @staticmethod
-    def get_node_name():
-        return "Wait Manager"

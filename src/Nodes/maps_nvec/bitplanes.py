@@ -1,13 +1,13 @@
 import torch
 from src.Nodes.node_socket import NodeSocket
-from src.Nodes.maps.point_map import PointMap
+from src.Nodes.node import Node
 
 
-class BitPlanes(PointMap):
+class BitPlanes(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         self.input = NodeSocket(False, "Input", default=None, description="")
-        super().__init__(node_id, factory_id, [self.input])
+        super().__init__([self.input])
 
     def produce(self):
         mask = self.input.get().produce()
@@ -20,7 +20,3 @@ class BitPlanes(PointMap):
             bitplanes.append(bitplane)
 
         return torch.tensor(bitplanes, device=self.device)
-
-    @staticmethod
-    def get_node_name():
-        return "BitPlanes"

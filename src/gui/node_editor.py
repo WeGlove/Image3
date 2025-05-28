@@ -139,8 +139,8 @@ class NodeEditor(QWidget):
                 self.factories[factory_name].set_next(next_id)
 
             for k, node_dict in data.items():
-                factory_id = node_dict["Node"]["system"]["factory_id"]
-                add_node = self.factories[factory_id].node_from_dict(node_dict["Node"]["properties"], node_dict["Node"]["system"])
+                factory_id = node_dict["Node"]["factory_id"]
+                add_node = self.factories[factory_id].node_from_dict(node_dict["Node"])
                 if add_node is None:
                     continue
                 self.add_nodes([add_node])
@@ -163,13 +163,13 @@ class NodeEditor(QWidget):
                     else:
                         ValueError()
 
-                    if node_dict["Node"]["system"]["node_id"] not in self.node_widgets.keys():
+                    if node_dict["Node"]["node_id"] not in self.node_widgets.keys():
                         continue
-                    in_node_widget = self.node_widgets[node_dict["Node"]["system"]["node_id"]]
+                    in_node_widget = self.node_widgets[node_dict["Node"]["node_id"]]
                     in_node_widget.socket_labels[j].connect(widget_to_connect)
 
             for k, node_dict in data.items():
-                position = node_dict["Node"]["system"]["position"]
+                position = node_dict["Node"]["position"]
                 if k in self.node_widgets:
                     self.node_widgets[k].move(position[0], position[1])
 

@@ -7,12 +7,12 @@ from src.Nodes.interactables.node_table import NodeTable
 
 class AnimatedProperty(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         self.keyframes_interactable = NodeTable()
         self.keyframes = []
         self.initial_value = NodeSocket(False, "Initial Value", None)
         self.animation_style = "Linear"
-        super().__init__(node_id, factory_id, "Used to animate a value", [self.initial_value], [self.keyframes_interactable])
+        super().__init__([self.initial_value], [self.keyframes_interactable], "Used to animate a value")
 
     def initialize(self, width, height, excluded_nodes, *args):
         super().initialize(width, height, excluded_nodes, *args)
@@ -103,7 +103,3 @@ class AnimatedProperty(Node):
             raise ValueError(f"Unknown animation style {self.animation_style}")
 
         return interp
-
-    @staticmethod
-    def get_node_name():
-        return "Animated Property"

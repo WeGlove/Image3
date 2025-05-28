@@ -21,7 +21,8 @@ class RenderGui(QMainWindow):  # Future TODO, set FPS Button
         self.frame_renderer = frame_renderer
         system_factory = get_system_factory()
         self.node_factories = [system_factory] + node_factories
-        out = system_factory.instantiate("Output")
+        out = system_factory.instantiate("Out")
+        out.set_node_name("Out")
         self.patch = Patch(out)
 
         # Metrics

@@ -1,14 +1,14 @@
 import torch
-from src.Nodes.maps.point_map import PointMap
+from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
 
 
-class Swap(PointMap):
+class Swap(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         self.sample = NodeSocket(False, "Sample", None)
         self.map = NodeSocket(False, "Map", None)
-        super().__init__(node_id, factory_id, [self.map, self.sample])
+        super().__init__([self.map, self.sample])
 
     def produce(self):
         positions = self.map.get().produce()
@@ -24,7 +24,3 @@ class Swap(PointMap):
         sampled = torch.reshape(sampled, (self.width, self.height))
 
         return sampled
-
-    @staticmethod
-    def get_node_name():
-        return "Swap"

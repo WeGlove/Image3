@@ -1,12 +1,12 @@
 from src.Nodes.maps.utils.Geos import get_polar
 import torch
-from src.Nodes.maps.point_map import PointMap
+from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
 
 
-class Spirals(PointMap):
+class Spirals(Node):
 
-    def __init__(self, node_id):
+    def __init__(self):
         self.noso_points = NodeSocket(False, "Points", None)
         self.noso_rotation = NodeSocket(False, "Rotation", None)
         self.noso_frequency = NodeSocket(False, "Frequency", None)
@@ -14,7 +14,7 @@ class Spirals(PointMap):
         self.noso_shift = NodeSocket(False, "Shift", None)
 
         self.angle_space = None
-        super().__init__(node_id, "Spirals", [
+        super().__init__("Spirals", [
             self.noso_points,
             self.noso_rotation,
             self.noso_frequency,

@@ -4,15 +4,11 @@ from src.Nodes.node_socket import NodeSocket
 
 class Division(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         self.a = NodeSocket(False, "A", default=None, description="")
         self.b = NodeSocket(False, "B", default=None, description="")
         self.reader = None
-        super().__init__(node_id, factory_id, "Division", [self.a, self.b], [])
+        super().__init__([self.a, self.b], [], "Division")
 
     def produce(self):
         return self.a.get().produce() / self.b.get().produce()
-
-    @staticmethod
-    def get_node_name():
-        return "Division"

@@ -1,16 +1,16 @@
 import numpy as np
 import torch
 from src.Nodes.node_socket import NodeSocket
-from src.Nodes.maps.point_map import PointMap
+from src.Nodes.node import Node
 
 
-class HSV(PointMap):
+class HSV(Node):
 
     def __init__(self, node_id, factory_id):
         self.r = NodeSocket(False, "R", default=None, description="")
         self.g = NodeSocket(False, "G", default=None, description="")
         self.b = NodeSocket(False, "B", default=None, description="")
-        super().__init__(node_id, factory_id, [self.r, self.g, self.b])
+        super().__init__([self.r, self.g, self.b])
 
     @staticmethod
     def _to_hsv(mask, width, height):
@@ -47,7 +47,3 @@ class HSV(PointMap):
         out_mask = torch.tensor([H, S, V])
 
         return out_mask
-
-    @staticmethod
-    def get_node_name():
-        return "HSV"

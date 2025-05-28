@@ -1,4 +1,4 @@
-class Patch:
+class Patch:  # TODO this is basically useless, is there mode use fot these?
 
     def __init__(self, root):
         self.root = root

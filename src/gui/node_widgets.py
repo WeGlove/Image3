@@ -16,6 +16,7 @@ class NodeWidget(QLabel):
     LINE_SIZE = 15
 
     def __init__(self, node, parent):
+        print(node.get_node_name(), parent)
         super().__init__(node.get_node_name(), parent=parent)
 
         self.font = QFont()

@@ -4,11 +4,11 @@ from src.Nodes.node_socket import NodeSocket
 
 class Once(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         self.input = NodeSocket(False, "Input", default=None, description="")
         self.last = None
         self.last_frame = -1
-        super().__init__(node_id, factory_id, "Returns the given value.", [self.input], [])
+        super().__init__([self.input], [], "Returns the given value.")
 
     def produce(self):
         if self.last_frame == self.frame_counter.get():
@@ -22,7 +22,3 @@ class Once(Node):
         super().initialize(width, height, excluded_nodes, frame_counter, device)
         self.last_frame = -1
         self.last = None
-
-    @staticmethod
-    def get_node_name():
-        return "Once"

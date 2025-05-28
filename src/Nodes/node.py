@@ -1,26 +1,39 @@
 from typing import List
-
 import numpy as np
-
 from src.Nodes.node_socket import NodeSocket
 from src.Nodes.interactables.interactable import Interactable
+from abc import abstractmethod
 
 
-class Node:
+class Node: # TODO comments
 
-    def __init__(self, node_id, factory_id, description, subnode_sockets: List[NodeSocket],
-                 interactables: List[Interactable], position=None):
-        self.subnode_sockets = subnode_sockets
-        self.frame_counter = None
+    def __init__(self, subnode_sockets: List[NodeSocket] = None, interactables: List[Interactable] = None,
+                 description=""):
+        # Subnodes and interactables
+        self.subnode_sockets = [] if subnode_sockets is None else subnode_sockets
+        self.interactables = [] if interactables is None else interactables
+
+        # Identifiers and descriptors
+
         self.description = description
-        self.interactables = interactables if interactables is not None else []
-        self.device = None
-        self.node_id = node_id
+        self.node_id = None
         self.is_initialized = False
-        self.factory_id = factory_id
-        self.position = np.zeros((2, 1)) if position is None else position
+        self.factory_id = None
+        self.position = np.array([0, 0])
+        self.node_name = None
+
+        # Initialization variables
+
+        self.frame_counter = None
         self.width = None
         self.height = None
+        self.device = None
+
+    def set_factory_id(self, factory_id):
+        self.factory_id = factory_id
+
+    def set_node_id(self, node_id):
+        self.node_id = node_id
 
     def set_position(self, position):
         self.position = np.array(position)
@@ -43,13 +56,16 @@ class Node:
     def connect_subnode(self, subnode_id, subnode):
         self.subnode_sockets[subnode_id].connect(subnode)
 
-    def to_dict(self):
-        return {"properties": {}, "system": {"node_id": self.node_id, "factory_id": self.factory_id, "name": self.get_node_name(),
-                                             "interactables": [interactable.to_dict() for interactable in self.interactables],
-                                             "position": self.position.tolist()}}
+    def set_node_name(self, name):
+        self.node_name = name
 
-    def produce(self, *args):
-        return None
+    def get_node_name(self):
+        return self.node_name
+
+    def to_dict(self):
+        return {"node_id": self.node_id, "factory_id": self.factory_id, "name": self.get_node_name(),
+                "interactables": [interactable.to_dict() for interactable in self.interactables],
+                "position": self.position.tolist()}
 
     def initialize(self, width, height, excluded_nodes, frame_counter, device):
         for socket in self.subnode_sockets:
@@ -73,6 +89,6 @@ class Node:
         out_subnodes.append(self)
         return out_subnodes
 
-    @staticmethod
-    def get_node_name(): # TODO this is kind of shit
-        return "Node"
+    @abstractmethod
+    def produce(self):
+        return None

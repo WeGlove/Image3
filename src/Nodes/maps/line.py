@@ -1,13 +1,13 @@
 from src.Nodes.maps.utils.Geos import get_centered_vector_map
 import torch
-from src.Nodes.maps.point_map import PointMap
+from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
 import math
 
 
-class Line(PointMap):
+class Line(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         """
 
         :param line: as [ax + by + c]
@@ -16,7 +16,7 @@ class Line(PointMap):
         """
         self.line_noso = NodeSocket(False, "Line", None)
         self.shift_noso = NodeSocket(False, "Shift", None)
-        super().__init__(node_id, factory_id, [self.line_noso, self.shift_noso])
+        super().__init__([self.line_noso, self.shift_noso])
 
     def produce(self):
         position = self.line_noso.get().produce()
@@ -47,7 +47,3 @@ class Line(PointMap):
         c = x_0[1]
 
         return Line(node_id, device=device, factory_id=factory_id, frame_counter=frame_counter, line=torch.tensor([a, b, c], device=device))
-
-    @staticmethod
-    def get_node_name():
-        return "Line"

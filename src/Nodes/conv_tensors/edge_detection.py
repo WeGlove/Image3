@@ -4,9 +4,9 @@ from src.Nodes.node import Node
 
 class EdgeDetection(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         self.reader = None
-        super().__init__(node_id, factory_id, "Edge Detection", [], [])
+        super().__init__(description="Edge Detection")
 
     def produce(self):
         mask = torch.tensor([
@@ -16,6 +16,3 @@ class EdgeDetection(Node):
         ], device=self.device, dtype=torch.float)
         return mask
 
-    @staticmethod
-    def get_node_name():
-        return "Edge Detection"

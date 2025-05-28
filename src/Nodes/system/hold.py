@@ -4,13 +4,12 @@ from src.Nodes.node_socket import NodeSocket
 
 class Hold(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         self.input = NodeSocket(False, "Input", default=None, description="")
         self.start = NodeSocket(False, "Start", default=None, description="")
         self.last = None
         self.last_frame = -1
-        super().__init__(node_id, factory_id, "Returns the given value.",
-                         [self.input, self.start], [])
+        super().__init__([self.input, self.start], [], "Returns the given value.")
 
     def produce(self):
         if self.last is None:
@@ -30,7 +29,3 @@ class Hold(Node):
         super().initialize(width, height, excluded_nodes, frame_counter, device)
         self.last_frame = -1
         self.last = None
-
-    @staticmethod
-    def get_node_name():
-        return "Hold"

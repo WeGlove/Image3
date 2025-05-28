@@ -10,7 +10,7 @@ import traceback
 from src.frame_counter import FrameCounter
 
 
-class Renderer:
+class Renderer:  # Future TODO Callbacks for exceptions pausing within rednerer!
 
     def __init__(self, device=None, fps=30, start_frame=0, stop_frame=100000, width=1920, height=1080, repeat=False, display=True,
                  save=False, save_path=".", image_format="png"):

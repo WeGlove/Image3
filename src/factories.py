@@ -15,9 +15,10 @@ from src.Nodes.system.none_property import NoneProperty
 
 
 def get_system_factory():
-    in_dict = {node.get_node_name(): node for node in
-               [Out, NumberProperty, StringProperty, TensorProperty, AnimatedProperty, Button, WaitManager, Hold,
-                Display, Once, Random, ListGet, NoneProperty]}
+    in_dict = {"Out": Out, "NumberProperty": NumberProperty, "StringProperty": StringProperty,
+               "TensorProperty": TensorProperty, "AnimatedProperty": AnimatedProperty, "Button": Button,
+               "WaitManager": WaitManager, "Hold": Hold, "Display": Display, "Once": Once, "Random": Random,
+               "ListGet": ListGet, "NoneProperty": NoneProperty}
     factory = NodeFactory(in_dict, "System")
     return factory
 
@@ -31,8 +32,8 @@ from src.Nodes.io.files.live_player import LivePlayer
 
 
 def get_io_factory():
-    in_dict = {node.get_node_name(): node for node in
-               [ImagesProperty, LoadImage, ByteReader, TextReader, KeyboardReader, LivePlayer]}
+    in_dict = {"ImagesProperty": ImagesProperty, "LoadImage": LoadImage, "ByteReader": ByteReader,
+               "TextReader": TextReader, "KeyboardReader": KeyboardReader, "LivePlayer": LivePlayer}
     factory = NodeFactory(in_dict, "IO")
     return factory
 
@@ -56,9 +57,10 @@ from src.Nodes.tensor_math.interpolate import Interpolate
 
 
 def get_math_factory():
-    in_dict = {node.get_node_name(): node for node in
-               [Matmul, Addition, Subtraction, Multiplication, Division, Modulo, Power, Convolution, Transposition,
-                Selection, Shape, Mean, Round, SVD, QR, Interpolate]}
+    in_dict = {"Matmul": Matmul, "Addition": Addition, "Subtraction": Subtraction, "Multiplication": Multiplication,
+               "Division": Division, "Modulo": Modulo, "Power": Power, "Convolution": Convolution,
+               "Transposition": Transposition, "Selection": Selection, "Shape": Shape, "Mean": Mean, "Round": Round,
+               "SVD": SVD, "QR": QR, "Interpolate": Interpolate}
     factory = NodeFactory(in_dict, "Tensor Math")
     return factory
 
@@ -74,8 +76,8 @@ from src.Nodes.maps.RFFT import RFFT
 
 
 def get_map_factory():
-    in_dict = {node.get_node_name(): node for node in
-               [Line, Noise, Fill, Spirals, Circles, Swap, iRFFT, RFFT]}
+    in_dict = {"Line": Line, "Noise": Noise, "Fill": Fill, "Spirals": Spirals, "Circles": Circles, "Swap": Swap,
+               "iRFFT": iRFFT, "RFFT": RFFT}
     factory = NodeFactory(in_dict, "Point Maps")
     return factory
 
@@ -86,8 +88,7 @@ from src.Nodes.imaging.mass_alpha import MassAlpha
 
 
 def get_imaging_factory():
-    in_dict = {node.get_node_name(): node for node in
-               [MassComposition, Coloring, MassAlpha]}
+    in_dict = {"MassComposition": MassComposition, "Coloring": Coloring, "MassAlpha": MassAlpha}
     factory = NodeFactory(in_dict, "Imaging")
     return factory
 
@@ -98,8 +99,7 @@ from src.Nodes.conv_tensors.sharpen import Sharpen
 
 
 def get_tensor_conv_factory():
-    in_dict = {node.get_node_name(): node for node in
-               [Mean, EdgeDetection, Sharpen]}
+    in_dict = {"Mean": Mean, "EdgeDetection": EdgeDetection, "Sharpen": Sharpen}
     factory = NodeFactory(in_dict, "Convolution Tensors")
     return factory
 
@@ -109,8 +109,7 @@ from src.Nodes.maps_2vec.positions import Positions
 
 
 def get_maps_2vec_factory():
-    in_dict = {node.get_node_name(): node for node in
-               [Polar, Positions]}
+    in_dict = {"Polar": Polar, "Positions": Positions}
     factory = NodeFactory(in_dict, "2Vec Maps")
     return factory
 
@@ -120,7 +119,6 @@ from src.Nodes.maps_nvec.bitplanes import BitPlanes
 
 
 def get_maps_nvec_factory():
-    in_dict = {node.get_node_name(): node for node in
-               [HSV, BitPlanes]}
+    in_dict = {"HSV": HSV, "BitPlanes": BitPlanes}
     factory = NodeFactory(in_dict, "NVec Maps")
     return factory

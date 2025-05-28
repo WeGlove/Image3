@@ -5,11 +5,11 @@ import torch
 
 class Round(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         self.a = NodeSocket(False, "A", default=None, description="")
         self.k = NodeSocket(False, "Bin Size", default=None, description="")
         self.shift = NodeSocket(False, "Shift", default=None, description="")
-        super().__init__(node_id, factory_id, "Round", [self.a, self.k, self.shift], [])
+        super().__init__([self.a, self.k, self.shift], [], "Round")
 
     def produce(self):
         a = self.a.get().produce()
@@ -23,7 +23,3 @@ class Round(Node):
             a = torch.floor(a / k + shift) * k
 
         return a
-
-    @staticmethod
-    def get_node_name():
-        return "Round"

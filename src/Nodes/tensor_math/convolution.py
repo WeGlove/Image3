@@ -6,11 +6,11 @@ from torch.nn.functional import conv2d
 
 class Convolution(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         self.a = NodeSocket(False, "A", default=None, description="")
         self.b = NodeSocket(False, "B", default=None, description="")
         self.reader = None
-        super().__init__(node_id, factory_id, "Convolution", [self.a, self.b], [])
+        super().__init__([self.a, self.b], [], "Convolution")
 
     def produce(self):
         a = self.a.get().produce()
@@ -20,7 +20,3 @@ class Convolution(Node):
         mask = conv2d(a, b, padding="same")
         mask = mask[0][0]
         return mask
-
-    @staticmethod
-    def get_node_name():
-        return "Convolution"
