@@ -3,35 +3,55 @@ import logging
 import os.path
 import traceback
 from typing import Dict, List
-from PyQt6.QtWidgets import QWidget, QLineEdit, QMenu
-from PyQt6.QtGui import QKeyEvent, QGuiApplication
 from src.node_factory import NodeFactory
 from src.gui.node_widgets import NodeWidget
 from src.Nodes.system.out import Out
-from PyQt6 import QtGui
+from PyQt6.QtWidgets import QWidget, QLineEdit, QMenu
+from PyQt6.QtGui import QKeyEvent, QGuiApplication
 from PyQt6.QtWidgets import QLabel
+from PyQt6 import QtGui
 
 
 class NodeEditor(QWidget):
 
-    SAVE_KEY = "s"
+    SAVE_KEY = "s"  # TODO Auto save
     LOAD_KEY = "l"
+    DELETE_KEY = 127
 
-    def __init__(self, factories: List[NodeFactory], patch, nodes=None):
-        super().__init__()
+    WHITE = 0xffffff
+
+    def __init__(self, factories: List[NodeFactory], patch): # TODO Variables aufräumen comments
+        super().__init__() # TODO nodes should already be part of the patch
 
         self.logger = logging.getLogger(__name__)
 
-        self.sockets = []
-        self.node_widgets: Dict[str, NodeWidget] = dict()
-        self.x = 0
+        self.patch = patch
+
+        self.sockets = [] # TODO not clear at all what this does
+        self.node_widgets: Dict[str, NodeWidget] = dict() # TODO this and patches are heavily related. This dict should be part of that
         self.selected = None
+
+        self.factories: Dict[str, NodeFactory] = {factory.get_factory_name(): factory for factory in factories}
         self.menu = QMenu(self)
         self.menu_acts = []
         self.factory_acts = []
-
         self.factory_menus = {}
-        for factory in factories:
+        self.load_factories(factories)
+
+        self.setWindowTitle("Node Editor")
+
+        self.line_label = QLabel(parent=self)  # TODO what does this do?
+        self.canvas = QtGui.QPixmap(1920, 1080)
+        self.line_pen = QtGui.QPen()
+        self.line_pen.setWidth(1)
+        self.line_pen.setColor(QtGui.QColor('black'))
+
+        self.resize(192, 108)
+
+        self.redraw_lines()
+
+    def load_factories(self, factories):
+        for factory in factories: # TODO sub menus?
             factory_menu = QMenu(self.menu)
             self.factory_menus[factory.get_factory_name()] = factory_menu
 
@@ -41,28 +61,14 @@ class NodeEditor(QWidget):
             for key in factory.in_dict.keys():
                 act = factory_menu.addAction(key)
                 self.factory_acts.append(act)
-        self.factories: Dict[str, NodeFactory] = {factory.get_factory_name(): factory for factory in factories}
-        self.patch = patch
-
-        if nodes is not None:
-            self.add_nodes(nodes)
-
-        self.setWindowTitle("Node Editor")
-
-        self.line_label = QLabel(parent=self)
-        self.canvas = QtGui.QPixmap(1920, 1080)
-        self.redraw_lines()
 
     def redraw_lines(self):
-        self.canvas.fill(0xffffff)
+        self.canvas.fill(self.WHITE)
         self.line_label.setPixmap(self.canvas)
 
-        canvas = self.line_label.pixmap()
-        painter = QtGui.QPainter(canvas)
-        pen = QtGui.QPen()
-        pen.setWidth(1)
-        pen.setColor(QtGui.QColor('black'))
-        painter.setPen(pen)
+        painter = QtGui.QPainter(self.canvas)
+        painter.setPen(self.line_pen)
+
         for key, node_widget in self.node_widgets.items():
             for node_socket_widget in node_widget.connected_sockets:
                 a = node_widget.pos()
@@ -77,7 +83,7 @@ class NodeEditor(QWidget):
                 painter.drawLine(a, b)
 
         painter.end()
-        self.line_label.setPixmap(canvas)
+        self.line_label.setPixmap(self.canvas)
 
     def select(self, selection):
         if self.selected is not None:
@@ -89,18 +95,22 @@ class NodeEditor(QWidget):
         if isinstance(event, QKeyEvent):
             key_text = event.text()
             if len(key_text) > 0:
-                if ord(key_text[0]) == 127:  # This is the delete button
+                if ord(key_text[0]) == self.DELETE_KEY:
+                    self.logger.info(f"Deleting Node {self.selected.node.node_id}")
                     del self.node_widgets[self.selected.node.node_id]
                     self.selected.cut()
                     self.selected = None
                 elif key_text[0] == self.SAVE_KEY:
+                    self.logger.info("Saving Patch")
                     self.save("out.nmm")
                 elif key_text[0] == self.LOAD_KEY:
+                    self.logger.info("Loading Patch")
                     self.load("out.nmm")
 
     def add_nodes(self, nodes):
         for node in nodes:
             node_widget = NodeWidget(node, parent=self)
+            node_widget.move(*node.position.tolist())
             self.node_widgets[node.node_id] = node_widget
 
     def save(self, path):
@@ -194,6 +204,7 @@ class NodeEditor(QWidget):
             nodes = []
 
             node = self.factories[action.text()].instantiate(out_action.text())
+            node.set_position((event.pos().x(), event.pos().y()))
             nodes.append(node)
 
             self.add_nodes(nodes)
@@ -205,4 +216,3 @@ class NodeEditor(QWidget):
         if isinstance(focused_widget, QLineEdit):
             focused_widget.clearFocus()
         super().mousePressEvent(event)
-
