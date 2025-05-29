@@ -16,11 +16,11 @@ class LoadImage(Node):
     def produce(self):
         return self.img
 
-    def initialize(self, width, height, excluded_nodes, frame_counter, device):
-        super().initialize(width, height, excluded_nodes, frame_counter, device)
+    def initialize(self, defaults, excluded_nodes, frame_counter):
+        super().initialize(defaults, excluded_nodes, frame_counter)
         path = self.initial_value.get()
 
         img = np.array(Image.open(os.path.join(path)))
-        self.img = torch.tensor(img, device=self.device, dtype=torch.float)
+        self.img = torch.tensor(img, device=self.defaults.device, dtype=torch.float)
 
         return img

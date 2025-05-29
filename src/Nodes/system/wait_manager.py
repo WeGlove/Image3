@@ -32,8 +32,8 @@ class WaitManager(Node):
         with self.production_lock:
             return self.last
 
-    def initialize(self, width, height, excluded_nodes, frame_counter, device):
-        super().initialize(width, height, excluded_nodes, frame_counter, device)
+    def initialize(self, defaults, excluded_nodes, frame_counter):
+        super().initialize(defaults, excluded_nodes, frame_counter)
         self.last = self.wait_for.get().produce()
         self.last_frame = self.frame_counter.get()
 

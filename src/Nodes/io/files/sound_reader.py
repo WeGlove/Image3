@@ -15,7 +15,7 @@ class SoundReader(Node):
         frame = self.w.readframes(self.frame_counter.get() % self.w_frame)
         return frame
 
-    def initialize(self, width, height, excluded_nodes, frame_counter, device):
-        super().initialize(width, height, excluded_nodes, frame_counter, device)
+    def initialize(self, defaults, excluded_nodes, frame_counter):
+        super().initialize(defaults, excluded_nodes, frame_counter)
         self.w = wave.open('/usr/share/sounds/ekiga/voicemail.wav', 'r') # TODO wtf xD?
         self.w_frame = self.w.getnframes()

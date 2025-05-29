@@ -12,4 +12,4 @@ class TensorProperty(Node):
 
     def produce(self):
         text = json.loads(self.initial_value.get())
-        return torch.tensor(text, device=self.device)
+        return torch.tensor(text, device=self.defaults.device)

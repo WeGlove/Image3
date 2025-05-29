@@ -25,9 +25,7 @@ class Node: # TODO comments
         # Initialization variables
 
         self.frame_counter = None
-        self.width = None
-        self.height = None
-        self.device = None
+        self.defaults = None
 
     def set_factory_id(self, factory_id):
         self.factory_id = factory_id
@@ -67,19 +65,17 @@ class Node: # TODO comments
                 "interactables": [interactable.to_dict() for interactable in self.interactables],
                 "position": self.position.tolist()}
 
-    def initialize(self, width, height, excluded_nodes, frame_counter, device):
+    def initialize(self, defaults, excluded_nodes, frame_counter):
         for socket in self.subnode_sockets:
             node = socket.get()
             if node in excluded_nodes:
                 continue
             else:
-                node.initialize(width, height, excluded_nodes + [self], frame_counter, device)
+                node.initialize(defaults, excluded_nodes + [self], frame_counter)
 
+        self.defaults = defaults
         self.frame_counter = frame_counter
-        self.device = device
         self.is_initialized = True
-        self.width = width
-        self.height = height
 
     def get_all_subnodes(self):
         subnodes = [self.get_subnode(k).get_all_subnodes() for k in range(self.get_subnode_count()) if self.subnode_sockets[k].is_connected()]

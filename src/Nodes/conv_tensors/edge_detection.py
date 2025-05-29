@@ -13,6 +13,6 @@ class EdgeDetection(Node):
             [-1, -1, -1],
             [-1, 8, -1],
             [-1, -1, -1]
-        ], device=self.device, dtype=torch.float)
+        ], device=self.defaults.device, dtype=torch.float)
         return mask
 

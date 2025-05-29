@@ -12,6 +12,6 @@ class TextReader(Node):
     def produce(self):
         return self.reader.read()
 
-    def initialize(self, width, height, excluded_nodes, frame_counter, device):
-        super().initialize(width, height, excluded_nodes, frame_counter, device)
+    def initialize(self, defaults, excluded_nodes, frame_counter):
+        super().initialize(defaults, excluded_nodes, frame_counter)
         self.reader = open(self.initial_value.get(), "r")

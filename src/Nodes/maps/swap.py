@@ -14,13 +14,13 @@ class Swap(Node):
         positions = self.map.get().produce()
         positions = positions[0, ...] * positions[1, ...]
         positions = positions.flatten(0, 1)
-        positions = torch.tensor(positions, dtype=torch.int64, device=self.device)
+        positions = torch.tensor(positions, dtype=torch.int64, device=self.defaults.device)
         positions = positions % positions.shape[0]
 
         sample = self.sample.get().produce()
         sample = torch.flatten(sample, -2, -1)
 
         sampled = torch.index_select(sample, 0, positions)
-        sampled = torch.reshape(sampled, (self.width, self.height))
+        sampled = torch.reshape(sampled, (self.defaults.width, self.defaults.height))
 
         return sampled

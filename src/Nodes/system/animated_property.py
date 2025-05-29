@@ -14,8 +14,8 @@ class AnimatedProperty(Node):
         self.animation_style = "Linear"
         super().__init__([self.initial_value], [self.keyframes_interactable], "Used to animate a value")
 
-    def initialize(self, width, height, excluded_nodes, *args):
-        super().initialize(width, height, excluded_nodes, *args)
+    def initialize(self, defaults, excluded_nodes, frame_counter):
+        super().initialize(defaults, excluded_nodes, frame_counter)
         self.keyframes = [eval(x) for x in self.keyframes_interactable.get_values()]
 
     def linear_interp(self):
@@ -32,10 +32,10 @@ class AnimatedProperty(Node):
                     frame_a, val_a = self.keyframes[k]
 
                     if type(val_a) is list:
-                        val_a = torch.tensor(val_a, device=self.device)
+                        val_a = torch.tensor(val_a, device=self.defaults.device)
 
                     if type(val_b) is list:
-                        val_b = torch.tensor(val_b, device=self.device)
+                        val_b = torch.tensor(val_b, device=self.defaults.device)
 
                     length = frame_a - frame_b
                     point_on_line = position / length
@@ -44,7 +44,7 @@ class AnimatedProperty(Node):
         else:
             out = self.keyframes[-1][1]
             if type(out) is list:
-                out = torch.tensor(out, device=self.device)
+                out = torch.tensor(out, device=self.defaults.device)
             return out
 
     def sin_interp(self):

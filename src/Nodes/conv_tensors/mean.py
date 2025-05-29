@@ -12,6 +12,6 @@ class Mean(Node):
 
     def produce(self):
         size = self.size.get().produce()
-        mask = torch.ones((int(size), int(size)), device=self.device)
+        mask = torch.ones((int(size), int(size)), device=self.defaults.device)
         mask = mask / size
         return mask

@@ -20,7 +20,7 @@ class MassComposition(Node):
                  torch.round(self.noso_compositor_c.get().produce() % 1 * (len(self.images)-1))]
         mask = torch.stack(masks).transpose(0, 2)
 
-        stack_img = torch.zeros(mask.shape, device=self.device)
+        stack_img = torch.zeros(mask.shape, device=self.defaults.device)
         for i, img in enumerate(self.images):
             stack_img[(mask == i)] = self.images[i][(mask == i)]
 

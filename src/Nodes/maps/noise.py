@@ -10,5 +10,6 @@ class Noise(Node):
         super().__init__([self.bias])
 
     def produce(self):
-        noise_map = torch.rand(self.width, self.height, device=self.device) ** self.bias.get().produce()
+        noise_map = (torch.rand(self.defaults.width, self.defaults.height, device=self.defaults.device)
+                     ** self.bias.get().produce())
         return noise_map

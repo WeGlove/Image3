@@ -40,9 +40,9 @@ class HSV(Node):
         mask_s = self.g.get().produce()
         mask_v = self.b.get().produce()
 
-        H = self._to_hsv(mask_h, self.width, self.height)[:, :, 0]
-        S = self._to_hsv(mask_s, self.width, self.height)[:, :, 1]
-        V = self._to_hsv(mask_v, self.width, self.height)[:, :, 2]
+        H = self._to_hsv(mask_h, self.defaults.width, self.defaults.height)[:, :, 0]
+        S = self._to_hsv(mask_s, self.defaults.width, self.defaults.height)[:, :, 1]
+        V = self._to_hsv(mask_v, self.defaults.width, self.defaults.height)[:, :, 2]
 
         out_mask = torch.tensor([H, S, V])
 

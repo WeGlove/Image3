@@ -18,7 +18,7 @@ class Once(Node):
         self.last = self.input.get().produce()
         return self.last
 
-    def initialize(self, width, height, excluded_nodes, frame_counter, device):
-        super().initialize(width, height, excluded_nodes, frame_counter, device)
+    def initialize(self, defaults, excluded_nodes, frame_counter):
+        super().initialize(defaults, excluded_nodes, frame_counter)
         self.last_frame = -1
         self.last = None

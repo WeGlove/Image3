@@ -29,7 +29,7 @@ class Spirals(Node):
         weights_angle = self.noso_weights_angle.get().produce()
         weights_angle = weights_angle / torch.sum(weights_angle)
         for i in range(points.shape[0]):
-            rad, angle = get_polar(self.width, self.height, self.device, points[i])
+            rad, angle = get_polar(self.defaults.width, self.defaults.height, self.defaults.device, points[i])
             angle = angle * weights_angle[i]
             if rad_out is None:
                 rad_out = rad

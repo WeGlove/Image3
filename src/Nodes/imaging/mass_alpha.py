@@ -20,7 +20,7 @@ class MassAlpha(Node):
                  self.noso_compositor_c.get().produce() % 1 * len(self.images)]
         mask = torch.stack(masks).transpose(0, 2)
 
-        stack_img = torch.zeros(mask.shape, device=self.device)
+        stack_img = torch.zeros(mask.shape, device=self.defaults.device)
         for i in range(len(self.images) - 1):
             img_a = self.images[i]
             img_b = self.images[i+1]

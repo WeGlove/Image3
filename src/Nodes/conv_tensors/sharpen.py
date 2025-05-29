@@ -13,5 +13,5 @@ class Sharpen(Node):
             [0, -1, 0],
             [-1, 5, -1],
             [0, -1, 0]
-        ], device=self.device, dtype=torch.float)
+        ], device=self.defaults.device, dtype=torch.float)
         return mask

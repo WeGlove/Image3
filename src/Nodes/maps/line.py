@@ -21,7 +21,7 @@ class Line(Node):
     def produce(self):
         position = self.line_noso.get().produce()
 
-        vector_map = get_centered_vector_map(self.width, self.height, self.device)
+        vector_map = get_centered_vector_map(self.defaults.width, self.defaults.height, self.defaults.device)
 
         vector_map = vector_map * position[:2]
 
@@ -31,7 +31,7 @@ class Line(Node):
 
         vector_map = vector_map / math.sqrt(position[0]**2 + position[1]**2)
 
-        vector_map = vector_map / math.sqrt((self.width/2)**2 + (self.height/2)**2)
+        vector_map = vector_map / math.sqrt((self.defaults.width/2)**2 + (self.defaults.height/2)**2)
 
         vector_map = torch.abs(vector_map)
 

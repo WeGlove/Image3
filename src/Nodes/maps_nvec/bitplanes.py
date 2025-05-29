@@ -19,4 +19,4 @@ class BitPlanes(Node):
             mask = mask >> 1
             bitplanes.append(bitplane)
 
-        return torch.tensor(bitplanes, device=self.device)
+        return torch.tensor(bitplanes, device=self.defaults.device)

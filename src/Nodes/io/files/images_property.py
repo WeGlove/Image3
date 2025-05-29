@@ -17,15 +17,15 @@ class ImagesProperty(Node):
     def produce(self):
         return self.initial_value.get()
 
-    def initialize(self, width, height, excluded_nodes, frame_counter, device):
-        super().initialize(width, height, excluded_nodes, frame_counter, device)
+    def initialize(self, defaults,  excluded_nodes, frame_counter):
+        super().initialize(defaults, excluded_nodes, frame_counter)
         path = self.initial_value.get()
 
         images = []
         for i, file in enumerate(os.listdir(path)):
             self.logger.debug(f"Loading Image: {i}")
             img = np.array(Image.open(os.path.join(path, file)))
-            img = torch.tensor(img, device=self.device, dtype=torch.float)
+            img = torch.tensor(img, device=self.defaults.device, dtype=torch.float)
             img = img[:, :, :3]
             images.append(img)
 

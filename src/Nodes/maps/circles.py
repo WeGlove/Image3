@@ -34,8 +34,8 @@ class Circles(Node):
         weights_rad = self.noso_weights_rad.get().produce()
         weights_rad = weights_rad / torch.sum(weights_rad)
         for i in range(points.shape[0]):
-            rad, _ = get_polar(self.width, self.height, self.device, points[i])
-            rad = rad / math.sqrt((self.width/2)**2 + (self.height/2)**2) * weights_rad[i]
+            rad, _ = get_polar(self.defaults.width, self.defaults.height, self.defaults.device, points[i])
+            rad = rad / math.sqrt((self.defaults.width/2)**2 + (self.defaults.height/2)**2) * weights_rad[i]
             if rad_out is None:
                 rad_out = rad
             else:
