@@ -6,7 +6,7 @@ from src.Nodes.node_socket import NodeSocket
 class Display(Node):
 
     def __init__(self):
-        self.a = NodeSocket(False, "A", default=None, description="")
+        self.a = NodeSocket("A")
         self.initial_value = NodeEdit("")
         super().__init__([self.a], [self.initial_value], "Returns the given value.")
 

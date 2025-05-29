@@ -10,7 +10,7 @@ class AnimatedProperty(Node):
     def __init__(self):
         self.keyframes_interactable = NodeTable()
         self.keyframes = []
-        self.initial_value = NodeSocket(False, "Initial Value", None)
+        self.initial_value = NodeSocket("Initial Value")
         self.animation_style = "Linear"
         super().__init__([self.initial_value], [self.keyframes_interactable], "Used to animate a value")
 

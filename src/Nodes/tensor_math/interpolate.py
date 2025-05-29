@@ -5,9 +5,9 @@ from src.Nodes.node_socket import NodeSocket
 class Interpolate(Node):
 
     def __init__(self):
-        self.a = NodeSocket(False, "A", default=None, description="")
-        self.b = NodeSocket(False, "B", default=None, description="")
-        self.x = NodeSocket(False, "x", default=None, description="")
+        self.a = NodeSocket("A")
+        self.b = NodeSocket("B")
+        self.x = NodeSocket("x")
         self.reader = None
         super().__init__([self.a, self.b, self.x], [], "Interpolate")
 

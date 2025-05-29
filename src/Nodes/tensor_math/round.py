@@ -6,9 +6,9 @@ import torch
 class Round(Node):
 
     def __init__(self):
-        self.a = NodeSocket(False, "A", default=None, description="")
-        self.k = NodeSocket(False, "Bin Size", default=None, description="")
-        self.shift = NodeSocket(False, "Shift", default=None, description="")
+        self.a = NodeSocket("A")
+        self.k = NodeSocket("Bin Size")
+        self.shift = NodeSocket("Shift")
         super().__init__([self.a, self.k, self.shift], [], "Round")
 
     def produce(self):

@@ -8,13 +8,13 @@ from src.Nodes.node_socket import NodeSocket
 class Circles(Node):
 
     def __init__(self):
-        self.noso_points = NodeSocket(False, "Points", None)
-        self.noso_rotation = NodeSocket(False, "Rotation", None)
-        self.noso_frequency = NodeSocket(False, "Frequency", None)
-        self.noso_weights_rad = NodeSocket(False, "Weights", None)
-        self.noso_scale = NodeSocket(False, "Scale", None)
-        self.noso_shift = NodeSocket(False, "Shift", None)
-        self.noso_ratio = NodeSocket(False, "Ratio", None)
+        self.noso_points = NodeSocket("Points")
+        self.noso_rotation = NodeSocket("Rotation")
+        self.noso_frequency = NodeSocket("Frequency")
+        self.noso_weights_rad = NodeSocket("Weights")
+        self.noso_scale = NodeSocket("Scale")
+        self.noso_shift = NodeSocket("Shift")
+        self.noso_ratio = NodeSocket("Ratio")
 
         self.angle_space = None
 

@@ -5,7 +5,7 @@ from src.Nodes.node_socket import NodeSocket
 class Shape(Node):
 
     def __init__(self):
-        self.a = NodeSocket(False, "A", default=None, description="")
+        self.a = NodeSocket("A")
         self.reader = None
         super().__init__([self.a], [], "Division")
 

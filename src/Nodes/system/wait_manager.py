@@ -8,7 +8,7 @@ from threading import RLock
 class WaitManager(Node):
 
     def __init__(self):
-        self.wait_for = NodeSocket(False, "Wait For", default=None, description="")
+        self.wait_for = NodeSocket("Wait For")
         self.last = None
         self.last_frame = -1
         self.production_thread = None

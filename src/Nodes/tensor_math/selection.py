@@ -5,9 +5,9 @@ from src.Nodes.node_socket import NodeSocket
 class Selection(Node):
 
     def __init__(self):
-        self.a = NodeSocket(False, "A", default=None, description="")
-        self.dim = NodeSocket(False, "Dim", default=None, description="")
-        self.select = NodeSocket(False, "Select", default=None, description="")
+        self.a = NodeSocket("A")
+        self.dim = NodeSocket("Dim")
+        self.select = NodeSocket("Select")
         self.reader = None
         super().__init__([self.a, self.dim, self.select], [], "Division")
 

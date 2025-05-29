@@ -5,8 +5,8 @@ from src.Nodes.node_socket import NodeSocket
 class Hold(Node):
 
     def __init__(self):
-        self.input = NodeSocket(False, "Input", default=None, description="")
-        self.start = NodeSocket(False, "Start", default=None, description="")
+        self.input = NodeSocket("Input")
+        self.start = NodeSocket("Start")
         self.last = None
         self.last_frame = -1
         super().__init__([self.input, self.start], [], "Returns the given value.")

@@ -6,7 +6,7 @@ import torch
 class SVD(Node):
 
     def __init__(self):
-        self.a = NodeSocket(False, "A", default=None, description="")
+        self.a = NodeSocket("A")
         super().__init__([self.a], [], "Round")
 
     def produce(self):

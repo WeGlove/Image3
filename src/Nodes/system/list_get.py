@@ -7,7 +7,7 @@ class ListGet(Node):
 
     def __init__(self):
         self.initial_value = NodeEdit("")
-        self.compositor = NodeSocket(False, "Compositor", None)
+        self.compositor = NodeSocket("Compositor")
         super().__init__([self.compositor], [self.initial_value], "Returns the given value.")
 
     def produce(self):

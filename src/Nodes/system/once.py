@@ -5,7 +5,7 @@ from src.Nodes.node_socket import NodeSocket
 class Once(Node):
 
     def __init__(self):
-        self.input = NodeSocket(False, "Input", default=None, description="")
+        self.input = NodeSocket("Input")
         self.last = None
         self.last_frame = -1
         super().__init__([self.input], [], "Returns the given value.")

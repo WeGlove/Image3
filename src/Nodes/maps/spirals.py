@@ -7,20 +7,15 @@ from src.Nodes.node_socket import NodeSocket
 class Spirals(Node):
 
     def __init__(self):
-        self.noso_points = NodeSocket(False, "Points", None)
-        self.noso_rotation = NodeSocket(False, "Rotation", None)
-        self.noso_frequency = NodeSocket(False, "Frequency", None)
-        self.noso_weights_angle = NodeSocket(False, "Weights", None)
-        self.noso_shift = NodeSocket(False, "Shift", None)
+        self.noso_points = NodeSocket("Points")
+        self.noso_rotation = NodeSocket("Rotation")
+        self.noso_frequency = NodeSocket("Frequency")
+        self.noso_weights_angle = NodeSocket("Weights")
+        self.noso_shift = NodeSocket("Shift")
 
         self.angle_space = None
-        super().__init__("Spirals", [
-            self.noso_points,
-            self.noso_rotation,
-            self.noso_frequency,
-            self.noso_weights_angle,
-            self.noso_shift
-        ])
+        super().__init__([self.noso_points, self.noso_rotation, self.noso_frequency, self.noso_weights_angle,
+                          self.noso_shift])
 
     def produce(self):
         rad_out = None

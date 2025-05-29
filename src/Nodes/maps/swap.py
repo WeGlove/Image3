@@ -6,8 +6,8 @@ from src.Nodes.node_socket import NodeSocket
 class Swap(Node):
 
     def __init__(self):
-        self.sample = NodeSocket(False, "Sample", None)
-        self.map = NodeSocket(False, "Map", None)
+        self.sample = NodeSocket("Sample")
+        self.map = NodeSocket("Map")
         super().__init__([self.map, self.sample])
 
     def produce(self):

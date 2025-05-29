@@ -7,9 +7,9 @@ from src.Nodes.node import Node
 class HSV(Node):
 
     def __init__(self, node_id, factory_id):
-        self.r = NodeSocket(False, "R", default=None, description="")
-        self.g = NodeSocket(False, "G", default=None, description="")
-        self.b = NodeSocket(False, "B", default=None, description="")
+        self.r = NodeSocket("R")
+        self.g = NodeSocket("G")
+        self.b = NodeSocket("B")
         super().__init__([self.r, self.g, self.b])
 
     @staticmethod

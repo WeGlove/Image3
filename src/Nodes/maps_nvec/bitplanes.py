@@ -6,7 +6,7 @@ from src.Nodes.node import Node
 class BitPlanes(Node):
 
     def __init__(self):
-        self.input = NodeSocket(False, "Input", default=None, description="")
+        self.input = NodeSocket("Input")
         super().__init__([self.input])
 
     def produce(self):

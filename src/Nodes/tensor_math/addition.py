@@ -5,8 +5,8 @@ from src.Nodes.node_socket import NodeSocket
 class Addition(Node):
 
     def __init__(self):
-        self.a = NodeSocket(False, "A", default=None, description="")
-        self.b = NodeSocket(False, "A", default=None, description="")
+        self.a = NodeSocket("A")
+        self.b = NodeSocket("A")
         self.reader = None
         super().__init__([self.a, self.b], [], "Keyboard Reader")
 

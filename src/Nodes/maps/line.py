@@ -14,8 +14,8 @@ class Line(Node):
         :param node_id:
         :param device:
         """
-        self.line_noso = NodeSocket(False, "Line", None)
-        self.shift_noso = NodeSocket(False, "Shift", None)
+        self.line_noso = NodeSocket("Line")
+        self.shift_noso = NodeSocket("Shift")
         super().__init__([self.line_noso, self.shift_noso])
 
     def produce(self):
@@ -24,15 +24,10 @@ class Line(Node):
         vector_map = get_centered_vector_map(self.defaults.width, self.defaults.height, self.defaults.device)
 
         vector_map = vector_map * position[:2]
-
         vector_map = torch.sum(vector_map, dim=2)
-
         vector_map = vector_map + position[2]
-
         vector_map = vector_map / math.sqrt(position[0]**2 + position[1]**2)
-
         vector_map = vector_map / math.sqrt((self.defaults.width/2)**2 + (self.defaults.height/2)**2)
-
         vector_map = torch.abs(vector_map)
 
         vector_map += self.shift_noso.get().produce()

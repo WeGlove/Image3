@@ -5,7 +5,7 @@ from src.Nodes.interactables.interactable import Interactable
 from abc import abstractmethod
 
 
-class Node: # TODO comments
+class Node:
 
     def __init__(self, subnode_sockets: List[NodeSocket] = None, interactables: List[Interactable] = None,
                  description=""):

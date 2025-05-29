@@ -6,7 +6,7 @@ from src.Nodes.node_socket import NodeSocket
 class Noise(Node):
 
     def __init__(self):
-        self.bias = NodeSocket(False, "Bias", default=None, description="")
+        self.bias = NodeSocket("Bias")
         super().__init__([self.bias])
 
     def produce(self):

@@ -6,7 +6,7 @@ from src.Nodes.maps.fill import Fill
 class Out(Node):
 
     def __init__(self):
-        self.noso_render_input = NodeSocket(False, "RenderInput", default=Fill())
+        self.noso_render_input = NodeSocket("RenderInput", default=Fill())
         super().__init__([self.noso_render_input], [], "The Output of the Patch")
 
     def produce(self):

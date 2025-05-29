@@ -5,9 +5,9 @@ from src.Nodes.node_socket import NodeSocket
 class Transposition(Node):
 
     def __init__(self):
-        self.a = NodeSocket(False, "A", default=None, description="")
-        self.dim_1 = NodeSocket(False, "Dim 1", default=None, description="")
-        self.dim_2 = NodeSocket(False, "Dim 2", default=None, description="")
+        self.a = NodeSocket("A")
+        self.dim_1 = NodeSocket("Dim 1")
+        self.dim_2 = NodeSocket("Dim 2")
         super().__init__([self.a, self.dim_1, self.dim_2], [], "Division")
 
     def produce(self):
