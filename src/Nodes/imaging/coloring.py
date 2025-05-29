@@ -6,9 +6,9 @@ from src.Nodes.node_socket import NodeSocket
 class Coloring(Node):
 
     def __init__(self):
-        self.noso_compositor_a = NodeSocket(False, "Compositor A", None)
-        self.noso_compositor_b = NodeSocket(False, "Compositor B", None)
-        self.noso_compositor_c = NodeSocket(False, "Compositor C", None)
+        self.noso_compositor_a = NodeSocket("Compositor A")
+        self.noso_compositor_b = NodeSocket("Compositor B")
+        self.noso_compositor_c = NodeSocket("Compositor C")
         self.images = []
         super().__init__([self.noso_compositor_a, self.noso_compositor_b, self.noso_compositor_c],
                          [], "Coloring")

@@ -7,8 +7,8 @@ from threading import Thread
 class LivePlayer(Node):
 
     def __init__(self):
-        self.compositor = NodeSocket(False, "Compositor", None)
-        self.data = NodeSocket(False, "Path", None)
+        self.compositor = NodeSocket("Compositor")
+        self.data = NodeSocket("Path")
 
         # for playing wav file
         self.song = None

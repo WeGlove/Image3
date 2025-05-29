@@ -6,7 +6,7 @@ from src.Nodes.node_socket import NodeSocket
 class Mean(Node):
 
     def __init__(self,):
-        self.size = NodeSocket(False, "Size", default=None, description="")
+        self.size = NodeSocket("Size")
         self.reader = None
         super().__init__([self.size], [], "Mean Tensor")
 
