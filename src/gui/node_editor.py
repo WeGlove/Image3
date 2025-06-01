@@ -4,12 +4,13 @@ import os.path
 import traceback
 from typing import Dict, List
 from src.node_factory import NodeFactory
-from src.gui.node_widgets import NodeWidget
+from src.gui.node_widget import NodeWidget
 from src.Nodes.system.out import Out
 from PyQt6.QtWidgets import QWidget, QLineEdit, QMenu
 from PyQt6.QtGui import QKeyEvent, QGuiApplication
 from PyQt6.QtWidgets import QLabel
 from PyQt6 import QtGui
+from src.patch import Patch
 
 
 class NodeEditor(QWidget):
@@ -26,9 +27,6 @@ class NodeEditor(QWidget):
         self.logger = logging.getLogger(__name__)
 
         self.patch = patch
-
-        self.sockets = [] # TODO not clear at all what this does
-        self.node_widgets: Dict[str, NodeWidget] = dict() # TODO this and patches are heavily related. This dict should be part of that
         self.selected = None
 
         self.factories: Dict[str, NodeFactory] = {factory.get_factory_name(): factory for factory in factories}
@@ -48,6 +46,9 @@ class NodeEditor(QWidget):
 
         self.resize(192, 108)
 
+        for node in self.patch.get_nodes():
+            node_widget = NodeWidget(node, parent=self)
+            node.set_gui_ref(node_widget)
         self.redraw_lines()
 
     def load_factories(self, factories):
@@ -69,7 +70,8 @@ class NodeEditor(QWidget):
         painter = QtGui.QPainter(self.canvas)
         painter.setPen(self.line_pen)
 
-        for key, node_widget in self.node_widgets.items():
+        for node in self.patch.get_nodes():
+            node_widget = node.get_gui_ref()
             for node_socket_widget in node_widget.connected_sockets:
                 a = node_widget.pos()
                 a.setY(a.y() + node_widget.height() / 2)
@@ -111,7 +113,6 @@ class NodeEditor(QWidget):
         for node in nodes:
             node_widget = NodeWidget(node, parent=self)
             node_widget.move(*node.position.tolist())
-            self.node_widgets[node.node_id] = node_widget
 
     def save(self, path):
         try:
@@ -140,10 +141,10 @@ class NodeEditor(QWidget):
             for factory in self.factories.values():
                 factory.reset()
 
-            for node in self.node_widgets.values():
-                node.cut()
+            for node in self.patch.get_nodes():
+                node.get_gui_ref().cut()
 
-            self.node_widgets = dict()
+            self.patch = Patch()
 
             for factory_name, next_id in factories.items():
                 self.factories[factory_name].set_next(next_id)
@@ -165,7 +166,8 @@ class NodeEditor(QWidget):
                         continue
 
                     connected_id = socket["ConnectedID"]
-                    for node_widget in self.node_widgets.values():
+                    for node in self.patch.get_nodes():
+                        node_widget = node.get_gui_ref()
                         out_id = node_widget.node.node_id
                         if out_id == connected_id:
                             widget_to_connect = node_widget
@@ -173,19 +175,20 @@ class NodeEditor(QWidget):
                     else:
                         ValueError()
 
-                    if node_dict["Node"]["node_id"] not in self.node_widgets.keys():
+                    if node_dict["Node"]["node_id"] not in self.patch.get_node_ids():
                         continue
-                    in_node_widget = self.node_widgets[node_dict["Node"]["node_id"]]
+                    in_node_widget = self.patch.get_node(node_dict["Node"]["node_id"])
                     in_node_widget.socket_labels[j].connect(widget_to_connect)
 
             for k, node_dict in data.items():
                 position = node_dict["Node"]["position"]
-                if k in self.node_widgets:
-                    self.node_widgets[k].move(position[0], position[1])
+                if k in self.patch.get_node_ids():
+                    self.patch.get_node(k).move(position[0], position[1])
 
-            for widget in self.node_widgets.values():
-                if type(widget.node) == Out:
-                    self.patch.set_root(widget.node)
+            for node in self.patch.get_nodes():
+                node_widget = node.get_gui_ref()
+                if type(node_widget.node) == Out:
+                    self.patch.set_root(node)
                     self.logger.info(self.patch.get_root().node_id)
 
         except Exception:

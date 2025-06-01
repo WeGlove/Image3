@@ -21,11 +21,18 @@ class Node:
         self.factory_id = None
         self.position = np.array([0, 0])
         self.node_name = None
+        self.gui_ref = None
 
         # Initialization variables
 
         self.frame_counter = None
         self.defaults = None
+
+    def set_gui_ref(self, ref):
+        self.gui_ref = ref
+
+    def get_gui_ref(self):
+        return self.gui_ref
 
     def set_factory_id(self, factory_id):
         self.factory_id = factory_id

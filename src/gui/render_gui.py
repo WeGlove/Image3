@@ -23,7 +23,9 @@ class RenderGui(QMainWindow):  # Future TODO, set FPS Button
         self.node_factories = [system_factory] + node_factories
         out = system_factory.instantiate("Out")
         out.set_node_name("Out")
-        self.patch = Patch(out)
+        self.patch = Patch()
+        self.patch.add_node(out)
+        self.patch.set_root(out)
 
         # Metrics
         self.frame_times = []
@@ -226,7 +228,6 @@ class RenderGui(QMainWindow):  # Future TODO, set FPS Button
         Run the GUI
         :return:
         """
-        self.editor.add_nodes(self.patch.get_root().get_all_subnodes())
         self.frame_renderer.run(self.patch)
         self.show()
         self.editor.show()

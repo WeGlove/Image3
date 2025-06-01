@@ -24,11 +24,14 @@ class NodeWidget(QLabel):
         self.show()
 
         self.node = node
+        self.node.set_gui_ref(self)
         self.parent = parent
-        self.socket_labels = [NodeSocketWidget(socket.get_socket_name(), self.parent, socket) for socket in node.subnode_sockets]
         self.setToolTip(self.node.get_description())
 
         self.connected_sockets = []
+
+        self.socket_labels = [NodeSocketWidget(socket.get_socket_name(), self.parent, socket) for socket in node.subnode_sockets]
+
 
         for k, socket in enumerate(self.socket_labels):
             pos = self.pos()
