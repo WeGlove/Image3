@@ -8,7 +8,6 @@ class NodeSocketWidget(QLabel):
 
     def __init__(self, name, parent, socket):
         super().__init__(name, parent=parent)
-
         self.logger = logging.getLogger(__name__)
 
         self.parent = parent

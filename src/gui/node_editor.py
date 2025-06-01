@@ -22,7 +22,7 @@ class NodeEditor(QWidget):
     WHITE = 0xffffff
 
     def __init__(self, factories: List[NodeFactory], patch): # TODO Variables aufräumen comments
-        super().__init__() # TODO nodes should already be part of the patch
+        super().__init__()
 
         self.logger = logging.getLogger(__name__)
 
@@ -116,9 +116,7 @@ class NodeEditor(QWidget):
 
     def save(self, path):
         try:
-            widgets = dict()
-            for k, node_widget in self.node_widgets.items():
-                 widgets[k] = node_widget.to_dict()
+            widgets = {k: v.get_gui_ref().to_dict() for k, v in self.patch.nodes.items()}
 
             file_dump = {
                 "factories": {factory.get_factory_name(): factory.next_id for factory in self.factories.values()},

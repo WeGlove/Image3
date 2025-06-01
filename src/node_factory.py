@@ -19,10 +19,11 @@ class NodeFactory: # TODO I don't like the way these work, should go over it aga
         name = system["name"]
         interactables = system["interactables"]
         position = system["position"]
-
+        creation_time = system["creation_time"]
         if name in self.in_dict:
             node = self.instantiate(node_id=system["node_id"], node_name=name, interactables=interactables)
             node.set_position(position)
+            node.creation_time = creation_time
             return node
         else:
             self.logger.warning("WARNING: UNKNOWN NODE")

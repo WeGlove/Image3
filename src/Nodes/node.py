@@ -1,3 +1,4 @@
+import time
 from typing import List
 import numpy as np
 from src.Nodes.node_socket import NodeSocket
@@ -22,6 +23,7 @@ class Node:
         self.position = np.array([0, 0])
         self.node_name = None
         self.gui_ref = None
+        self.creation_time = time.time()
 
         # Initialization variables
 
@@ -70,7 +72,7 @@ class Node:
     def to_dict(self):
         return {"node_id": self.node_id, "factory_id": self.factory_id, "name": self.get_node_name(),
                 "interactables": [interactable.to_dict() for interactable in self.interactables],
-                "position": self.position.tolist()}
+                "position": self.position.tolist(), "creation_time": self.creation_time}
 
     def initialize(self, defaults, excluded_nodes, frame_counter):
         for socket in self.subnode_sockets:
