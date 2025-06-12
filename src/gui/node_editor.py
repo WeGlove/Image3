@@ -6,7 +6,7 @@ from typing import Dict, List
 from src.node_factory import NodeFactory
 from src.gui.node_widget import NodeWidget
 from src.Nodes.system.out import Out
-from PyQt6.QtWidgets import QWidget, QLineEdit, QMenu
+from PyQt6.QtWidgets import QWidget, QLineEdit
 from PyQt6.QtGui import QKeyEvent, QGuiApplication
 from PyQt6.QtWidgets import QLabel
 from PyQt6 import QtGui
@@ -16,32 +16,30 @@ from src.gui.context_menu_hierarchy import ContextMenuHierarchy
 
 class NodeEditor(QWidget):
 
-    SAVE_KEY = "s"  # TODO Auto save
+    SAVE_KEY = "s"
     LOAD_KEY = "l"
     DELETE_KEY = 127
 
     WHITE = 0xffffff
 
-    def __init__(self, factories: List[NodeFactory], patch): # TODO Variables aufräumen comments
+    def __init__(self, factories: List[NodeFactory], patch):
         super().__init__()
-
         self.logger = logging.getLogger(__name__)
 
         self.patch = patch
         self.selected = None
-
         self.factories: Dict[str, NodeFactory] = {factory.get_factory_name(): factory for factory in factories}
 
-        self.context_menu_hierarchy = ContextMenuHierarchy([(factory.factory_name, factory.hierarchy) for factory in factories], self)
+        self.context_menu_hierarchy = ContextMenuHierarchy(
+            [(factory.factory_name, factory.hierarchy) for factory in factories], self)
 
-        self.setWindowTitle("Node Editor")
-
-        self.line_label = QLabel(parent=self)  # TODO what does this do?
+        self.label_canvas = QLabel(parent=self)
         self.canvas = QtGui.QPixmap(1920, 1080)
         self.line_pen = QtGui.QPen()
         self.line_pen.setWidth(1)
         self.line_pen.setColor(QtGui.QColor('black'))
 
+        self.setWindowTitle("Node Editor")
         self.resize(192, 108)
 
         for node in self.patch.get_nodes():
@@ -51,7 +49,7 @@ class NodeEditor(QWidget):
 
     def redraw_lines(self):
         self.canvas.fill(self.WHITE)
-        self.line_label.setPixmap(self.canvas)
+        self.label_canvas.setPixmap(self.canvas)
 
         painter = QtGui.QPainter(self.canvas)
         painter.setPen(self.line_pen)
@@ -71,26 +69,13 @@ class NodeEditor(QWidget):
                 painter.drawLine(a, b)
 
         painter.end()
-        self.line_label.setPixmap(self.canvas)
+        self.label_canvas.setPixmap(self.canvas)
 
     def select(self, selection):
         if self.selected is not None:
             self.selected.deselect()
         self.selected = selection
         self.selected.select()
-
-    def keyPressEvent(self, event):
-        if isinstance(event, QKeyEvent):
-            key_text = event.text()
-            if len(key_text) > 0:
-                if ord(key_text[0]) == self.DELETE_KEY:
-                    self.delete_selected_node()
-                elif key_text[0] == self.SAVE_KEY:
-                    self.logger.info("Saving Patch")
-                    self.save("out.nmm")
-                elif key_text[0] == self.LOAD_KEY:
-                    self.logger.info("Loading Patch")
-                    self.load("out.nmm")
 
     def delete_selected_node(self):
         try:
@@ -168,7 +153,7 @@ class NodeEditor(QWidget):
                     if node_dict["Node"]["node_id"] not in self.patch.get_node_ids():
                         continue
                     in_node_widget = self.patch.get_node(node_dict["Node"]["node_id"])
-                    in_node_widget.socket_labels[j].connect(widget_to_connect)
+                    in_node_widget.socket_labels[j].connect(widget_to_connect) # TODO this is probably broken
 
             for k, node_dict in data.items():
                 position = node_dict["Node"]["position"]
@@ -183,6 +168,8 @@ class NodeEditor(QWidget):
 
         except Exception:
             self.logger.error(traceback.format_exc())
+
+    """Events"""
 
     def contextMenuEvent(self, event):
         try:
@@ -207,3 +194,16 @@ class NodeEditor(QWidget):
         if isinstance(focused_widget, QLineEdit):
             focused_widget.clearFocus()
         super().mousePressEvent(event)
+
+    def keyPressEvent(self, event):
+        if isinstance(event, QKeyEvent):
+            key_text = event.text()
+            if len(key_text) > 0:
+                if ord(key_text[0]) == self.DELETE_KEY:
+                    self.delete_selected_node()
+                elif key_text[0] == self.SAVE_KEY:
+                    self.logger.info("Saving Patch")
+                    self.save("out.nmm")
+                elif key_text[0] == self.LOAD_KEY:
+                    self.logger.info("Loading Patch")
+                    self.load("out.nmm")
