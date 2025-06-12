@@ -5,7 +5,6 @@ import traceback
 from typing import Dict, List
 from src.node_factory import NodeFactory
 from src.gui.node_widget import NodeWidget
-from src.Nodes.system.out import Out
 from PyQt6.QtWidgets import QWidget, QLineEdit
 from PyQt6.QtGui import QKeyEvent, QGuiApplication
 from PyQt6.QtWidgets import QLabel
@@ -21,6 +20,7 @@ class NodeEditor(QWidget):
     DELETE_KEY = 127
 
     WHITE = 0xffffff
+    DEFAULT_FILE_NAME = "out.nmm"
 
     def __init__(self, factories: List[NodeFactory], patch):
         super().__init__()
@@ -98,13 +98,15 @@ class NodeEditor(QWidget):
 
             file_dump = {
                 "factories": {factory.get_factory_name(): factory.next_id for factory in self.factories.values()},
-                "node_widgets": widgets
+                "node_widgets": widgets,
+                "patch_root": self.patch.get_root().node_id
             }
 
             with open(os.path.join(path), "w+") as f:
                 json.dump(file_dump, f, indent=1)
         except Exception:
             self.logger.error(traceback.format_exc())
+        self.logger.info(f"Saved patch")
 
     def load(self, path):
         self.logger.info(f"Loading patch from {path}")
@@ -113,15 +115,10 @@ class NodeEditor(QWidget):
                 data = json.load(f)
 
             factories = data["factories"]
-            data = data["node_widgets"]
+            root_id = data["patch_root"]
+            data = data["node_widgets"] # TODO horrible naming
 
-            for factory in self.factories.values():
-                factory.reset()
-
-            for node in self.patch.get_nodes():
-                node.get_gui_ref().cut()
-
-            self.patch = Patch()
+            self.reset()
 
             for factory_name, next_id in factories.items():
                 self.factories[factory_name].set_next(next_id)
@@ -131,6 +128,7 @@ class NodeEditor(QWidget):
                 add_node = self.factories[factory_id].node_from_dict(node_dict["Node"])
                 if add_node is None:
                     continue
+                self.patch.add_node(add_node)
                 self.add_nodes([add_node])
 
             for k, node_dict in data.items():
@@ -155,21 +153,27 @@ class NodeEditor(QWidget):
                     if node_dict["Node"]["node_id"] not in self.patch.get_node_ids():
                         continue
                     in_node_widget = self.patch.get_node(node_dict["Node"]["node_id"])
-                    in_node_widget.socket_labels[j].connect(widget_to_connect) # TODO this is probably broken
+                    in_node_widget.get_gui_ref().socket_labels[j].connect(widget_to_connect)
 
             for k, node_dict in data.items():
                 position = node_dict["Node"]["position"]
                 if k in self.patch.get_node_ids():
-                    self.patch.get_node(k).move(position[0], position[1])
+                    self.patch.get_node(k).get_gui_ref().move(position[0], position[1])
 
-            for node in self.patch.get_nodes():
-                node_widget = node.get_gui_ref()
-                if type(node_widget.node) == Out: # TODO this should be done by the patch itself
-                    self.patch.set_root(node)
-                    self.logger.info(self.patch.get_root().node_id)
-
+            self.patch.set_root(self.patch.get_node(root_id))
         except Exception:
             self.logger.error(traceback.format_exc())
+        self.logger.info(f"Loaded patch")
+
+    def reset(self):
+        for factory in self.factories.values():
+            factory.reset()
+
+        for node in self.patch.get_nodes():
+            node.get_gui_ref().cut()
+
+        self.patch = Patch()
+
 
     """Events"""
 
@@ -184,8 +188,10 @@ class NodeEditor(QWidget):
             node_name = action_trace[-1]
             factory = self.factories[factory_name]
 
+            self.logger.info(f"Instantiating Node of path {action_trace}")
             node = factory.instantiate(node_name)
             node.set_position((event.pos().x(), event.pos().y()))
+
             self.patch.add_node(node)
             self.add_nodes([node])
         except Exception:
@@ -204,8 +210,6 @@ class NodeEditor(QWidget):
                 if ord(key_text[0]) == self.DELETE_KEY:
                     self.delete_selected_node()
                 elif key_text[0] == self.SAVE_KEY:
-                    self.logger.info("Saving Patch")
-                    self.save("out.nmm")
+                    self.save(self.DEFAULT_FILE_NAME)
                 elif key_text[0] == self.LOAD_KEY:
-                    self.logger.info("Loading Patch")
-                    self.load("out.nmm")
+                    self.load(self.DEFAULT_FILE_NAME)

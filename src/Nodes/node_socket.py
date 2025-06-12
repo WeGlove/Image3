@@ -21,12 +21,12 @@ class NodeSocket:
         return self.socket_name
 
     def connect(self, node):
-        self.logger.info(f"Connect {self.socket_name} {node.node_id}")
+        self.logger.info(f"Connecting {self.socket_name} to {node.node_id}")
         self.node = node
         self.connected = True
 
     def disconnect(self):
-        self.logger.info(f"Disconnect {self.socket_name}")
+        self.logger.info(f"Disconnecting {self.socket_name}")
         self.node = None
         self.connected = False
 

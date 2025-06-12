@@ -1,4 +1,4 @@
-class Patch:
+class Patch: # TODO a patch should also be a node
 
     def __init__(self):
         self.root = None
@@ -16,7 +16,7 @@ class Patch:
     def add_node(self, node):
         self.nodes[node.node_id] = node
 
-    def set_root(self, root):
+    def set_root(self, root): # TODO this should be done via ID
         self.root = root
 
     def get_root(self):
