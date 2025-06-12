@@ -34,7 +34,8 @@ from src.Nodes.io.files.live_player import LivePlayer
 def get_io_factory():
     in_dict = {"ImagesProperty": ImagesProperty, "LoadImage": LoadImage, "ByteReader": ByteReader,
                "TextReader": TextReader, "KeyboardReader": KeyboardReader, "LivePlayer": LivePlayer}
-    factory = NodeFactory(in_dict, "IO")
+    factory = NodeFactory(in_dict, "IO",
+                          hierarchy= ["ImagesProperty", "LoadImage", "ByteReader", ("Test", ["TextReader", "KeyboardReader", "LivePlayer"])])
     return factory
 
 

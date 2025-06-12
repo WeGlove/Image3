@@ -11,6 +11,7 @@ from PyQt6.QtGui import QKeyEvent, QGuiApplication
 from PyQt6.QtWidgets import QLabel
 from PyQt6 import QtGui
 from src.patch import Patch
+from src.gui.context_menu_hierarchy import ContextMenuHierarchy
 
 
 class NodeEditor(QWidget):
@@ -30,11 +31,8 @@ class NodeEditor(QWidget):
         self.selected = None
 
         self.factories: Dict[str, NodeFactory] = {factory.get_factory_name(): factory for factory in factories}
-        self.menu = QMenu(self)
-        self.menu_acts = []
-        self.factory_acts = []
-        self.factory_menus = {}
-        self.load_factories(factories)
+
+        self.context_menu_hierarchy = ContextMenuHierarchy([(factory.factory_name, factory.hierarchy) for factory in factories], self)
 
         self.setWindowTitle("Node Editor")
 
@@ -50,18 +48,6 @@ class NodeEditor(QWidget):
             node_widget = NodeWidget(node, parent=self)
             node.set_gui_ref(node_widget)
         self.redraw_lines()
-
-    def load_factories(self, factories):
-        for factory in factories: # TODO sub menus?
-            factory_menu = QMenu(self.menu)
-            self.factory_menus[factory.get_factory_name()] = factory_menu
-
-            act = self.menu.addAction(factory.get_factory_name())
-            self.menu_acts.append(act)
-
-            for key in factory.in_dict.keys():
-                act = factory_menu.addAction(key)
-                self.factory_acts.append(act)
 
     def redraw_lines(self):
         self.canvas.fill(self.WHITE)
@@ -99,7 +85,7 @@ class NodeEditor(QWidget):
             if len(key_text) > 0:
                 if ord(key_text[0]) == self.DELETE_KEY:
                     self.logger.info(f"Deleting Node {self.selected.node.node_id}")
-                    del self.node_widgets[self.selected.node.node_id]
+                    del self.node_widgets[self.selected.node.node_id] # TODO this is deprecated
                     self.selected.cut()
                     self.selected = None
                 elif key_text[0] == self.SAVE_KEY:
@@ -194,21 +180,18 @@ class NodeEditor(QWidget):
 
     def contextMenuEvent(self, event):
         try:
-            self.menu.move(self.mapToGlobal(event.pos()))
-            action = self.menu.exec()
-            if action is None:
+            try:
+                action_trace = self.context_menu_hierarchy.exec(event)
+            except ValueError:
                 return
-            self.factory_menus[action.text()].move(self.mapToGlobal(event.pos()))
-            out_action = self.factory_menus[action.text()].exec()
-            if out_action is None:
-                return
-            nodes = []
 
-            node = self.factories[action.text()].instantiate(out_action.text())
+            factory_name = action_trace[0]
+            node_name = action_trace[-1]
+            factory = self.factories[factory_name]
+
+            node = factory.instantiate(node_name)
             node.set_position((event.pos().x(), event.pos().y()))
-            nodes.append(node)
-
-            self.add_nodes(nodes)
+            self.add_nodes([node])
         except Exception:
             self.logger.error(traceback.format_exc())
 

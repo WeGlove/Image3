@@ -3,11 +3,14 @@ import logging
 
 class NodeFactory: # TODO I don't like the way these work, should go over it again
 
-    def __init__(self, in_dict, factory_name):
+    def __init__(self, in_dict, factory_name, hierarchy=None):
         self.logger = logging.getLogger(__name__)
         self.next_id = 0
-        self.in_dict = in_dict
+        self.in_dict = in_dict # TODO horrible name
         self.factory_name = factory_name
+        self.hierarchy = hierarchy
+        if self.hierarchy is None:
+            self.hierarchy = list(in_dict.keys())
 
     def reset(self):
         self.next_id = 0
