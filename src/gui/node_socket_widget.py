@@ -26,7 +26,7 @@ class NodeSocketWidget(QLabel):
 
     def mouseReleaseEvent(self, event):
         try:
-            for k, node_widget in self.parent.node_widgets.items(): # TODO this is broken
+            for node_widget in [node.gui_ref for node in self.parent.patch.get_nodes()]:
                 hit = node_widget.geometry().contains(self.pos()+event.pos())
                 if hit:
                     self.connect(node_widget)

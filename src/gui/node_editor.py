@@ -92,6 +92,7 @@ class NodeEditor(QWidget):
             node_widget.move(*node.position.tolist())
 
     def save(self, path):
+        self.logger.info(f"Saving patch to {path}")
         try:
             widgets = {k: v.get_gui_ref().to_dict() for k, v in self.patch.nodes.items()}
 
@@ -106,6 +107,7 @@ class NodeEditor(QWidget):
             self.logger.error(traceback.format_exc())
 
     def load(self, path):
+        self.logger.info(f"Loading patch from {path}")
         try:
             with open(os.path.join(path), "r") as f:
                 data = json.load(f)
@@ -148,7 +150,7 @@ class NodeEditor(QWidget):
                             widget_to_connect = node_widget
                             break
                     else:
-                        ValueError()
+                        raise ValueError()
 
                     if node_dict["Node"]["node_id"] not in self.patch.get_node_ids():
                         continue
@@ -162,7 +164,7 @@ class NodeEditor(QWidget):
 
             for node in self.patch.get_nodes():
                 node_widget = node.get_gui_ref()
-                if type(node_widget.node) == Out:
+                if type(node_widget.node) == Out: # TODO this should be done by the patch itself
                     self.patch.set_root(node)
                     self.logger.info(self.patch.get_root().node_id)
 
