@@ -84,16 +84,22 @@ class NodeEditor(QWidget):
             key_text = event.text()
             if len(key_text) > 0:
                 if ord(key_text[0]) == self.DELETE_KEY:
-                    self.logger.info(f"Deleting Node {self.selected.node.node_id}")
-                    del self.node_widgets[self.selected.node.node_id] # TODO this is deprecated
-                    self.selected.cut()
-                    self.selected = None
+                    self.delete_selected_node()
                 elif key_text[0] == self.SAVE_KEY:
                     self.logger.info("Saving Patch")
                     self.save("out.nmm")
                 elif key_text[0] == self.LOAD_KEY:
                     self.logger.info("Loading Patch")
                     self.load("out.nmm")
+
+    def delete_selected_node(self):
+        try:
+            self.logger.info(f"Deleting Node {self.selected.node.node_id}")
+            self.patch.remove_node(self.selected.node.node_id)
+            self.selected.cut()
+            self.selected = None
+        except Exception:
+            self.logger.error(traceback.format_exc())
 
     def add_nodes(self, nodes):
         for node in nodes:
@@ -191,6 +197,7 @@ class NodeEditor(QWidget):
 
             node = factory.instantiate(node_name)
             node.set_position((event.pos().x(), event.pos().y()))
+            self.patch.add_node(node)
             self.add_nodes([node])
         except Exception:
             self.logger.error(traceback.format_exc())

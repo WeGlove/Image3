@@ -21,3 +21,6 @@ class Patch:
 
     def get_root(self):
         return self.root
+
+    def remove_node(self, node_id):
+        del self.nodes[node_id]
