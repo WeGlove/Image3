@@ -20,6 +20,7 @@ class NodeWidget(QLabel):
 
         self.font = QFont()
         self.font.setBold(True)
+        self.setStyleSheet("background-color:rgb(230, 230, 230)")
         self.setFont(self.font)
         self.show()
 

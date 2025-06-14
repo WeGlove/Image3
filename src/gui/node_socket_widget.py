@@ -15,6 +15,7 @@ class NodeSocketWidget(QLabel):
         self.connected_node_widget = None
 
         self.connection_label = QLabel("", parent=self.parent)
+        self.setStyleSheet("background-color:rgb(230, 230, 230)")
 
         self.move(parent.pos())
         self.connection_label.move(parent.pos())
