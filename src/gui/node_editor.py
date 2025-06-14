@@ -7,7 +7,7 @@ import numpy as np
 from src.node_factory import NodeFactory
 from src.gui.node_widget import NodeWidget
 from PyQt6.QtWidgets import QWidget, QLineEdit
-from PyQt6.QtGui import QKeyEvent, QGuiApplication
+from PyQt6.QtGui import QKeyEvent, QGuiApplication, QImageReader
 from PyQt6.QtWidgets import QLabel
 from PyQt6 import QtGui
 from src.patch import Patch
@@ -26,7 +26,7 @@ class NodeEditor(QWidget):
     WHITE = 0xffffff
     DEFAULT_FILE_NAME = "out.nmm"
 
-    def __init__(self, factories: List[NodeFactory], patch): # tODO movements
+    def __init__(self, factories: List[NodeFactory], patch):
         super().__init__()
         self.logger = logging.getLogger(__name__)
 
@@ -42,6 +42,8 @@ class NodeEditor(QWidget):
         self.line_pen = QtGui.QPen()
         self.line_pen.setWidth(1)
         self.line_pen.setColor(QtGui.QColor('black'))
+        self.img_reader = QImageReader(os.path.join(".", "bg.png"))
+        self.bg = self.img_reader.read()
 
         self.setWindowTitle("Node Editor")
         self.resize(192, 108)
@@ -59,7 +61,7 @@ class NodeEditor(QWidget):
             node.get_gui_ref().update_position()
 
     def redraw_lines(self):
-        self.canvas.fill(self.WHITE) # TODO proper background
+        self.canvas.convertFromImage(self.bg)
         self.label_canvas.setPixmap(self.canvas)
 
         painter = QtGui.QPainter(self.canvas)
@@ -127,14 +129,14 @@ class NodeEditor(QWidget):
 
             factories = data["factories"]
             root_id = data["patch_root"]
-            data = data["node_widgets"] # TODO horrible naming
+            node_widgets = data["node_widgets"]
 
             self.reset()
 
             for factory_name, next_id in factories.items():
                 self.factories[factory_name].set_next(next_id)
 
-            for k, node_dict in data.items():
+            for k, node_dict in node_widgets.items():
                 factory_id = node_dict["Node"]["factory_id"]
                 add_node = self.factories[factory_id].node_from_dict(node_dict["Node"])
                 if add_node is None:
@@ -142,7 +144,7 @@ class NodeEditor(QWidget):
                 self.patch.add_node(add_node)
                 self.add_nodes([add_node])
 
-            for k, node_dict in data.items():
+            for k, node_dict in node_widgets.items():
                 socket_widgets = node_dict["Sockets"]
                 for j, socket_widget in enumerate(socket_widgets):
                     socket = socket_widget["Socket"]
@@ -172,6 +174,7 @@ class NodeEditor(QWidget):
                     self.patch.get_node(k).get_gui_ref().move(position[0], position[1])
 
             self.patch.set_root(self.patch.get_node(root_id))
+            self.set_global_position(np.array([0, 0]))
         except Exception:
             self.logger.error(traceback.format_exc())
         self.logger.info(f"Loaded patch")
