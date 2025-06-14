@@ -32,7 +32,6 @@ class NodeWidget(QLabel):
 
         self.socket_labels = [NodeSocketWidget(socket.get_socket_name(), self.parent, socket) for socket in node.subnode_sockets]
 
-
         for k, socket in enumerate(self.socket_labels):
             pos = self.pos()
             socket.move(pos.x(), pos.y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
@@ -85,7 +84,8 @@ class NodeWidget(QLabel):
         else:
             offset = event.pos()
             pos = self.pos()
-            self.move(pos.x() + offset.x(), pos.y() + offset.y())
+            self.move(pos.x() - self.parent.global_position[0] + offset.x(),
+                      pos.y() - self.parent.global_position[1] + offset.y())
 
     def select(self):
         self.setStyleSheet("color:red")
@@ -93,16 +93,21 @@ class NodeWidget(QLabel):
     def deselect(self):
         self.setStyleSheet("color:black")
 
+    def update_position(self):
+        self.move(*self.node.position.tolist())
+
     def move(self, *a0):
-        super().move(*a0)
+        super().move(a0[0] + self.parent.global_position[0], a0[1] + self.parent.global_position[1])
         self.node.set_position(a0)
 
         for connected_socket in self.connected_sockets:
             connected_socket.move(connected_socket.pos())
         for k, edit_field in enumerate(self.edit_fields):
-            edit_field.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + k*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
+            edit_field.move(self.pos().x(),
+                            self.pos().y() + self.SOCKET_OFFSET + k*self.LINE_SIZE + len(self.socket_labels)*self.LINE_SIZE)
         for k, label in enumerate(self.socket_labels):
-            label.move(self.pos().x(), self.pos().y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
+            label.move(self.pos().x(),
+                       self.pos().y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
 
     def to_dict(self):
         return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels]}

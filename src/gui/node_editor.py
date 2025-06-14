@@ -3,6 +3,7 @@ import logging
 import os.path
 import traceback
 from typing import Dict, List
+import numpy as np
 from src.node_factory import NodeFactory
 from src.gui.node_widget import NodeWidget
 from PyQt6.QtWidgets import QWidget, QLineEdit
@@ -17,12 +18,15 @@ class NodeEditor(QWidget):
 
     SAVE_KEY = "s"
     LOAD_KEY = "l"
+    MOVE_KEY = "w"
     DELETE_KEY = 127
+
+    STEP_SIZE = 10
 
     WHITE = 0xffffff
     DEFAULT_FILE_NAME = "out.nmm"
 
-    def __init__(self, factories: List[NodeFactory], patch):
+    def __init__(self, factories: List[NodeFactory], patch): # tODO movements
         super().__init__()
         self.logger = logging.getLogger(__name__)
 
@@ -42,13 +46,20 @@ class NodeEditor(QWidget):
         self.setWindowTitle("Node Editor")
         self.resize(192, 108)
 
+        self.global_position = np.array([0, 0])
+
         for node in self.patch.get_nodes():
             node_widget = NodeWidget(node, parent=self)
             node.set_gui_ref(node_widget)
         self.redraw_lines()
 
+    def set_global_position(self, new_pos):
+        self.global_position = new_pos
+        for node in self.patch.get_nodes():
+            node.get_gui_ref().update_position()
+
     def redraw_lines(self):
-        self.canvas.fill(self.WHITE)
+        self.canvas.fill(self.WHITE) # TODO proper background
         self.label_canvas.setPixmap(self.canvas)
 
         painter = QtGui.QPainter(self.canvas)
@@ -174,7 +185,6 @@ class NodeEditor(QWidget):
 
         self.patch = Patch()
 
-
     """Events"""
 
     def contextMenuEvent(self, event):
@@ -204,12 +214,22 @@ class NodeEditor(QWidget):
         super().mousePressEvent(event)
 
     def keyPressEvent(self, event):
-        if isinstance(event, QKeyEvent):
-            key_text = event.text()
-            if len(key_text) > 0:
-                if ord(key_text[0]) == self.DELETE_KEY:
-                    self.delete_selected_node()
-                elif key_text[0] == self.SAVE_KEY:
-                    self.save(self.DEFAULT_FILE_NAME)
-                elif key_text[0] == self.LOAD_KEY:
-                    self.load(self.DEFAULT_FILE_NAME)
+        if not isinstance(event, QKeyEvent):
+            return
+        key_text = event.text()
+        if len(key_text) > 0:
+            if ord(key_text[0]) == self.DELETE_KEY:
+                self.delete_selected_node()
+            elif key_text[0] == self.SAVE_KEY:
+                self.save(self.DEFAULT_FILE_NAME)
+            elif key_text[0] == self.LOAD_KEY:
+                self.load(self.DEFAULT_FILE_NAME)
+        else:
+            if event.key() == 16777234:  # LEFT
+                self.set_global_position(self.global_position + np.array([-self.STEP_SIZE, 0]))
+            elif event.key() == 16777235:  # UP
+                self.set_global_position(self.global_position + np.array([0, -self.STEP_SIZE]))
+            elif event.key() == 16777236:  # RIGHT
+                self.set_global_position(self.global_position + np.array([self.STEP_SIZE, 0]))
+            elif event.key() == 16777237:  # DOWN
+                self.set_global_position(self.global_position + np.array([0, self.STEP_SIZE]))
