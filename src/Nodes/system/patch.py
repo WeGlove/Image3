@@ -1,8 +1,17 @@
-class Patch: # TODO a patch should also be a node
+from src.Nodes.node import Node
+
+
+class Patch(Node): # TODO a patch should also be a node
 
     def __init__(self):
         self.root = None
         self.nodes = {}
+        super().__init__([], [], "Returns the value of the patch.")
+
+    def initialize(self, defaults, excluded_nodes, frame_counter):
+        super().initialize(defaults, excluded_nodes, frame_counter)
+        if self.root is not None:
+            self.root.initialize(defaults, excluded_nodes, frame_counter)
 
     def get_nodes(self):
         return self.nodes.values()

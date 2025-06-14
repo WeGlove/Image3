@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import QWidget, QLineEdit
 from PyQt6.QtGui import QKeyEvent, QGuiApplication, QImageReader
 from PyQt6.QtWidgets import QLabel
 from PyQt6 import QtGui
-from src.patch import Patch
+from src.Nodes.system.patch import Patch
 from src.gui.context_menu_hierarchy import ContextMenuHierarchy
 
 

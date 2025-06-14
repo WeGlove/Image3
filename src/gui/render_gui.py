@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLab
 from src.renderer import Renderer
 from src.gui.node_editor import NodeEditor
 from src.factories import get_system_factory
-from src.patch import Patch
+from src.Nodes.system.patch import Patch
 from typing import List
 from src.node_factory import NodeFactory
 
