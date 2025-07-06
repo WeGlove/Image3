@@ -102,7 +102,7 @@ class Renderer:  # Future TODO Callbacks for exceptions pausing within rednerer!
 
             if self.should_reset:
                 self.should_reset = False
-                patch.get_root().initialize(self.defaults, [], self.frame_counter)
+                patch.initialize(self.defaults, [], self.frame_counter)
 
             current_frame = self.frame_counter.get()
             self.on_frame(current_frame, time.time())  # GUI update

@@ -1,7 +1,7 @@
 from src.Nodes.node import Node
 
 
-class Patch(Node): # TODO a patch should also be a node
+class Patch(Node):
 
     def __init__(self):
         self.root = None

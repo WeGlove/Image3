@@ -9,17 +9,24 @@ from src.Nodes.system.wait_manager import WaitManager
 from src.Nodes.system.hold import Hold
 from src.Nodes.system.display import Display
 from src.Nodes.system.once import Once
-from src.Nodes.system.random import Random
 from src.Nodes.system.list_get import ListGet
 from src.Nodes.system.none_property import NoneProperty
 
 
 def get_system_factory():
-    in_dict = {"Out": Out, "NumberProperty": NumberProperty, "StringProperty": StringProperty,
-               "TensorProperty": TensorProperty, "AnimatedProperty": AnimatedProperty, "Button": Button,
-               "WaitManager": WaitManager, "Hold": Hold, "Display": Display, "Once": Once, "Random": Random,
-               "ListGet": ListGet, "NoneProperty": NoneProperty}
-    factory = NodeFactory(in_dict, "System")
+    in_dict = {"Number": NumberProperty, "String": StringProperty, "Tensor": TensorProperty,
+               "Animation": AnimatedProperty,
+               "Button": Button, "Display": Display,
+               "WaitManager": WaitManager, "Hold": Hold, "Once": Once,
+               "ListGet": ListGet,
+               "Out": Out}
+    factory = NodeFactory(in_dict, "System",
+                          hierarchy=[("Inputs", ["Number", "String", "Tensor"]),
+                                     "Animation",
+                                     ("Widgets", ["Button", "Display"]),
+                                     ("Delays", ["WaitManager", "Hold", "Once"]),
+                                     "ListGet"
+                                     ])
     return factory
 
 
@@ -34,58 +41,71 @@ from src.Nodes.io.files.live_player import LivePlayer
 def get_io_factory():
     in_dict = {"ImagesProperty": ImagesProperty, "LoadImage": LoadImage, "ByteReader": ByteReader,
                "TextReader": TextReader, "KeyboardReader": KeyboardReader, "LivePlayer": LivePlayer}
-    factory = NodeFactory(in_dict, "IO",
-                          hierarchy= ["ImagesProperty", "LoadImage", "ByteReader", ("Test", ["TextReader", "KeyboardReader", "LivePlayer"])])
+    factory = NodeFactory(in_dict, "IO")
     return factory
 
 
-from src.Nodes.tensor_math.matmul import Matmul
-from src.Nodes.tensor_math.addition import Addition
-from src.Nodes.tensor_math.subtraction import Subtraction
-from src.Nodes.tensor_math.multiplication import Multiplication
-from src.Nodes.tensor_math.division import Division
-from src.Nodes.tensor_math.modulo import Modulo
-from src.Nodes.tensor_math.power import Power
-from src.Nodes.tensor_math.convolution import Convolution
-from src.Nodes.tensor_math.transposition import Transposition
-from src.Nodes.tensor_math.selection import Selection
-from src.Nodes.tensor_math.shape import Shape
-from src.Nodes.tensor_math.mean import Mean
-from src.Nodes.tensor_math.round import Round
-from src.Nodes.tensor_math.svd import SVD
-from src.Nodes.tensor_math.qr import QR
-from src.Nodes.tensor_math.interpolate import Interpolate
+from src.Nodes.math.linalg.matmul import Matmul
+from src.Nodes.math.airthmetic.addition import Addition
+from src.Nodes.math.airthmetic.subtraction import Subtraction
+from src.Nodes.math.airthmetic.multiplication import Multiplication
+from src.Nodes.math.airthmetic.division import Division
+from src.Nodes.math.airthmetic.modulo import Modulo
+from src.Nodes.math.airthmetic.power import Power
+from src.Nodes.math.linalg.convolution import Convolution
+from src.Nodes.math.linalg.transposition import Transposition
+from src.Nodes.math.selection import Selection
+from src.Nodes.math.linalg.shape import Shape
+from src.Nodes.math.mean import Mean
+from src.Nodes.math.round import Round
+from src.Nodes.math.linalg.svd import SVD
+from src.Nodes.math.linalg.qr import QR
+from src.Nodes.math.interpolate import Interpolate
+from src.Nodes.math.constants.pi_property import PiProperty
+from src.Nodes.math.constants.e_property import EProperty
+from src.Nodes.math.random import Normal
+from src.Nodes.math.random.normal import Gauss
+from src.Nodes.math.constants.constant import Constant
 
 
 def get_math_factory():
-    in_dict = {"Matmul": Matmul, "Addition": Addition, "Subtraction": Subtraction, "Multiplication": Multiplication,
-               "Division": Division, "Modulo": Modulo, "Power": Power, "Convolution": Convolution,
-               "Transposition": Transposition, "Selection": Selection, "Shape": Shape, "Mean": Mean, "Round": Round,
-               "SVD": SVD, "QR": QR, "Interpolate": Interpolate}
-    factory = NodeFactory(in_dict, "Tensor Math")
+    in_dict = {"None": NoneProperty, "Pi": PiProperty, "E": EProperty,
+               "Addition": Addition, "Subtraction": Subtraction, "Multiplication": Multiplication, "Division": Division, "Modulo": Modulo, "Power": Power,
+               "Convolution": Convolution, "Matmul": Matmul, "SVD": SVD, "QR": QR, "Shape": Shape, "Transposition": Transposition,
+               "Uniform": Normal, "Normal": Gauss,
+               "Selection": Selection, "Mean": Mean, "Round": Round, # TODO order these
+               "Interpolate": Interpolate, "Constant": Constant}
+    factory = NodeFactory(in_dict, "Math", hierarchy=[
+        ("Constants", ["None", "E", "Pi"]),
+        ("Arithmetic", ["Addition", "Subtraction", "Multiplication", "Division", "Modulo", "Power"]),
+        ("LinAlg", ["Convolution", "Matmul", "SVD", "QR", "Shape", "Transposition"]),
+        ("Random", ["Normal", "Gauss"]),
+        "FunctionValueMap", "Constant"
+    ])
     return factory
 
 
-from src.Nodes.maps.line import Line
+from src.Nodes.math.distance.dist_linear import Line
 from src.Nodes.maps.noise import Noise
-from src.Nodes.maps.fill import Fill
-from src.Nodes.maps.spirals import Spirals
-from src.Nodes.maps.circles import Circles
-from src.Nodes.maps.swap import Swap
-from src.Nodes.maps.iRFFT import iRFFT
-from src.Nodes.maps.RFFT import RFFT
+from src.Nodes.math.fill import Fill
+from src.Nodes.math.spirals import Spirals
+from src.Nodes.math.distance.dist_point import Circles
+from src.Nodes.math.swap import Swap
+from src.Nodes.math.iRFFT import iRFFT
+from src.Nodes.math.RFFT import RFFT
+from src.Nodes.math.bspline import BSpline
 
 
 def get_map_factory():
     in_dict = {"Line": Line, "Noise": Noise, "Fill": Fill, "Spirals": Spirals, "Circles": Circles, "Swap": Swap,
-               "iRFFT": iRFFT, "RFFT": RFFT}
+               "iRFFT": iRFFT, "RFFT": RFFT, "BSpline": BSpline}
     factory = NodeFactory(in_dict, "Point Maps")
     return factory
 
 
-from src.Nodes.imaging.mass_composition import MassComposition
-from src.Nodes.imaging.coloring import Coloring
-from src.Nodes.imaging.mass_alpha import MassAlpha
+from src.Nodes.image_processing.mass_composition import MassComposition
+from src.Nodes.image_processing.color.tensors_to_rgb import Coloring
+from src.Nodes.image_processing.mass_alpha import MassAlpha
 
 
 def get_imaging_factory():
@@ -94,19 +114,19 @@ def get_imaging_factory():
     return factory
 
 
-from src.Nodes.conv_tensors.mean import Mean
-from src.Nodes.conv_tensors.edge_detection import EdgeDetection
-from src.Nodes.conv_tensors.sharpen import Sharpen
+from src.conv_tensors.mean import Mean
+from src.conv_tensors.edge_detection import EdgeDetection
+from src.conv_tensors.sharpen import Sharpen
 
 
-def get_tensor_conv_factory():
+def get_tensor_conv_factory(): # TODO integrate in Math?
     in_dict = {"Mean": Mean, "EdgeDetection": EdgeDetection, "Sharpen": Sharpen}
     factory = NodeFactory(in_dict, "Convolution Tensors")
     return factory
 
 
-from src.Nodes.maps_2vec.polar import Polar
-from src.Nodes.maps_2vec.positions import Positions
+from src.Nodes.math.polar import Polar
+from src.Nodes.math.positions import Positions
 
 
 def get_maps_2vec_factory():
@@ -115,8 +135,8 @@ def get_maps_2vec_factory():
     return factory
 
 
-from src.Nodes.maps_nvec.HSV import HSV
-from src.Nodes.maps_nvec.bitplanes import BitPlanes
+from src.Nodes.image_processing.color.rgb_to_hsv import HSV
+from src.Nodes.image_processing.color.tensor_to_bitplanes import BitPlanes
 
 
 def get_maps_nvec_factory():

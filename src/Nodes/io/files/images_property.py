@@ -1,7 +1,7 @@
 import logging
 import torch
 from src.Nodes.node import Node
-from src.Nodes.interactables.node_edit import NodeEdit
+from src.interactables.node_edit import NodeEdit
 import os
 import numpy as np
 from PIL import Image

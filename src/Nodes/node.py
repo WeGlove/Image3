@@ -2,7 +2,7 @@ import time
 from typing import List
 import numpy as np
 from src.Nodes.node_socket import NodeSocket
-from src.Nodes.interactables.interactable import Interactable
+from src.interactables.interactable import Interactable
 from abc import abstractmethod
 
 

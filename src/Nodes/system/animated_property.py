@@ -2,7 +2,7 @@ import torch
 import math
 from src.Nodes.node import Node
 from src.Nodes.node import NodeSocket
-from src.Nodes.interactables.node_table import NodeTable
+from src.interactables.node_table import NodeTable
 
 
 class AnimatedProperty(Node):

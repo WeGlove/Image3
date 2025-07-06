@@ -7,9 +7,9 @@ class Hold(Node):
     def __init__(self):
         self.input = NodeSocket("Input")
         self.start = NodeSocket("Start")
-        self.last = None
+        self.last = None # TODO this should be a list instead
         self.last_frame = -1
-        super().__init__([self.input, self.start], [], "Returns the given value.")
+        super().__init__([self.input, self.start], [], "Returns the value given in the prvious frame")
 
     def produce(self):
         if self.last is None:

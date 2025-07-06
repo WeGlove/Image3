@@ -1,6 +1,6 @@
 from src.Nodes.node import Node
 from src.Nodes.node import NodeSocket
-from src.Nodes.maps.fill import Fill
+from src.Nodes.math.fill import Fill
 
 
 class Out(Node):

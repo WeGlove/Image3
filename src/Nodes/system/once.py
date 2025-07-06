@@ -8,7 +8,7 @@ class Once(Node):
         self.input = NodeSocket("Input")
         self.last = None
         self.last_frame = -1
-        super().__init__([self.input], [], "Returns the given value.")
+        super().__init__([self.input], [], "Returns the first produced value")
 
     def produce(self):
         if self.last_frame == self.frame_counter.get():

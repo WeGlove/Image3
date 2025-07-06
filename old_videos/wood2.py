@@ -2,7 +2,7 @@ import os.path
 import numpy as np
 from PIL import Image
 from src.Nodes import Renderer
-from src.Nodes.imaging.mass_composition import MassComposition
+from src.Nodes.image_processing.mass_composition import MassComposition
 import torch
 from src.Nodes import PointMapping
 from src.Nodes import Lines

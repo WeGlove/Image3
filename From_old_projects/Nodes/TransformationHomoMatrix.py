@@ -1,4 +1,4 @@
-from src.Nodes.maps.utils.Geos import get_homo_vector_map
+from src.math.Geos import get_homo_vector_map
 import torch
 from src.Nodes import AnimatedProperty
 from src.Nodes import Compositor

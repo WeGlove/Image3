@@ -19,7 +19,7 @@ class WaitManager(Node):
     def _waiting_production(self):
         while self.is_running:
             if self.last_frame == self.frame_counter.get():
-                time.sleep(1)
+                time.sleep(1) # TODO this number shouldn't be magic
                 continue
 
             last_frame = self.frame_counter.get()
