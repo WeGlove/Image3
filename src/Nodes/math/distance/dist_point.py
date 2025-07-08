@@ -5,7 +5,7 @@ from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
 
 
-class Circles(Node):
+class DistPoint(Node):
 
     def __init__(self):
         self.noso_points = NodeSocket("Points")

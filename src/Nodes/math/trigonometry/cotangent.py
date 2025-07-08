@@ -3,7 +3,7 @@ from src.Nodes.node_socket import NodeSocket
 import torch
 
 
-class Tan(Node):
+class Cotangent(Node):
 
     def __init__(self):
         self.input_noso = NodeSocket("Input", None)
