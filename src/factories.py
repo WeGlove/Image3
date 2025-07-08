@@ -54,13 +54,13 @@ from src.Nodes.math.airthmetic.modulo import Modulo
 from src.Nodes.math.airthmetic.power import Power
 from src.Nodes.math.linalg.convolution import Convolution
 from src.Nodes.math.linalg.transposition import Transposition
-from src.Nodes.math.selection import Selection
+from src.Nodes.math.positions.selection import Selection
 from src.Nodes.math.linalg.shape import Shape
-from src.Nodes.math.mean import Mean
-from src.Nodes.math.round import Round
+from src.Nodes.math.airthmetic.mean import Mean
+from src.Nodes.math.airthmetic.round import Round
 from src.Nodes.math.linalg.svd import SVD
 from src.Nodes.math.linalg.qr import QR
-from src.Nodes.math.interpolate import Interpolate
+from src.Nodes.math.airthmetic.interpolate import Interpolate
 from src.Nodes.math.constants.pi_property import PiProperty
 from src.Nodes.math.constants.e_property import EProperty
 from src.Nodes.math.random import Normal
@@ -85,14 +85,14 @@ def get_math_factory():
     return factory
 
 
-from src.Nodes.math.distance.dist_linear import Line
+from src.Nodes.math.distance.dist_polynom_linear import Line
 from src.Nodes.maps.noise import Noise
-from src.Nodes.math.fill import Fill
+from src.Nodes.math.constants.fill import Fill
 from src.Nodes.math.spirals import Spirals
 from src.Nodes.math.distance.dist_point import Circles
-from src.Nodes.math.swap import Swap
-from src.Nodes.math.iRFFT import iRFFT
-from src.Nodes.math.RFFT import RFFT
+from src.Nodes.math.positions.swap import Swap
+from src.Nodes.math.spectral.iRFFT import iRFFT
+from src.Nodes.math.spectral.RFFT import RFFT
 from src.Nodes.math.bspline import BSpline
 
 

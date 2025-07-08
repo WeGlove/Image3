@@ -11,4 +11,5 @@ class Normal(Node):
         super().__init__([self.noso_mean, self.noso_std], [], "Returns the given value.")
 
     def produce(self):
-        return torch.norm(self.noso_mean.get().produce(), self.noso_std.get().produce())
+        return torch.normal(torch.ones((self.defaults.width, self.defaults.height)) * self.noso_mean.get().produce(),
+                            torch.ones((self.defaults.width, self.defaults.height)) * self.noso_std.get().produce())

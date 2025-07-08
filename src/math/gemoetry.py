@@ -1,3 +1,5 @@
+import math
+
 import torch
 
 
@@ -78,3 +80,10 @@ def radial_map(pixels_polar, amount, size):
     arr = torch.floor(arr)
 
     return arr.repeat(3, 1, 1).transpose(0, 1).transpose(1, 2)
+
+
+def dist_line(a, b, c, width, height, device):
+    vector_map = get_vector_map(width, height, device)
+    point_offset = torch.abs(torch.matmul(vector_map, torch.tensor([a, b], device=device)) + c)
+    length = math.sqrt(a**2 + b**2)
+    return point_offset / length

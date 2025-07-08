@@ -1,21 +1,6 @@
-from src.math.Geos import get_centered_vector_map
+from src.math.gemoetry import get_centered_vector_map
 import torch
 import math
-
-
-def linear_dist(a, b, width, height, device):
-    vector_map = get_centered_vector_map(width, height, device)
-
-    vector_map = vector_map * position[:2]
-    vector_map = torch.sum(vector_map, dim=2)
-    vector_map = vector_map + position[2]
-    vector_map = vector_map / math.sqrt(position[0] ** 2 + position[1] ** 2)
-    vector_map = vector_map / math.sqrt((width / 2) ** 2 + (height / 2) ** 2)
-    vector_map = torch.abs(vector_map)
-
-    vector_map += shift
-
-    return vector_map
 
 
 def linear(a, x, b):

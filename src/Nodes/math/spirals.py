@@ -1,4 +1,4 @@
-from src.math.Geos import get_polar
+from src.math.gemoetry import get_polar
 import torch
 from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
