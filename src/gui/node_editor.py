@@ -168,7 +168,7 @@ class NodeEditor(QWidget):
                     in_node_widget = self.patch.get_node(node_dict["Node"]["node_id"])
                     in_node_widget.get_gui_ref().socket_labels[j].connect(widget_to_connect)
 
-            for k, node_dict in data.items():
+            for k, node_dict in data["node_widgets"].items():
                 position = node_dict["Node"]["position"]
                 if k in self.patch.get_node_ids():
                     self.patch.get_node(k).get_gui_ref().move(position[0], position[1])
