@@ -7,7 +7,7 @@ from src.Nodes.math import (Abs, Addition, Division, Interpolate, Log, Mean, Mod
                             Transposition, Shape, SVD, QR, ColumnExtension, RowExtension, Cube, Linear,
                             Square, Positions, Selection, Swap, Normal, Uniform, RFFT, iRFFT, Cos, Cosecant, Cotangent,
                             Secant, Sin, Tan, BSpline, Polar, Spirals)
-from src.Nodes.image_processing import MassAlpha, MassComposition, RGBToHSV, HSVToRGB, BitPlanes, GreyScale, HueShift
+from src.Nodes.image_processing import MassAlpha, MassComposition, RGBToHSV, HSVToRGB, BitPlanes, GreyScale, HueShift, RGBToB, RGBToG, RGBToR, TensorsToRGB
 
 
 def get_system_factory():
@@ -60,9 +60,11 @@ def get_math_factory():
     ])
     return factory
 
+
 def get_imaging_factory():
     in_dict = {"MassAlpha": MassAlpha, "MassComposition": MassComposition, "RGBToHSV": RGBToHSV, "HSVToRGB": HSVToRGB,
-               "BitPlanes": BitPlanes, "GreyScale": GreyScale, "HueShift": HueShift}
+               "BitPlanes": BitPlanes, "GreyScale": GreyScale, "HueShift": HueShift, "RGBToR": RGBToR, "RGBToG": RGBToG,
+               "RGBToB": RGBToB, "TensorsToRGB": TensorsToRGB}
     factory = NodeFactory(in_dict, "Imaging")
     return factory
 
