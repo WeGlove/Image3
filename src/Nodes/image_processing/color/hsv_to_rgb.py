@@ -6,7 +6,7 @@ from src.math.color import hsv_to_rgb
 
 class HSVToRGB(Node):
 
-    def __init__(self, node_id, factory_id):
+    def __init__(self):
         self.h = NodeSocket("H")
         self.s = NodeSocket("S")
         self.v = NodeSocket("V")
