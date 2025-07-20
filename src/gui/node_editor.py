@@ -141,6 +141,7 @@ class NodeEditor(QWidget):
                 add_node = self.factories[factory_id].node_from_dict(node_dict["Node"])
                 if add_node is None:
                     continue
+                self.logger.info(f"Adding node: {add_node.node_id}")
                 self.patch.add_node(add_node)
                 self.add_nodes([add_node])
 
@@ -173,7 +174,8 @@ class NodeEditor(QWidget):
                 if k in self.patch.get_node_ids():
                     self.patch.get_node(k).get_gui_ref().move(position[0], position[1])
 
-            self.patch.set_root(self.patch.get_node(root_id))
+            root_node = self.patch.get_node(root_id)
+            self.patch.set_root(root_node)
             self.set_global_position(np.array([0, 0]))
         except Exception:
             self.logger.error(traceback.format_exc())
@@ -186,7 +188,7 @@ class NodeEditor(QWidget):
         for node in self.patch.get_nodes():
             node.get_gui_ref().cut()
 
-        self.patch = Patch()
+        self.patch.reset()
 
     """Events"""
 

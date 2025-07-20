@@ -33,3 +33,7 @@ class Patch(Node):
 
     def remove_node(self, node_id):
         del self.nodes[node_id]
+
+    def reset(self):
+        self.root = None
+        self.nodes = {}

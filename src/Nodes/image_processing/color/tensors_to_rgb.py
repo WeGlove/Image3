@@ -14,5 +14,6 @@ class TensorsToRGB(Node):
 
     def produce(self):
         img = torch.stack([self.r.get().produce(), self.g.get().produce(), self.b.get().produce()])
+        img = torch.reshape(img, (img.shape[1], img.shape[2], img.shape[0]))
 
         return img

@@ -13,4 +13,4 @@ class RGBToR(Node):
     def produce(self):
         img = self.rgb.get().produce()
 
-        return img[0]
+        return img[:, :, 0]

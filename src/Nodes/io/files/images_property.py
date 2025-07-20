@@ -12,10 +12,11 @@ class ImagesProperty(Node):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.initial_value = NodeEdit(".")
+        self.images = []
         super().__init__([], [self.initial_value], "Images Property")
 
     def produce(self):
-        return self.initial_value.get()
+        return self.images
 
     def initialize(self, defaults,  excluded_nodes, frame_counter):
         super().initialize(defaults, excluded_nodes, frame_counter)
@@ -27,6 +28,7 @@ class ImagesProperty(Node):
             img = np.array(Image.open(os.path.join(path, file)))
             img = torch.tensor(img, device=self.defaults.device, dtype=torch.float)
             img = img[:, :, :3]
+            img = img / 255
             images.append(img)
 
-        return images
+        self.images = images

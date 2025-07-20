@@ -10,7 +10,9 @@ from typing import List
 from src.node_factory import NodeFactory
 
 
-class RenderGui(QMainWindow):  # Future TODO, set FPS Button
+class RenderGui(QMainWindow): # Future TODO, set FPS Button
+
+    OUT_ID = "Out"
 
     def __init__(self, frame_renderer: Renderer, node_factories: List[NodeFactory]):
         self.app = QApplication([])
@@ -21,8 +23,8 @@ class RenderGui(QMainWindow):  # Future TODO, set FPS Button
         self.frame_renderer = frame_renderer
         system_factory = get_system_factory()
         self.node_factories = [system_factory] + node_factories
-        out = system_factory.instantiate("Out")
-        out.set_node_name("Out")
+        out = system_factory.instantiate(self.OUT_ID)
+        out.set_node_name(self.OUT_ID)
         self.patch = Patch()
         self.patch.add_node(out)
         self.patch.set_root(out)
