@@ -122,6 +122,7 @@ class Renderer:  # Future TODO Callbacks for exceptions pausing within rednerer!
 
             try:
                 rendered_img = patch.get_root().produce()
+                rendered_img = rendered_img.transpose(0, 1)
             except Exception:
                 self.logger.error(traceback.format_exc())
                 self.pause()
@@ -139,7 +140,7 @@ class Renderer:  # Future TODO Callbacks for exceptions pausing within rednerer!
                     self.new_image = True
 
             if self.save:
-                mask = Image.fromarray(np.uint8((rendered_img.cpu() % 1) * 255))
+                mask = Image.fromarray(np.uint8(np.clip(rendered_img.cpu() * 255, a_min=0, a_max=255)))
                 mask.save(os.path.join(self.save_path, f"render_{current_frame}.{self.image_format}"))
                 self.logger.info(f"Saved frame {current_frame}")
 

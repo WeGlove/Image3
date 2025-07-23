@@ -29,6 +29,7 @@ class ImagesProperty(Node):
             img = torch.tensor(img, device=self.defaults.device, dtype=torch.float)
             img = img[:, :, :3]
             img = img / 255
+            img = img.transpose(0, 1)  # TODo use defaults to set dimensions
             images.append(img)
 
         self.images = images

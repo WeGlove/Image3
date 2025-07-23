@@ -11,5 +11,5 @@ class Fill(Node):
         super().__init__([self.input_noso])
 
     def produce(self):
-        return (torch.ones((self.defaults.height, self.defaults.width), device=self.defaults.device)
+        return (torch.ones(self.defaults.dimensions, device=self.defaults.device)
                 * self.input_noso.get().produce())
