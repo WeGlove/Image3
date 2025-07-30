@@ -10,6 +10,8 @@ class ColumnExtension(Node):
 
     def produce(self):
         arr = self.column.get().produce()
-        arr = arr.repeat((1, self.defaults.width))
+        print("Test", arr.shape)
+        arr = arr.repeat((self.defaults.width, 1))
+        print(arr.shape)
 
         return arr

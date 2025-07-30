@@ -6,7 +6,7 @@ from src.Nodes.math import (Abs, Addition, Division, Interpolate, Log, Mean, Mod
                             Subtraction, PiProperty, EProperty, Fill, DistPoint, DistGeometryLine, Matmul, Convolution,
                             Transposition, Shape, SVD, QR, ColumnExtension, RowExtension, Cube, Linear,
                             Square, Positions, Selection, Swap, Normal, Uniform, RFFT, iRFFT, Cos, Cosecant, Cotangent,
-                            Secant, Sin, Tan, BSpline, Polar, Spirals)
+                            Secant, Sin, Tan, BSpline, Polar, Spirals, RowRange, ColumnRange)
 from src.Nodes.image_processing import MassAlpha, MassComposition, RGBToHSV, HSVToRGB, BitPlanes, GreyScale, HueShift, RGBToB, RGBToG, RGBToR, TensorsToRGB
 
 
@@ -44,11 +44,11 @@ def get_math_factory():
                "Square": Square, "Positions": Positions, "Selection": Selection, "Swap": Swap, "Normal": Normal,
                "Uniform": Uniform, "RFFT": RFFT, "iRFFT": iRFFT, "Cos": Cos, "Cosecant": Cosecant,
                "Cotangent": Cotangent, "Secant": Secant, "Sin": Sin, "Tan": Tan, "BSpline": BSpline, "Polar": Polar,
-               "Spirals": Spirals}
+               "Spirals": Spirals, "RowRange": RowRange, "ColumnRange": ColumnRange}
     factory = NodeFactory(in_dict, "Math", hierarchy=[
         ("Arithmetic >", ["Abs", "Addition", "Division", "Interpolate", "Log", "Mean", "Modulo", "Multiplication",
                           "Power", "Root", "Round", "Subtraction"]),
-        ("Constants >", ["Fill", "E", "Pi"]),
+        ("Constants >", ["Fill", "E", "Pi", "RowRange", "ColumnRange"]),
         ("Distance >", ["DistPoint", "DistGeometryLine"]),
         ("LinAlg >", ["Matmul", "Convolution", "Transposition", "Shape", "SVD", "QR", "ColumnExtension", "RowExtension"]),
         ("Polynomial >", ["Cube", "Linear", "Square"]),

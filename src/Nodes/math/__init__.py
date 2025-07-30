@@ -14,6 +14,8 @@ from src.Nodes.math.airthmetic.subtraction import Subtraction
 from src.Nodes.math.constants.pi_property import PiProperty
 from src.Nodes.math.constants.e_property import EProperty
 from src.Nodes.math.constants.fill import Fill
+from src.Nodes.math.constants.row_range import RowRange
+from src.Nodes.math.constants.column_range import ColumnRange
 
 from src.Nodes.math.distance.dist_point import DistPoint
 from src.Nodes.math.distance.dist_geometry_line import DistGeometryLine

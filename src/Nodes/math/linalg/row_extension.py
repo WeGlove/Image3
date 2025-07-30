@@ -11,5 +11,6 @@ class RowExtension(Node):
     def produce(self):
         arr = self.row.get().produce()
         arr = arr.repeat((self.defaults.height, 1))
+        arr = arr.T
 
         return arr

@@ -71,7 +71,7 @@ class Renderer:  # Future TODO Callbacks for exceptions pausing within rednerer!
                 self.new_image = False
 
             if render is not None and is_new:
-                img = render.cpu().numpy() % 1
+                img = render.cpu().numpy()
                 cv2.imshow('Render', img)
 
                 # This is currently necessary to quit because the gui doesn't send signals on quitting
@@ -123,6 +123,7 @@ class Renderer:  # Future TODO Callbacks for exceptions pausing within rednerer!
             try:
                 rendered_img = patch.get_root().produce()
                 rendered_img = rendered_img.transpose(0, 1)
+                rendered_img = rendered_img % 1
             except Exception:
                 self.logger.error(traceback.format_exc())
                 self.pause()
