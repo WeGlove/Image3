@@ -9,4 +9,4 @@ class Uniform(Node):
         super().__init__([], [], "Returns the given value.")
 
     def produce(self):
-        return torch.rand((self.defaults.width, self.defaults.height))
+        return torch.rand((self.defaults.width, self.defaults.height), device=self.defaults.device)

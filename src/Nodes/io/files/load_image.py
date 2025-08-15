@@ -22,5 +22,9 @@ class LoadImage(Node):
 
         img = np.array(Image.open(os.path.join(path)))
         self.img = torch.tensor(img, device=self.defaults.device, dtype=torch.float)
+        if self.img.shape[-1] > 3:
+            self.img = self.img[:, :, :3]
+        self.img = torch.transpose(self.img, 0, 1)
+        self.img /= 255
 
         return img

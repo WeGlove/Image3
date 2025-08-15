@@ -123,7 +123,6 @@ class Renderer:  # Future TODO Callbacks for exceptions pausing within rednerer!
             try:
                 rendered_img = patch.get_root().produce()
                 rendered_img = rendered_img.transpose(0, 1)
-                rendered_img = rendered_img % 1
             except Exception:
                 self.logger.error(traceback.format_exc())
                 self.pause()

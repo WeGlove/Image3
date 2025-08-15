@@ -1,3 +1,5 @@
+import time
+
 import torch
 from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
@@ -14,6 +16,7 @@ class MassAlpha(Node):
                          "Mass Alpha")
 
     def produce(self):
+        a = time.time()
         images = self.noso_images.get().produce()
 
         masks = [self.noso_compositor_a.get().produce(),
@@ -24,6 +27,7 @@ class MassAlpha(Node):
         mask = mask * len(images)
         mask_floor = torch.floor(mask)
 
+        b = time.time()
         stack_img = torch.zeros(mask.shape, device=self.defaults.device)
         for i in range(len(images) - 1):
             img_a = images[i]
@@ -35,4 +39,6 @@ class MassAlpha(Node):
 
             stack_img[(mask_floor == i)] = combined_img[(mask_floor == i)]
 
+        print("Stck time", time.time()-b)
+        print("Full Time", time.time()-a)
         return stack_img

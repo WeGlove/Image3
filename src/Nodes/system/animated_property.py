@@ -26,6 +26,8 @@ class AnimatedProperty(Node):
             position = frame - self.frame_counter.get()
             if position > 0:
                 if k == 0:
+                    if type(self.keyframes[0][1]) is list:
+                        return torch.tensor(self.keyframes[0][1], device=self.defaults.device)
                     return self.keyframes[0][1]
                 else:
                     frame_b, val_b = self.keyframes[k - 1]

@@ -10,6 +10,7 @@ from src.Nodes.math.airthmetic.power import Power
 from src.Nodes.math.airthmetic.root import Root
 from src.Nodes.math.airthmetic.round import Round
 from src.Nodes.math.airthmetic.subtraction import Subtraction
+from src.Nodes.math.airthmetic.cheap_interpolate import CheapInterpolate
 
 from src.Nodes.math.constants.pi_property import PiProperty
 from src.Nodes.math.constants.e_property import EProperty
@@ -28,6 +29,7 @@ from src.Nodes.math.linalg.svd import SVD
 from src.Nodes.math.linalg.qr import QR
 from src.Nodes.math.linalg.column_extension import ColumnExtension
 from src.Nodes.math.linalg.row_extension import RowExtension
+from src.Nodes.math.linalg.select import Select
 
 from src.Nodes.math.polynomial.cube import Cube
 from src.Nodes.math.polynomial.linear import Linear
