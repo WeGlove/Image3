@@ -13,7 +13,7 @@ if __name__ == "__main__":
     device = torch.device('cuda')
 
     with torch.cuda.device(0):
-        renderer = Renderer(device, width=952)
+        renderer = Renderer(device)
 
         factories = [get_io_factory(), get_math_factory(), get_imaging_factory(), get_tensor_conv_factory()]
         logger.info(f"Created {len(factories)} factories")

@@ -176,11 +176,43 @@ class RenderGui(QMainWindow): # Future TODO, set FPS Button
 
         def on_set_path():
             save_path = QFileDialog.getExistingDirectory(self)
+            self.path_label.setText(save_path)
             self.logger.info(f"Setting path {save_path}")
             self.frame_renderer.set_save_path(save_path)
         self.path_button.clicked.connect(on_set_path)
 
         # Row 9
+
+        self.path_label = QLabel()
+
+        # Row 10
+
+        self.width_button = QPushButton("Set Width", parent=self)
+        self.height_button = QPushButton("Set Height", parent=self)
+
+        def on_set_width():
+            self.frame_renderer.defaults.width = int(self.width_edit.text())
+            self.logger.info(f"Setting width {self.frame_renderer.defaults.width}")
+            self.width_label.setText(f"Width: {self.width_edit.text()}")
+        self.width_button.clicked.connect(on_set_width)
+
+        def on_set_height():
+            self.frame_renderer.defaults.height = int(self.height_edit.text())
+            self.logger.info(f"Setting height {self.frame_renderer.defaults.height}")
+            self.height_label.setText(f"Height: {self.height_edit.text()}")
+        self.height_button.clicked.connect(on_set_height)
+
+        # Row 11
+
+        self.width_edit = QLineEdit("", parent=self)
+        self.height_edit = QLineEdit("", parent=self)
+
+        # Row 12
+
+        self.width_label = QLabel("", parent=self)
+        self.height_label = QLabel("", parent=self)
+
+        # Row 13
 
         self.text_widget = QLabel()
 
@@ -205,6 +237,18 @@ class RenderGui(QMainWindow): # Future TODO, set FPS Button
         render_settings_layout.addWidget(self.render_button)
         render_settings_layout.addWidget(self.repeat_button)
 
+        dimensions_settings_button_layout = QHBoxLayout()
+        dimensions_settings_button_layout.addWidget(self.width_button)
+        dimensions_settings_button_layout.addWidget(self.height_button)
+
+        dimensions_settings_edit_layout = QHBoxLayout()
+        dimensions_settings_edit_layout.addWidget(self.width_edit)
+        dimensions_settings_edit_layout.addWidget(self.height_edit)
+
+        dimensions_settings_label_layout = QHBoxLayout()
+        dimensions_settings_label_layout.addWidget(self.width_label)
+        dimensions_settings_label_layout.addWidget(self.height_label)
+
         layout = QVBoxLayout()
         layout.addWidget(self.reset_button)
         layout.addLayout(player_layout)
@@ -214,13 +258,17 @@ class RenderGui(QMainWindow): # Future TODO, set FPS Button
         layout.addWidget(self.img_format_button)
         layout.addWidget(self.img_format_widget)
         layout.addWidget(self.path_button)
+        layout.addWidget(self.path_label)
+        layout.addLayout(dimensions_settings_edit_layout)
+        layout.addLayout(dimensions_settings_button_layout)
+        layout.addLayout(dimensions_settings_label_layout)
         layout.addWidget(self.text_widget)
 
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
-        self.setFixedSize(QSize(500, 300))
+        self.setFixedSize(QSize(500, 500))
         self.update_fps_labels()
 
         self.editor = NodeEditor(self.node_factories, self.patch)
