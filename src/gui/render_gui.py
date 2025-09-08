@@ -1,7 +1,10 @@
 import logging
+import os.path
+
 import numpy as np
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QApplication, QHBoxLayout, QFileDialog
+from PyQt6 import QtGui
 from src.renderer import Renderer
 from src.gui.node_editor import NodeEditor
 from src.factories import get_system_factory
@@ -269,6 +272,7 @@ class RenderGui(QMainWindow): # Future TODO, set FPS Button
         self.setCentralWidget(widget)
 
         self.setFixedSize(QSize(500, 500))
+        self.setWindowIcon(QtGui.QIcon(os.path.join(".", "res", "window_icon.png")))
         self.update_fps_labels()
 
         self.editor = NodeEditor(self.node_factories, self.patch)

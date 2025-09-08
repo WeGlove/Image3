@@ -42,7 +42,7 @@ class NodeEditor(QWidget):
         self.line_pen = QtGui.QPen()
         self.line_pen.setWidth(1)
         self.line_pen.setColor(QtGui.QColor('black'))
-        self.img_reader = QImageReader(os.path.join(".", "bg.png"))
+        self.img_reader = QImageReader(os.path.join(".", "res", "bg.png"))
         self.bg = self.img_reader.read()
 
         self.setWindowTitle("Node Editor")
