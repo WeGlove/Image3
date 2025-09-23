@@ -2,12 +2,14 @@ import logging
 import traceback
 from PyQt6.QtWidgets import QLabel
 from src.Nodes.node import NodeSocket
+from src.serializable import Serializable
 
 
-class NodeSocketWidget(QLabel):
+class NodeSocketWidget(QLabel, Serializable):
 
     def __init__(self, name, parent, socket):
-        super().__init__(name, parent=parent)
+        super(QLabel, self).__init__(name, parent=parent)
+        super(Serializable, self).__init__()
         self.logger = logging.getLogger(__name__)
 
         self.parent = parent
@@ -66,5 +68,5 @@ class NodeSocketWidget(QLabel):
         super().move(*a0)
         self.parent.redraw_lines()
 
-    def to_dict(self):
-        return {"Socket": self.socket.to_dict()}
+    def serialize(self):
+        return {"Socket": self.socket.serialize()}

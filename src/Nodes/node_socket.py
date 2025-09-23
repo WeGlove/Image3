@@ -1,7 +1,8 @@
 import logging
+from src.serializable import Serializable
 
 
-class NodeSocket:
+class NodeSocket(Serializable):
 
     def __init__(self, socket_name, default=None, description=""):
         self.logger = logging.getLogger(__name__)
@@ -38,6 +39,6 @@ class NodeSocket:
         else:
             return self.default
 
-    def to_dict(self):
+    def serialize(self):
         return {"ConnectedID": self.node.node_id if self.connected else None,
                 "Connected": self.connected}

@@ -4,9 +4,10 @@ import numpy as np
 from src.Nodes.node_socket import NodeSocket
 from src.interactables.interactable import Interactable
 from abc import abstractmethod
+from src.serializable import Serializable
 
 
-class Node:
+class Node(Serializable):
 
     def __init__(self, subnode_sockets: List[NodeSocket] = None, interactables: List[Interactable] = None,
                  description=""):
@@ -69,7 +70,7 @@ class Node:
     def get_node_name(self):
         return self.node_name
 
-    def to_dict(self):
+    def serialize(self):
         return {"node_id": self.node_id, "factory_id": self.factory_id, "name": self.get_node_name(),
                 "interactables": [interactable.to_dict() for interactable in self.interactables],
                 "position": self.position.tolist(), "creation_time": self.creation_time}

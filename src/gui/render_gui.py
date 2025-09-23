@@ -1,5 +1,7 @@
+import json
 import logging
 import os.path
+import traceback
 
 import numpy as np
 from PyQt6.QtCore import QSize
@@ -11,9 +13,10 @@ from src.factories import get_system_factory
 from src.Nodes.system.patch import Patch
 from typing import List
 from src.node_factory import NodeFactory
+from src.serializable import Serializable
 
 
-class RenderGui(QMainWindow): # Future TODO, set FPS Button
+class RenderGui(QMainWindow, Serializable): # Future TODO, set FPS Button
 
     OUT_ID = "Out"
 
@@ -184,6 +187,11 @@ class RenderGui(QMainWindow): # Future TODO, set FPS Button
             self.frame_renderer.set_save_path(save_path)
         self.path_button.clicked.connect(on_set_path)
 
+        def on_save():
+            session_dict = self.serialize()
+            with open(self.path_label.text(), "r") as f:
+                json.dump(session_dict, f)
+
         # Row 9
 
         self.path_label = QLabel()
@@ -275,7 +283,13 @@ class RenderGui(QMainWindow): # Future TODO, set FPS Button
         self.setWindowIcon(QtGui.QIcon(os.path.join(".", "res", "window_icon.png")))
         self.update_fps_labels()
 
-        self.editor = NodeEditor(self.node_factories, self.patch)
+        def save_callback(fp):
+            self.save(fp)
+
+        def load_callback(fp):
+            self.load(fp)
+
+        self.editor = NodeEditor(self.node_factories, self.patch, save_callback, load_callback)
 
     def run(self):
         """
@@ -317,3 +331,39 @@ class RenderGui(QMainWindow): # Future TODO, set FPS Button
         """
         self.text_widget.setText(f"frame: {self.frame_renderer.start_frame} - {self.current_frame} / {self.frame_renderer.stop_frame}, "
                                  f"Render Time: {self.current_frame/self.frame_renderer.fps:.2f}, Real Time: {self.render_time:.2f}, FPS: {self._live_fps():.2f}")
+
+    def save(self, fp):
+        self.logger.info("Saving")
+        try:
+            obj = self.serialize()
+            with open(fp, "w+") as f:
+                json.dump(obj, f)
+        except Exception as e:
+            self.logger.error(f"Serialization failed. {traceback.format_exc()}")
+            return
+        self.logger.info("Saved")
+
+    def load(self, fp):
+        self.logger.info("Loading")
+        try:
+            with open(fp, "r") as f:
+                obj = json.load(f)
+                self.frame_renderer, self.editor = self.deserialize(obj, self.editor)
+        except Exception as e:
+            self.logger.error(f"Deserialization failed. {traceback.format_exc()}")
+            return
+        self.logger.info("Loaded")
+
+    def serialize(self):
+        frame_renderer_dict = self.frame_renderer.serialize()
+        editor_dict = self.editor.serialize()
+        return {
+            "frame_renderer": frame_renderer_dict,
+            "editor_dict": editor_dict
+        }
+
+    @staticmethod
+    def deserialize(obj, node_editor):
+        frame_renderer = Renderer.deserialize(obj["frame_renderer"])
+        editor = NodeEditor.deserialize(obj["editor_dict"], node_editor)
+        return frame_renderer, editor

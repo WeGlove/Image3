@@ -9,9 +9,10 @@ from threading import Lock
 import traceback
 from src.frame_counter import FrameCounter
 from src.defaults import Defaults
+from src.serializable import Serializable
 
 
-class Renderer:  # Future TODO Callbacks for exceptions pausing within rednerer!
+class Renderer(Serializable):  # Future TODO Callbacks for exceptions pausing within rednerer!
 
     def __init__(self, device=None, fps=30, start_frame=0, stop_frame=100000, width=1920, height=1080, repeat=False, display=True,
                  save=False, save_path=".", image_format="png"):
@@ -292,3 +293,23 @@ class Renderer:  # Future TODO Callbacks for exceptions pausing within rednerer!
         """
         self._display_thread.join()
         self._render_thread.join()
+
+    def serialize(self):
+        return {
+            "defaults": self.defaults.serialize(),
+            "display": self.display,
+            "save": self.save,
+            "save_path": self.save_path,
+            "image_format": self.image_format,
+            "start_frame": self.start_frame,
+            "stop_frame": self.stop_frame,
+            "fps": self.fps,
+            "repeat": self.repeat
+        }
+
+    @staticmethod
+    def deserialize(obj):
+        return Renderer(device=obj["defaults"]["device"], fps=obj["fps"], start_frame=obj["start_frame"],
+                        stop_frame=obj["stop_frame"], width=obj["defaults"]["width"], height=obj["defaults"]["height"],
+                        repeat=obj["repeat"], display=obj["display"], save=obj["save"], save_path=obj["save_path"],
+                        image_format=obj["image_format"])

@@ -10,11 +10,11 @@ from PyQt6.QtWidgets import QWidget, QLineEdit
 from PyQt6.QtGui import QKeyEvent, QGuiApplication, QImageReader
 from PyQt6.QtWidgets import QLabel
 from PyQt6 import QtGui
-from src.Nodes.system.patch import Patch
 from src.gui.context_menu_hierarchy import ContextMenuHierarchy
+from src.serializable import Serializable
 
 
-class NodeEditor(QWidget):
+class NodeEditor(QWidget, Serializable):
 
     SAVE_KEY = "s"
     LOAD_KEY = "l"
@@ -26,13 +26,15 @@ class NodeEditor(QWidget):
     WHITE = 0xffffff
     DEFAULT_FILE_NAME = "out.nmm"
 
-    def __init__(self, factories: List[NodeFactory], patch):
+    def __init__(self, factories: List[NodeFactory], patch, save_callback, load_callback):
         super().__init__()
         self.logger = logging.getLogger(__name__)
 
         self.patch = patch
         self.selected = None
         self.factories: Dict[str, NodeFactory] = {factory.get_factory_name(): factory for factory in factories}
+        self.save_callback = save_callback
+        self.load_callback = load_callback
 
         self.context_menu_hierarchy = ContextMenuHierarchy(
             [(factory.factory_name, factory.hierarchy) for factory in factories], self)
@@ -104,82 +106,69 @@ class NodeEditor(QWidget):
             node_widget = NodeWidget(node, parent=self)
             node_widget.move(*node.position.tolist())
 
-    def save(self, path):
-        self.logger.info(f"Saving patch to {path}")
-        try:
-            widgets = {k: v.get_gui_ref().to_dict() for k, v in self.patch.nodes.items()}
+    def serialize(self):
+        widgets = {k: v.get_gui_ref().serialize() for k, v in self.patch.nodes.items()}
 
-            file_dump = {
-                "factories": {factory.get_factory_name(): factory.next_id for factory in self.factories.values()},
-                "node_widgets": widgets,
-                "patch_root": self.patch.get_root().node_id
-            }
+        return {
+            "factories": {factory.get_factory_name(): factory.next_id for factory in self.factories.values()},
+            "node_widgets": widgets,
+            "patch_root": self.patch.get_root().node_id
+        }
 
-            with open(os.path.join(path), "w+") as f:
-                json.dump(file_dump, f, indent=1)
-        except Exception:
-            self.logger.error(traceback.format_exc())
-        self.logger.info(f"Saved patch")
+    @staticmethod
+    def deserialize(obj, node_editor):
+        factories = obj["factories"]
+        root_id = obj["patch_root"]
+        node_widgets = obj["node_widgets"]
 
-    def load(self, path):
-        self.logger.info(f"Loading patch from {path}")
-        try:
-            with open(os.path.join(path), "r") as f:
-                data = json.load(f)
+        node_editor.reset()
 
-            factories = data["factories"]
-            root_id = data["patch_root"]
-            node_widgets = data["node_widgets"]
+        for factory_name, next_id in factories.items():
+            node_editor.factories[factory_name].set_next(next_id)
 
-            self.reset()
+        for k, node_dict in node_widgets.items():
+            factory_id = node_dict["Node"]["factory_id"]
+            add_node = node_editor.factories[factory_id].node_from_dict(node_dict["Node"])
+            if add_node is None:
+                continue
+            node_editor.logger.info(f"Adding node: {add_node.node_id}")
+            node_editor.patch.add_node(add_node)
+            node_editor.add_nodes([add_node])
 
-            for factory_name, next_id in factories.items():
-                self.factories[factory_name].set_next(next_id)
+        for k, node_dict in node_widgets.items():
+            socket_widgets = node_dict["Sockets"]
+            for j, socket_widget in enumerate(socket_widgets):
+                socket = socket_widget["Socket"]
 
-            for k, node_dict in node_widgets.items():
-                factory_id = node_dict["Node"]["factory_id"]
-                add_node = self.factories[factory_id].node_from_dict(node_dict["Node"])
-                if add_node is None:
+                is_connected = socket["Connected"]
+                if not is_connected:
                     continue
-                self.logger.info(f"Adding node: {add_node.node_id}")
-                self.patch.add_node(add_node)
-                self.add_nodes([add_node])
 
-            for k, node_dict in node_widgets.items():
-                socket_widgets = node_dict["Sockets"]
-                for j, socket_widget in enumerate(socket_widgets):
-                    socket = socket_widget["Socket"]
+                connected_id = socket["ConnectedID"]
+                for node in node_editor.patch.get_nodes():
+                    node_widget = node.get_gui_ref()
+                    out_id = node_widget.node.node_id
+                    if out_id == connected_id:
+                        widget_to_connect = node_widget
+                        break
+                else:
+                    raise ValueError()
 
-                    is_connected = socket["Connected"]
-                    if not is_connected:
-                        continue
+                if node_dict["Node"]["node_id"] not in node_editor.patch.get_node_ids():
+                    continue
+                in_node_widget = node_editor.patch.get_node(node_dict["Node"]["node_id"])
+                in_node_widget.get_gui_ref().socket_labels[j].connect(widget_to_connect)
 
-                    connected_id = socket["ConnectedID"]
-                    for node in self.patch.get_nodes():
-                        node_widget = node.get_gui_ref()
-                        out_id = node_widget.node.node_id
-                        if out_id == connected_id:
-                            widget_to_connect = node_widget
-                            break
-                    else:
-                        raise ValueError()
+        for k, node_dict in obj["node_widgets"].items():
+            position = node_dict["Node"]["position"]
+            if k in node_editor.patch.get_node_ids():
+                node_editor.patch.get_node(k).get_gui_ref().move(position[0], position[1])
 
-                    if node_dict["Node"]["node_id"] not in self.patch.get_node_ids():
-                        continue
-                    in_node_widget = self.patch.get_node(node_dict["Node"]["node_id"])
-                    in_node_widget.get_gui_ref().socket_labels[j].connect(widget_to_connect)
+        root_node = node_editor.patch.get_node(root_id)
+        node_editor.patch.set_root(root_node)
+        node_editor.set_global_position(np.array([0, 0]))
 
-            for k, node_dict in data["node_widgets"].items():
-                position = node_dict["Node"]["position"]
-                if k in self.patch.get_node_ids():
-                    self.patch.get_node(k).get_gui_ref().move(position[0], position[1])
-
-            root_node = self.patch.get_node(root_id)
-            self.patch.set_root(root_node)
-            self.set_global_position(np.array([0, 0]))
-        except Exception:
-            self.logger.error(traceback.format_exc())
-        self.logger.info(f"Loaded patch")
+        return node_editor
 
     def reset(self):
         for factory in self.factories.values():
@@ -226,9 +215,9 @@ class NodeEditor(QWidget):
             if ord(key_text[0]) == self.DELETE_KEY:
                 self.delete_selected_node()
             elif key_text[0] == self.SAVE_KEY:
-                self.save(self.DEFAULT_FILE_NAME)
+                self.save_callback(self.DEFAULT_FILE_NAME)
             elif key_text[0] == self.LOAD_KEY:
-                self.load(self.DEFAULT_FILE_NAME)
+                self.load_callback(self.DEFAULT_FILE_NAME)
         else:
             if event.key() == 16777234:  # LEFT
                 self.set_global_position(self.global_position + np.array([-self.STEP_SIZE, 0]))

@@ -8,15 +8,17 @@ from src.interactables.node_table import NodeTable
 from src.gui.interactable_widgets.ButtonWidget import ButtonWidget
 from src.gui.interactable_widgets.EditWidget import EditWidget
 from src.gui.interactable_widgets.TableWidget import TableWidget
+from src.serializable import Serializable
 
 
-class NodeWidget(QLabel):
+class NodeWidget(QLabel, Serializable):
 
     SOCKET_OFFSET = 20
     LINE_SIZE = 15
 
     def __init__(self, node, parent):
-        super().__init__(node.get_node_name(), parent=parent)
+        super(QLabel, self).__init__(node.get_node_name(), parent=parent)
+        super(Serializable, self).__init__()
 
         self.font = QFont()
         self.font.setBold(True)
@@ -110,5 +112,5 @@ class NodeWidget(QLabel):
             label.move(self.pos().x(),
                        self.pos().y() + self.SOCKET_OFFSET + k*self.LINE_SIZE)
 
-    def to_dict(self):
-        return {"Node": self.node.to_dict(), "Sockets": [socket.to_dict() for socket in self.socket_labels]}
+    def serialize(self):
+        return {"Node": self.node.serialize(), "Sockets": [socket.serialize() for socket in self.socket_labels]}
