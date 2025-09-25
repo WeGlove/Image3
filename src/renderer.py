@@ -276,6 +276,9 @@ class Renderer(Serializable):  # Future TODO Callbacks for exceptions pausing wi
         self.save_path = save_path
         self.logger.info(f"Set save path to {save_path}")
 
+    def set_fps(self, fps):
+        self.fps = fps
+
     def run(self, patch):
         """
         Run the renderer

@@ -16,7 +16,7 @@ from src.node_factory import NodeFactory
 from src.serializable import Serializable
 
 
-class RenderGui(QMainWindow, Serializable): # Future TODO, set FPS Button
+class RenderGui(QMainWindow, Serializable):
 
     OUT_ID = "Out"
 
@@ -178,6 +178,20 @@ class RenderGui(QMainWindow, Serializable): # Future TODO, set FPS Button
 
         # Row 8
 
+        self.set_fps_button = QPushButton("Set FPS", self)
+
+        def on_set_fps():
+            self.logger.info(f"Setting fps {self.set_fps_widget.text()}")
+            self.frame_renderer.set_fps(float(self.set_fps_widget.text()))
+
+        self.set_fps_button.clicked.connect(on_set_fps)
+
+        # Row 9
+
+        self.set_fps_widget = QLineEdit("30")
+
+        # Row 10
+
         self.path_button = QPushButton("Set Out Path", self)
 
         def on_set_path():
@@ -187,16 +201,11 @@ class RenderGui(QMainWindow, Serializable): # Future TODO, set FPS Button
             self.frame_renderer.set_save_path(save_path)
         self.path_button.clicked.connect(on_set_path)
 
-        def on_save():
-            session_dict = self.serialize()
-            with open(self.path_label.text(), "r") as f:
-                json.dump(session_dict, f)
-
-        # Row 9
+        # Row 11
 
         self.path_label = QLabel()
 
-        # Row 10
+        # Row 12
 
         self.width_button = QPushButton("Set Width", parent=self)
         self.height_button = QPushButton("Set Height", parent=self)
@@ -213,17 +222,17 @@ class RenderGui(QMainWindow, Serializable): # Future TODO, set FPS Button
             self.height_label.setText(f"Height: {self.height_edit.text()}")
         self.height_button.clicked.connect(on_set_height)
 
-        # Row 11
+        # Row 13
 
         self.width_edit = QLineEdit("", parent=self)
         self.height_edit = QLineEdit("", parent=self)
 
-        # Row 12
+        # Row 14
 
         self.width_label = QLabel("", parent=self)
         self.height_label = QLabel("", parent=self)
 
-        # Row 13
+        # Row 15
 
         self.text_widget = QLabel()
 
@@ -268,6 +277,8 @@ class RenderGui(QMainWindow, Serializable): # Future TODO, set FPS Button
         layout.addLayout(frame_set_edit_layout)
         layout.addWidget(self.img_format_button)
         layout.addWidget(self.img_format_widget)
+        layout.addWidget(self.set_fps_button)
+        layout.addWidget(self.set_fps_widget)
         layout.addWidget(self.path_button)
         layout.addWidget(self.path_label)
         layout.addLayout(dimensions_settings_edit_layout)
