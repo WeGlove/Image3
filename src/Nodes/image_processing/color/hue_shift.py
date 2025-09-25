@@ -2,6 +2,7 @@ import torch
 from src.math.color import rgb_to_hsv, hsv_to_rgb
 from src.Nodes.node_socket import NodeSocket
 from src.Nodes.node import Node
+from src.Nodes.system.internal_value import InternalValue
 
 
 class HueShift(Node):
@@ -10,7 +11,7 @@ class HueShift(Node):
         self.R = NodeSocket("R")
         self.G = NodeSocket("G")
         self.B = NodeSocket("B")
-        self.shift = NodeSocket("Shift")
+        self.shift = NodeSocket("Shift", default=InternalValue(0))
 
         super().__init__([self.R, self.G, self.B, self.shift],
                          [], "Coloring")

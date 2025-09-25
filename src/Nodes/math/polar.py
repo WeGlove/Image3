@@ -8,7 +8,7 @@ class Polar(Node):
 
     def __init__(self):
         self.center = NodeSocket("Center")
-        self.angle_shift = NodeSocket("Angle Shit")
+        self.angle_shift = NodeSocket("Angle Shift")
         super().__init__([self.center, self.angle_shift])
 
     def produce(self):

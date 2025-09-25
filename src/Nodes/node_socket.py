@@ -12,6 +12,9 @@ class NodeSocket(Serializable):
         self.socket_name = socket_name
         self.description = description
 
+    def has_default(self):
+        return self.default is not None
+
     def is_connected(self):
         return self.connected
 

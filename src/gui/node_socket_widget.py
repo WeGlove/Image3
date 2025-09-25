@@ -17,7 +17,7 @@ class NodeSocketWidget(QLabel, Serializable):
         self.connected_node_widget = None
 
         self.connection_label = QLabel("", parent=self.parent)
-        self.setStyleSheet("background-color:rgb(230, 230, 230)")
+        self.setStyleSheet("background-color:rgb(230, 230, 0)" if self.socket.has_default() else "background-color:rgb(230, 0, 0)")
 
         self.move(parent.pos())
         self.connection_label.move(parent.pos())
@@ -35,11 +35,7 @@ class NodeSocketWidget(QLabel, Serializable):
                     self.connect(node_widget)
                     break
             else:
-                connected = self.socket.is_connected()
-                if connected:
-                    self.connected_node_widget.disconnect_socket(self)
-                self.socket.disconnect()
-                self.connection_label.hide()
+                self.socket_disconnect()
 
             self.parent.redraw_lines()
 
@@ -47,15 +43,22 @@ class NodeSocketWidget(QLabel, Serializable):
             self.logger.error(traceback.format_exc())
 
     def connect(self, node_widget):
+        self.socket_disconnect()
+
+        self.socket.connect(node_widget.node)
+        self.connected_node_widget = node_widget
+        self.connected_node_widget.connect_socket(self)
+        self.setStyleSheet("background-color:rgb(230, 230, 230)")
+        self.connection_label.show()
+
+    def socket_disconnect(self):
         connected = self.socket.is_connected()
         if connected:
             self.connected_node_widget.disconnect_socket(self)
         self.socket.disconnect()
 
-        self.socket.connect(node_widget.node)
-        self.connected_node_widget = node_widget
-        self.connected_node_widget.connect_socket(self)
-        self.connection_label.show()
+        self.connection_label.hide()
+        self.setStyleSheet("background-color:rgb(230, 230, 0)" if self.socket.has_default() else "background-color:rgb(230, 0, 0)")
 
     def cut(self):
         if self.socket.is_connected():

@@ -1,5 +1,4 @@
 from src.Nodes.node import Node
-from src.Nodes.node_socket import NodeSocket
 import torch
 
 

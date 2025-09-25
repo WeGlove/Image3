@@ -8,7 +8,7 @@ class LivePlayer(Node):
 
     def __init__(self):
         self.compositor = NodeSocket("Compositor")
-        self.data = NodeSocket("Path")
+        self.data = NodeSocket("Path", default=".")
 
         # for playing wav file
         self.song = None

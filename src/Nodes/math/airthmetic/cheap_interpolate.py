@@ -1,5 +1,6 @@
 from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
+from src.Nodes.system.internal_value import InternalValue
 
 
 class CheapInterpolate(Node):
@@ -7,7 +8,7 @@ class CheapInterpolate(Node):
     def __init__(self):
         self.a = NodeSocket("A")
         self.b = NodeSocket("B")
-        self.x = NodeSocket("x")
+        self.x = NodeSocket("x", default=InternalValue(0))
         self.reader = None
         super().__init__([self.a, self.b, self.x], [], "Interpolate")
 

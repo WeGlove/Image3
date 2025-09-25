@@ -6,7 +6,7 @@ from src.Nodes.node_socket import NodeSocket
 class ListGet(Node):
 
     def __init__(self):
-        self.initial_value = NodeEdit("")
+        self.initial_value = NodeEdit("0")
         self.compositor = NodeSocket("Compositor")
         super().__init__([self.compositor], [self.initial_value], "Returns the given value.")
 

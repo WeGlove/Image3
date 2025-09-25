@@ -10,10 +10,8 @@ class GreyScale(Node):
         self.R = NodeSocket("R")
         self.G = NodeSocket("G")
         self.B = NodeSocket("B")
-        self.shift = NodeSocket("Shift")
 
-        super().__init__([self.R, self.G, self.B, self.shift],
-                         [], "Coloring")
+        super().__init__([self.R, self.G, self.B],[], "Coloring")
 
     def produce(self):
         grey_mask = grey_scale(self.R.get().produce(), self.G.get().produce(), self.B.get().produce())

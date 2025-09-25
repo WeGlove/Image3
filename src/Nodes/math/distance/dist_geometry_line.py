@@ -1,14 +1,15 @@
 from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
 from src.math.gemoetry import dist_line
+from src.Nodes.system.internal_value import InternalValue
 
 
 class DistGeometryLine(Node):
 
     def __init__(self):
-        self.a = NodeSocket("A", None)
-        self.b = NodeSocket("B", None)
-        self.c = NodeSocket("C", None)
+        self.a = NodeSocket("A", default=InternalValue(1))
+        self.b = NodeSocket("B", default=InternalValue(1))
+        self.c = NodeSocket("C", default=InternalValue(1))
         super().__init__([self.a, self.b, self.c], [], "Returns the given value.")
 
     def produce(self):

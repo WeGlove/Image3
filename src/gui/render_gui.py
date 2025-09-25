@@ -2,7 +2,6 @@ import json
 import logging
 import os.path
 import traceback
-
 import numpy as np
 from PyQt6.QtCore import QSize
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QApplication, QHBoxLayout, QFileDialog

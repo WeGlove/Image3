@@ -6,7 +6,7 @@ import torch
 class PiProperty(Node):
 
     def __init__(self):
-        super().__init__([], [], "Returns the given value.")
+        super().__init__([], [], "Returns Pi")
 
     def produce(self):
         return torch.tensor(math.pi)

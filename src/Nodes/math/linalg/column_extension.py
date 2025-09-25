@@ -6,12 +6,10 @@ class ColumnExtension(Node):
 
     def __init__(self):
         self.column = NodeSocket("Column")
-        super().__init__([self.column], [], "Round")
+        super().__init__([self.column], [], "ColumnExtension")
 
     def produce(self):
         arr = self.column.get().produce()
-        print("Test", arr.shape)
         arr = arr.repeat((self.defaults.width, 1))
-        print(arr.shape)
 
         return arr

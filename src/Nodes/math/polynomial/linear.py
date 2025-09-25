@@ -1,14 +1,14 @@
 from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
+from src.Nodes.system.internal_value import InternalValue
 
 
 class Linear(Node):
 
     def __init__(self):
-        self.a = NodeSocket("a")
-        self.b = NodeSocket("b")
+        self.a = NodeSocket("a", default=InternalValue(1))
+        self.b = NodeSocket("b", default=InternalValue(0))
         self.X = NodeSocket("X")
-        self.reader = None
         super().__init__([self.a, self.b, self.X], [], "Keyboard Reader")
 
     def produce(self):

@@ -1,16 +1,17 @@
 from src.math.gemoetry import get_polar
-import torch
 import math
 from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
+from src.Nodes.system.internal_value import InternalValue
+import torch
 
 
 class DistPoint(Node):
 
     def __init__(self):
         self.noso_point = NodeSocket("Point")
-        self.noso_scale = NodeSocket("Scale")
-        self.noso_shift = NodeSocket("Shift")
+        self.noso_scale = NodeSocket("Scale", default=InternalValue(1))
+        self.noso_shift = NodeSocket("Shift", default=InternalValue(0))
 
         self.angle_space = None
 

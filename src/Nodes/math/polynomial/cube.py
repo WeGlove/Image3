@@ -1,18 +1,18 @@
 from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
+from src.Nodes.system.internal_value import InternalValue
 
 
 class Cube(Node):
 
     def __init__(self):
-        self.a0 = NodeSocket("a0")
-        self.a1 = NodeSocket("a1")
-        self.a2 = NodeSocket("a2")
-        self.b = NodeSocket("b")
+        self.a0 = NodeSocket("a0", default=InternalValue(1))
+        self.a1 = NodeSocket("a1", default=InternalValue(1))
+        self.a2 = NodeSocket("a2", default=InternalValue(1))
+        self.b = NodeSocket("b", default=InternalValue(0))
         self.X0 = NodeSocket("X0")
         self.X1 = NodeSocket("X1")
         self.X2 = NodeSocket("X2")
-        self.reader = None
         super().__init__([self.a0, self.a1, self.a2, self.b, self.X0, self.X1, self.X2], [], "Keyboard Reader")
 
     def produce(self):

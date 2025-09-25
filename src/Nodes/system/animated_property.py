@@ -3,6 +3,7 @@ import math
 from src.Nodes.node import Node
 from src.Nodes.node import NodeSocket
 from src.interactables.node_table import NodeTable
+from src.Nodes.system.internal_value import InternalValue
 
 
 class AnimatedProperty(Node):
@@ -10,7 +11,7 @@ class AnimatedProperty(Node):
     def __init__(self):
         self.keyframes_interactable = NodeTable()
         self.keyframes = []
-        self.initial_value = NodeSocket("Initial Value")
+        self.initial_value = NodeSocket("Initial Value", default=InternalValue(0))
         self.animation_style = "Linear"
         super().__init__([self.initial_value], [self.keyframes_interactable], "Used to animate a value")
 
