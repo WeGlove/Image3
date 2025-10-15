@@ -359,6 +359,8 @@ class RenderGui(QMainWindow, Serializable):
             with open(fp, "r") as f:
                 obj = json.load(f)
                 self.frame_renderer, self.editor = self.deserialize(obj, self.editor)
+                self.patch = self.editor.patch
+                self.frame_renderer.run(self.patch)
         except Exception as e:
             self.logger.error(f"Deserialization failed. {traceback.format_exc()}")
             return

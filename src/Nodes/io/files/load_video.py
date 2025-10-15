@@ -16,10 +16,13 @@ class LoadVideo(Node):
 
     def produce(self):
         ret, frame = self.cap.read()
+        if not ret:
+            raise ValueError("Video not found or corrupted")
         pil_img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
         pil_img_torch = torch.tensor(np.array(pil_img), device=self.defaults.device)
+        pil_img_torch = pil_img_torch.transpose(0, 1)
         return pil_img_torch
 
     def initialize(self, defaults, excluded_nodes, frame_counter):
         super().initialize(defaults, excluded_nodes, frame_counter)
-        self.cap = cv2.VideoCapture(self.initial_value.get().produce())
+        self.cap = cv2.VideoCapture(self.initial_value.get())

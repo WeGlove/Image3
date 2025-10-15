@@ -15,12 +15,12 @@ class RFFTRounding(Node):
 
     def produce(self):
         mask = self.input.get().produce()
-        fft = torch.fft.rfft2(mask)
-
         k = self.k.get().produce()
         shift = self.shift.get().produce()
 
-        fft = bin_round(fft, k, shift)
-        mask = torch.fft.irfft2(fft)
+        for x in range(mask.shape[self.defaults.color_dim]):
+            fft = torch.fft.rfft2(mask[:, :, x])
+            fft = bin_round(fft, k, shift)
+            mask[:, :, x] = torch.fft.irfft2(fft)
 
         return mask

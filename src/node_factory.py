@@ -18,7 +18,7 @@ class NodeFactory: # TODO I don't like the way these work, should go over it aga
     def set_next(self, x):
         self.next_id = x
 
-    def node_from_dict(self, system):
+    def node_from_dict(self, system): # TODO should just deserialize!
         name = system["name"]
         interactables = system["interactables"]
         position = system["position"]

@@ -7,9 +7,9 @@ from src.Nodes.internal.internal_value import InternalValue
 class DistLine(Node):
 
     def __init__(self):
-        self.a = NodeSocket("A", default=InternalValue(1))
-        self.b = NodeSocket("B", default=InternalValue(1))
-        self.c = NodeSocket("C", default=InternalValue(1))
+        self.a = NodeSocket("A", default=InternalValue(1.))
+        self.b = NodeSocket("B", default=InternalValue(1.))
+        self.c = NodeSocket("C", default=InternalValue(1.))
         super().__init__([self.a, self.b, self.c], [], "Returns the given value.")
 
     def produce(self):

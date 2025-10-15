@@ -75,6 +75,7 @@ def get_imaging_factory():
     factory = NodeFactory(in_dict, "Imaging")
     return factory
 
+
 def get_text_factory():
     in_dict = {"Text": Text}
     factory = NodeFactory(in_dict, "Text")
