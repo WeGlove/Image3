@@ -1,10 +1,10 @@
 from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
 from src.math.gemoetry import dist_line
-from src.Nodes.system.internal_value import InternalValue
+from src.Nodes.internal.internal_value import InternalValue
 
 
-class DistGeometryLine(Node):
+class DistLine(Node):
 
     def __init__(self):
         self.a = NodeSocket("A", default=InternalValue(1))

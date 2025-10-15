@@ -2,7 +2,7 @@ import torch
 from src.math.color import rgb_to_hsv, hsv_to_rgb
 from src.Nodes.node_socket import NodeSocket
 from src.Nodes.node import Node
-from src.Nodes.system.internal_value import InternalValue
+from src.Nodes.internal.internal_value import InternalValue
 
 
 class HueShift(Node):

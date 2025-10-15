@@ -2,8 +2,7 @@ from src.math.gemoetry import get_polar
 import math
 from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
-from src.Nodes.system.internal_value import InternalValue
-import torch
+from src.Nodes.internal.internal_value import InternalValue
 
 
 class DistPoint(Node):
@@ -19,7 +18,7 @@ class DistPoint(Node):
             self.noso_point,
             self.noso_scale,
             self.noso_shift,
-        ], [], "Circles")
+        ], [], "DistPoint")
 
     def produce(self):
         point = self.noso_point.get().produce()
@@ -28,6 +27,4 @@ class DistPoint(Node):
 
         rad_out = (rad * self.noso_scale.get().produce() + self.noso_shift.get().produce()) % 1
 
-        arr_map = rad_out
-
-        return arr_map
+        return rad_out

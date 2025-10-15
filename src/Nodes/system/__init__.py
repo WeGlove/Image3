@@ -1,4 +1,3 @@
-from src.Nodes.system.out import Out
 from src.Nodes.system.number_property import NumberProperty
 from src.Nodes.system.string_property import StringProperty
 from src.Nodes.system.tensor_property import TensorProperty
@@ -10,3 +9,4 @@ from src.Nodes.system.display import Display
 from src.Nodes.system.once import Once
 from src.Nodes.system.list_get import ListGet
 from src.Nodes.system.none_property import NoneProperty
+from src.Nodes.system.out import Out

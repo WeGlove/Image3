@@ -3,7 +3,7 @@ from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
 import math
 from src.math.rotation2D import rotation_2D
-from src.math.polynomial import two_points_to_linear, linear_dist
+from src.math.polynomial import two_points_to_linear
 
 
 class Star(Node):

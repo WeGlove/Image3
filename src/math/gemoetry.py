@@ -83,7 +83,30 @@ def radial_map(pixels_polar, amount, size):
 
 
 def dist_line(a, b, c, width, height, device):
+    """
+    ax + by - c = 0
+    :param a:
+    :param b:
+    :param c:
+    :param width:
+    :param height:
+    :param device:
+    :return:
+    """
     vector_map = get_vector_map(width, height, device)
     point_offset = torch.abs(torch.matmul(vector_map, torch.tensor([a, b], device=device)) + c)
     length = math.sqrt((width/2)**2 + (height/2)**2)
     return point_offset / length
+
+
+def linear_to_slope_intercept(a, b, c):
+    """
+    :param a:
+    :param b:
+    :param c:
+    :return: m, x0, y0
+    """
+    return -a/b, -c/a, -c/b
+
+def slope_interceptr_to_linear(b, m):
+    return 1, m, b

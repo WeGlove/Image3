@@ -2,7 +2,7 @@ from src.gui.render_gui import RenderGui
 from src.renderer import Renderer
 import torch
 import logging
-from src.factories import get_io_factory, get_math_factory, get_imaging_factory, get_tensor_conv_factory
+from src.factories import get_io_factory, get_math_factory, get_imaging_factory, get_tensor_conv_factory, get_text_factory
 
 
 if __name__ == "__main__":
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     with torch.cuda.device(0):
         renderer = Renderer(device)
 
-        factories = [get_io_factory(), get_math_factory(), get_imaging_factory(), get_tensor_conv_factory()]
+        factories = [get_io_factory(), get_math_factory(), get_imaging_factory(), get_tensor_conv_factory(), get_text_factory()]
         logger.info(f"Created {len(factories)} factories")
 
         logger.info("Running GUI")

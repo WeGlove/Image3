@@ -3,7 +3,7 @@ import math
 from src.Nodes.node import Node
 from src.Nodes.node import NodeSocket
 from src.interactables.node_table import NodeTable
-from src.Nodes.system.internal_value import InternalValue
+from src.Nodes.internal.internal_value import InternalValue
 
 
 class AnimatedProperty(Node):

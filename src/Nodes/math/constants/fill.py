@@ -1,7 +1,7 @@
 import torch
 from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
-from src.Nodes.system.internal_value import InternalValue
+from src.Nodes.internal.internal_value import InternalValue
 
 
 class Fill(Node):
