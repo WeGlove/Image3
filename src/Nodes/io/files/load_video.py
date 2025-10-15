@@ -25,4 +25,6 @@ class LoadVideo(Node):
 
     def initialize(self, defaults, excluded_nodes, frame_counter):
         super().initialize(defaults, excluded_nodes, frame_counter)
+        if self.cap is not None:
+            self.cap.release()
         self.cap = cv2.VideoCapture(self.initial_value.get())

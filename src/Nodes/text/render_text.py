@@ -6,13 +6,11 @@ from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
 
-class Text(Node):
+class RenderText(Node):
 
     def __init__(self):
         self.text = NodeSocket("Text", default=InternalValue("Hello World!"))
-        self.fontsize = NodeSocket("Font Size", default=InternalValue(60))
-        self.font = NodeSocket("Font", default=InternalValue("arial.ttf"))
-        super().__init__([self.text, self.fontsize, self.font])
+        super().__init__([self.text])
         self.image = None
         self.draw = None
 
@@ -22,9 +20,7 @@ class Text(Node):
         image = Image.new("RGBA", self.defaults.dimensions, (255, 255, 255))
         draw = ImageDraw.Draw(image)
 
-        font = ImageFont.truetype(self.font.get().produce(), self.fontsize.get().produce())
-
-        draw.text((10, 0), text, (0, 0, 0), font=font)
+        draw.text((10, 0), text["text"], (0, 0, 0), font=text["font"])
         img = np.array(image)
 
         return torch.tensor(img, device=self.defaults.device).transpose(0, 1)

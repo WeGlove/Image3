@@ -9,7 +9,7 @@ from src.Nodes.math import (Abs, Addition, Division, Interpolate, Log, Mean, Mod
                             Secant, Sin, Tan, BSpline, Polar, Spirals, RowRange, ColumnRange, CheapInterpolate, Select, Reshape,
                             Split, Unsplit)
 from src.Nodes.image_processing import MassAlpha, MassComposition, RGBToHSV, HSVToRGB, BitPlanes, GreyScale, HueShift, RGBToB, RGBToG, RGBToR, TensorsToRGB
-from src.Nodes.text import Text
+from src.Nodes.text import RenderText, VectorText
 from src.conv_tensors.mean import Mean
 from src.conv_tensors.edge_detection import EdgeDetection
 from src.conv_tensors.sharpen import Sharpen
@@ -77,7 +77,7 @@ def get_imaging_factory():
 
 
 def get_text_factory():
-    in_dict = {"Text": Text}
+    in_dict = {"RenderText": RenderText, "VectorText": VectorText}
     factory = NodeFactory(in_dict, "Text")
     return factory
 
