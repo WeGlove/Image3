@@ -2,7 +2,7 @@ import torch
 from src.Nodes.internal.internal_value import InternalValue
 from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import numpy as np
 
 
@@ -15,12 +15,13 @@ class RenderText(Node):
         self.draw = None
 
     def produce(self):
-        text = self.text.get().produce()
+        texts = self.text.get().produce()
 
         image = Image.new("RGBA", self.defaults.dimensions, (255, 255, 255))
         draw = ImageDraw.Draw(image)
 
-        draw.text((10, 0), text["text"], (0, 0, 0), font=text["font"])
-        img = np.array(image)
+        for text in texts:
+            draw.text((10, 0), text["text"], (0, 0, 0), font=text["font"])
 
+        img = np.array(image)
         return torch.tensor(img, device=self.defaults.device).transpose(0, 1)

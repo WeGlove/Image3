@@ -1,9 +1,7 @@
-import torch
 from src.Nodes.internal.internal_value import InternalValue
 from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
-from PIL import Image, ImageDraw, ImageFont
-import numpy as np
+from PIL import ImageFont
 
 
 class VectorText(Node):
@@ -12,7 +10,8 @@ class VectorText(Node):
         self.text = NodeSocket("Text", default=InternalValue("Hello World!"))
         self.fontsize = NodeSocket("Font Size", default=InternalValue(60))
         self.font = NodeSocket("Font", default=InternalValue("arial.ttf"))
-        super().__init__([self.text, self.fontsize, self.font])
+        self.stack = NodeSocket("Stack", default=InternalValue([]))
+        super().__init__([self.text, self.fontsize, self.font, self.stack])
         self.image = None
         self.draw = None
 
@@ -20,4 +19,4 @@ class VectorText(Node):
         text = self.text.get().produce()
         font = ImageFont.truetype(self.font.get().produce(), self.fontsize.get().produce())
 
-        return {"text": text, "font": font}
+        return self.stack.get().produce() + [{"text": text, "font": font}]
