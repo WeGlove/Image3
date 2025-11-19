@@ -8,4 +8,4 @@ class RowRange(Node):
         super().__init__()
 
     def produce(self):
-        return torch.linspace(-1, 1, self.defaults.width)
+        return torch.linspace(-1, 1, self.defaults.width, device=self.defaults.device)

@@ -42,20 +42,7 @@ class RenderGui(QMainWindow, Serializable):
         """GUI Settings"""
         self.setWindowTitle("Nightmare Machine")
 
-        def on_frame(frame, frame_time):
-            """
-            Feedback function from renderer
-            :param frame:
-            :param frame_time:
-            :return:
-            """
-            self.frame_times.append(frame_time)
-            self.frame_times = self.frame_times[int(-self.frame_renderer.fps):]
-            if len(self.frame_times) > 1:
-                self.render_time += self.frame_times[-1] - self.frame_times[-2]
-            self.current_frame = frame
-            self.update_fps_labels()
-        self.frame_renderer.on_frame = on_frame
+        self.frame_renderer.on_frame = self.on_frame
 
         self.reset_button = QPushButton("Reset", self)
 
@@ -301,6 +288,20 @@ class RenderGui(QMainWindow, Serializable):
 
         self.editor = NodeEditor(self.node_factories, self.patch, save_callback, load_callback)
 
+    def on_frame(self, frame, frame_time):
+            """
+            Feedback function from renderer
+            :param frame:
+            :param frame_time:
+            :return:
+            """
+            self.frame_times.append(frame_time)
+            self.frame_times = self.frame_times[int(-self.frame_renderer.fps):]
+            if len(self.frame_times) > 1:
+                self.render_time += self.frame_times[-1] - self.frame_times[-2]
+            self.current_frame = frame
+            self.update_fps_labels()
+
     def run(self):
         """
         Run the GUI
@@ -359,6 +360,7 @@ class RenderGui(QMainWindow, Serializable):
             with open(fp, "r") as f:
                 obj = json.load(f)
                 self.frame_renderer, self.editor = self.deserialize(obj, self.editor)
+                self.frame_renderer.on_frame = self.on_frame
                 self.patch = self.editor.patch
                 self.frame_renderer.run(self.patch)
         except Exception as e:

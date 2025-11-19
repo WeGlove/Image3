@@ -3,7 +3,7 @@ from src.Nodes.system import (Out, NumberProperty, StringProperty, TensorPropert
                               Hold, Display, Once, ListGet, NoneProperty)
 from src.Nodes.io import ImagesProperty, LoadImage, ByteReader, TextReader, KeyboardReader, LivePlayer, LoadVideo
 from src.Nodes.math import (Abs, Addition, Division, Interpolate, Log, Mean, Modulo, Multiplication, Power, Root, Round,
-                            Subtraction, PiProperty, EProperty, Fill, DistPoint, DistLine, Matmul, Convolution,
+                            Subtraction, PiProperty, EProperty, Fill, DistPoint, DistLine, NGon, Random, Star, DistAnchorLine, Matmul, Convolution,
                             Transposition, Shape, SVD, QR, ColumnExtension, RowExtension, Cube, Linear,
                             Square, Positions, Selection, Swap, Normal, Uniform, RFFT, iRFFT, RFFTRounding, Cos, Cosecant, Cotangent,
                             Secant, Sin, Tan, BSpline, Polar, Spirals, RowRange, ColumnRange, CheapInterpolate, Select, Reshape,
@@ -50,12 +50,13 @@ def get_math_factory():
                "Uniform": Uniform, "RFFT": RFFT, "iRFFT": iRFFT, "Cos": Cos, "Cosecant": Cosecant,
                "Cotangent": Cotangent, "Secant": Secant, "Sin": Sin, "Tan": Tan, "BSpline": BSpline, "Polar": Polar,
                "Spirals": Spirals, "RowRange": RowRange, "ColumnRange": ColumnRange, "CheapInterpolate": CheapInterpolate,
-               "Select": Select, "RFFTRounding": RFFTRounding, "Reshape": Reshape, "Tiling": Split, "DeTiling": Unsplit}
+               "Select": Select, "RFFTRounding": RFFTRounding, "Reshape": Reshape, "Tiling": Split, "DeTiling": Unsplit,
+               "NGon": NGon, "Random": Random, "Star": Star, "DistAnchorLine": DistAnchorLine}
     factory = NodeFactory(in_dict, "Math", hierarchy=[
         ("Arithmetic >", ["Abs", "Addition", "Division", "Interpolate", "Log", "Mean", "Modulo", "Multiplication",
                           "Power", "Root", "Round", "Subtraction", "CheapInterpolate"]),
         ("Constants >", ["Fill", "E", "Pi", "RowRange", "ColumnRange"]),
-        ("Distance >", ["DistPoint", "DistGeometryLine"]),
+        ("Distance >", ["DistPoint", "DistGeometryLine", "NGon", "Random", "Star", "DistAnchorLine"]),
         ("LinAlg >", ["Matmul", "Convolution", "Transposition", "Shape", "SVD", "QR", "ColumnExtension", "RowExtension",
                       "Select", "Reshape", "Split", "Unsplit"]),
         ("Polynomial >", ["Cube", "Linear", "Square"]),

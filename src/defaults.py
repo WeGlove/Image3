@@ -19,7 +19,7 @@ class Defaults(Serializable):
         return {
             "width": self.width,
             "height": self.height,
-            "device": self.device.type
+            "device": self.device if type(self.device) == str else self.device.type
         }
 
     @staticmethod

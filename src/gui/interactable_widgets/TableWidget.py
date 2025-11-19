@@ -88,6 +88,7 @@ class TableWidget(InteractableWidget):
                 self.node.interactables[self.k].set(to_json())
             except Exception:
                 self.logger.error(traceback.format_exc())
+                self.logger.error(f"Node Name: {self.node.get_node_name()} Error String: {x}")
 
         self._update = update
 

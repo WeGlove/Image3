@@ -22,7 +22,7 @@ class MassAlpha(Node):
                  self.noso_compositor_c.get().produce()]
         mask = torch.stack(masks).transpose(0, 1).transpose(1, 2)
         mask = mask % 1
-        mask = mask * len(images)
+        mask = mask * (len(images) - 1)
         mask_floor = torch.floor(mask)
 
         stack_img = torch.zeros(mask.shape, device=self.defaults.device)

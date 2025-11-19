@@ -20,6 +20,10 @@ from src.Nodes.math.constants.column_range import ColumnRange
 
 from src.Nodes.math.distance.dist_point import DistPoint
 from src.Nodes.math.distance.dist_line import DistLine
+from src.Nodes.math.distance.random import Random
+from src.Nodes.math.distance.dist_anchor_line import DistAnchorLine
+from src.Nodes.math.distance.star import Star
+from src.Nodes.math.distance.n_gon import NGon
 
 from src.Nodes.math.linalg.matmul import Matmul
 from src.Nodes.math.linalg.convolution import Convolution

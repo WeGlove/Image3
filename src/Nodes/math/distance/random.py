@@ -3,7 +3,7 @@ from src.Nodes.node import Node
 from src.Nodes.node_socket import NodeSocket
 import math
 from src.math.rotation2D import rotation_2D
-from src.math.polynomial import two_points_to_linear, linear_dist
+#from src.math.polynomial import two_points_to_linear, linear_dist
 import random
 
 
@@ -20,7 +20,7 @@ class Random(Node):
         map = torch.zeros((self.defaults.width, self.defaults.height))
         for i in range(self.n.get().produce()):
             point = self.position.get().produce() + torch.matmul(unit, rotation_2D(2 * math.pi * random.random() / self.n.get().produce(), self.defaults.device))[0]
-            a, b = two_points_to_linear(self.position.get().produce(), point, self.defaults.device)
-            map += linear_dist(a, b, self.defaults.width, self.defaults.height, self.defaults.device)
+            #a, b = two_points_to_linear(self.position.get().produce(), point, self.defaults.device)
+            #map += linear_dist(a, b, self.defaults.width, self.defaults.height, self.defaults.device)
 
         return map
